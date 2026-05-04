@@ -4,18 +4,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Department {
+    private int id;
     private String name;
+    private String description;
+
     private List<Job> jobs = new ArrayList<>();
 
-    public Department(String name) {
+    public Department(int id, String name, String description) {
+        this.id = id;
         this.name = name;
+        this.description = description;
     }
 
+    public int getId() {
+        return id;
+    }
     public String getName() {
         return name;
+    }
+    public String getDescription() {
+        return description;
     }
 
     public List<Job> getJobs() {
         return jobs;
+    }
+
+    public String toString(){
+        return name;
     }
 }

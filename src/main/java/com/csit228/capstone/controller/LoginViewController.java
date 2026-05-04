@@ -1,7 +1,10 @@
 package com.csit228.capstone.controller;
 
+import com.csit228.capstone.application.TixApp;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.exceptions.InvalidCredentialsException;
+import com.csit228.capstone.model.Serializer;
+import com.csit228.capstone.model.Ticket;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.Controls;
 import javafx.fxml.FXML;
@@ -41,7 +44,12 @@ public class LoginViewController {
         } else {
             try{
                 User u = userDAO.login(username, password);
-                if(u != null) Controls.switchScreen("MainView.fxml");
+                if(u != null){
+                    TixApp.currentUser = u;
+                    TixApp.serializer.setUser(u);
+                    TixApp.serializer.serialize();
+                    Controls.switchScreen("MainView.fxml");
+                }
             } catch (InvalidCredentialsException e) {
                 showError("Invalid Credentials.");
             }

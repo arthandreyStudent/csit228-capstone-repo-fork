@@ -1,6 +1,10 @@
 package com.csit228.capstone.application;
 
+import com.csit228.capstone.model.Serializer;
+import com.csit228.capstone.model.User;
+import com.csit228.capstone.utils.Controls;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -9,15 +13,22 @@ import javafx.scene.Scene;
 import java.io.IOException;
 
 public class TixApp extends Application {
+    public static Serializer serializer = new Serializer();
+    public static User currentUser = null;
     public static Stage stage = null;    @Override
     public void start(Stage primaryStage) throws IOException {
         stage = primaryStage;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/LoginView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.sizeToScene();
-        stage.setScene(scene);
-        stage.setTitle("TIX.org");
-        stage.centerOnScreen();
-        stage.show();
+        initialize();
+        if(currentUser != null){
+            Controls.switchScreen("MainView.fxml");
+        } else {
+            Controls.switchScreen("LoginView.fxml");
+        }
+    }
+
+
+    public void initialize(){
+        serializer.setFilePath("user.ser");
+        currentUser = (User) serializer.deserialize();
     }
 }

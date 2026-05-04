@@ -1,13 +1,22 @@
 package com.csit228.capstone.model;
 
 public class Job {
-    private String jobTitle;
+    private int id;
+    private String name;
 
-    public Job(String jobTitle) {
-        this.jobTitle = jobTitle;
+    public Job(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public String getJobTitle() {
-        return jobTitle;
+    public int getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public String toString(){
+        return name;
     }
 }
