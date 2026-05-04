@@ -6,13 +6,13 @@ public class Executive extends User {
         setRole(Role.EXECUTIVE);
     }
 
-    public Executive(int userId, String fullName, String username, String passwordHash) {
-        super(userId, fullName, username, passwordHash, Role.EXECUTIVE);
+    public Executive(int userId, String firstName, String lastName, String username, String passwordHash,int departmentId) {
+        super(userId, firstName, lastName, username, passwordHash, Role.EXECUTIVE, departmentId);
     }
 
     public boolean createTicket(Ticket t) {
         // TO DO: pass ticket to TicketDAO once TicketDAO is created
-        return false;
+        return t != null;
     }
 
     public boolean assignTicket(Ticket t, Member m) {
@@ -33,6 +33,6 @@ public class Executive extends User {
     }
 
     public void sendNotification(Notification n) {
-        // TO DO: implement once Notification class is created
+        // TO DO: connect this to NotificationDAO once created
     }
 }

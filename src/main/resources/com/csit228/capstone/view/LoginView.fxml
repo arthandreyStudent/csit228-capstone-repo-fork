@@ -4,12 +4,12 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 40; -fx-background-color: #111827;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="com.csit228.capstone.controller.LoginViewController">
+<VBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 40; -fx-background-color: #111827;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.LoginViewController">
    <Label text="TIX.org" textFill="WHITE">
       <font>
          <Font name="Calibri Bold" size="22.0" />
@@ -35,7 +35,7 @@
       </VBox.margin>
    </Label>
 
-    <TextField fx:id="usernameField" prefWidth="250.0" promptText="Enter username">
+    <TextField fx:id="tfUsername" onKeyPressed="#closeError" prefWidth="250.0" promptText="Enter username">
       <padding>
          <Insets bottom="6.0" left="10.0" right="10.0" top="6.0" />
       </padding>
@@ -50,34 +50,37 @@
          <Insets bottom="-10.0" />
       </padding>
    </Label>
-   <TextField fx:id="usernameField1" prefWidth="250.0" promptText="Enter password">
-      <padding>
-         <Insets bottom="6.0" left="10.0" right="10.0" top="6.0" />
-      </padding>
-      <font>
-         <Font size="14.0" />
-      </font>
-   </TextField>
-   <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
+   <VBox>
       <children>
-         <CheckBox mnemonicParsing="false" text="Show password" textFill="#6092ff" />
-      </children>
-   </HBox>
-   <HBox alignment="CENTER" maxWidth="1.7976931348623157E308">
-      <children>
-      
-          <Button style="-fx-background-color: #2563EB; -fx-font-family: Calibri; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-radius: 10;" text="Login" textAlignment="CENTER" textFill="WHITE">
+         <TextField fx:id="tfPassword" prefWidth="250.0" promptText="Enter password" visible="false">
+            <padding>
+               <Insets bottom="6.0" left="10.0" right="10.0" top="6.0" />
+            </padding>
             <font>
-               <Font size="16.0" />
+               <Font size="14.0" />
+            </font>
+         </TextField>
+         <PasswordField fx:id="pfPassword" onKeyPressed="#closeError" promptText="Enter password">
+            <font>
+               <Font size="14.0" />
             </font>
             <padding>
-               <Insets bottom="8.0" left="25.0" right="25.0" top="8.0" />
+               <Insets bottom="6.0" left="10.0" right="10.0" top="6.0" />
             </padding>
-         </Button>
+         </PasswordField>
       </children>
-      <VBox.margin>
-         <Insets bottom="30.0" top="20.0" />
-      </VBox.margin>
-   </HBox>
+   </VBox>
+   <CheckBox fx:id="cbPassword" mnemonicParsing="false" onAction="#showPassword" text="Show password" textFill="#6092ff" />
+   <Label fx:id="lbError" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#createAccount" prefHeight="17.0" prefWidth="317.0" text="Please fill in all fields!" textFill="#ff8282" visible="false" />
+
+          <Button fx:id="btnLogin" alignment="CENTER" contentDisplay="CENTER" onAction="#login" style="-fx-background-color: #2563EB; -fx-font-family: Calibri; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-radius: 10;" text="Login" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="NEVER">
+      <font>
+         <Font size="16.0" />
+      </font>
+      <padding>
+         <Insets bottom="8.0" left="25.0" right="25.0" top="8.0" />
+      </padding>
+   </Button>
+   <Label fx:id="lbCreateAccount" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#createAccount" text="Create Account" textFill="WHITE" />
 
 </VBox>

@@ -10,6 +10,7 @@ public class DBConnector {
     static String url;
     static String user;
     static String password;
+
     public static Connection getConnection(){
         loadEnv();
         try{

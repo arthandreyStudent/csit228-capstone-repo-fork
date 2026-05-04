@@ -6,13 +6,15 @@ public class Editor extends User {
         setRole(Role.EDITOR);
     }
 
-    public Editor(int userId, String fullName, String username, String passwordHash) {
-        super(userId, fullName, username, passwordHash, Role.EDITOR);
+    public Editor(int userId, String firstName, String lastName, String username, String passwordHash, int department_id) {
+        super(userId, firstName, lastName, username, passwordHash, Role.EDITOR, department_id);
     }
+
+
 
     public boolean editTicket(Ticket t) {
         // TO DO: update ticket details once TicketDAO or controller logic is created
-        return false;
+        return t != null;
     }
 
     public boolean updateTicketStatus(Ticket t, TicketStatus status) {
@@ -24,11 +26,16 @@ public class Editor extends User {
         return true;
     }
 
-    public void reviewTicket(Ticket t) {
-        // TO DO: implement ticket review logic
+    public boolean reviewTicket(Ticket t) {
+        if (t == null) {
+            return false;
+        }
+
+        // connect to review screen logic or TicketDAO.
+        return true;
     }
 
     public void notifyMember(Member m) {
-        // TO DO: implement once Notification class is created
+        // iconnect sa NotificationDAO once created
     }
 }

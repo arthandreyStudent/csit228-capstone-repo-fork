@@ -377,135 +377,21 @@
                      <Insets bottom="15.0" />
                   </VBox.margin>
                </HBox>
-               <GridPane alignment="CENTER_LEFT" hgap="5.0" style="-fx-background-color: white; -fx-background-radius: 10;" vgap="10.0">
-                 <columnConstraints>
-                     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="250.0" />
-                     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" />
-                     <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="120.0" />
-                   <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" />
-                   <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" />
-                 </columnConstraints>
-                 <rowConstraints>
-                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                 </rowConstraints>
-                  <padding>
-                     <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
-                  </padding>
-                  <children>
-                     <Label text="Ticket" textFill="#5e5e5e">
-                        <font>
-                           <Font name="Calibri Bold" size="17.0" />
-                        </font>
-                     </Label>
-                     <Label text="Category" textFill="#5e5e5e" GridPane.columnIndex="1">
-                        <font>
-                           <Font name="Calibri Bold" size="17.0" />
-                        </font>
-                     </Label>
-                     <Label text="Volunteer" textFill="#5e5e5e" GridPane.columnIndex="2">
-                        <font>
-                           <Font name="Calibri Bold" size="17.0" />
-                        </font>
-                     </Label>
-                     <Label text="Status" textFill="#5e5e5e" GridPane.columnIndex="3">
-                        <font>
-                           <Font name="Calibri Bold" size="17.0" />
-                        </font>
-                     </Label>
-                     <Label text="Deadline" textFill="#5e5e5e" GridPane.columnIndex="4">
-                        <font>
-                           <Font name="Calibri Bold" size="17.0" />
-                        </font>
-                     </Label>
-                     <Label text="Poster Design for Membership Drive" GridPane.rowIndex="1">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label text="Design" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label text="Maria Santos" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label style="-fx-background-color: #FEF3C7; -fx-background-radius: 50;" text="Pending" textFill="#b45309" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                        <font>
-                           <Font name="System Bold" size="13.0" />
-                        </font>
-                        <padding>
-                           <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                        </padding>
-                     </Label>
-                     <Label text="Sept 18" GridPane.columnIndex="4" GridPane.rowIndex="1">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label text="Capture Photos During Outreach" GridPane.rowIndex="2">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label text="Media" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label text="Joshua N." GridPane.columnIndex="2" GridPane.rowIndex="2">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label style="-fx-background-color: #DBECFF; -fx-background-radius: 50;" text="In Progress" textFill="#2563eb" GridPane.columnIndex="3" GridPane.rowIndex="2">
-                        <font>
-                           <Font name="System Bold" size="13.0" />
-                        </font>
-                        <padding>
-                           <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                        </padding>
-                     </Label>
-                     <Label text="Sept 22" GridPane.columnIndex="4" GridPane.rowIndex="2">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label text="Set Up Chairs for General Assembly" GridPane.rowIndex="3">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label text="Logistics" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label text="Carlo Reyes" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                     <Label style="-fx-background-color: #D1FAE5; -fx-background-radius: 50;" text="Completed" textFill="#35826a" GridPane.columnIndex="3" GridPane.rowIndex="3">
-                        <font>
-                           <Font name="System Bold" size="13.0" />
-                        </font>
-                        <padding>
-                           <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                        </padding>
-                     </Label>
-                     <Label text="Sept 20" GridPane.columnIndex="4" GridPane.rowIndex="3">
-                        <font>
-                           <Font name="Calibri" size="14.0" />
-                        </font>
-                     </Label>
-                  </children>
-               </GridPane>
+               <ScrollPane prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS">
+                  <content>
+                     <GridPane gridLinesVisible="true">
+                       <columnConstraints>
+                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                       </columnConstraints>
+                       <rowConstraints>
+                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                       </rowConstraints>
+                     </GridPane>
+                  </content>
+               </ScrollPane>
             </children>
             <padding>
                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
