@@ -25,10 +25,6 @@ public class DBConnector {
     }
     private static void loadEnv(){
         try(BufferedReader br = new BufferedReader(new FileReader(".env"))){
-            String line;
-//            while((line = br.readLine())!=null){
-//                System.out.println(line);
-//            }
             url = br.readLine().trim();
             user= br.readLine().trim();
             password= br.readLine().trim();
