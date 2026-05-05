@@ -1,6 +1,8 @@
 
 package com.csit228.capstone.model;
 
+import java.time.LocalDateTime;
+
 public class TicketView {
     private int id;
     private String title;
@@ -10,7 +12,9 @@ public class TicketView {
     private String departmentName;
     private String createdBy;
     private String assignedToName;
-
+    private LocalDateTime lastUpdated;
+    private LocalDateTime dateCreated;
+    private LocalDateTime deadline;
 
     public int getId() {
         return id;
@@ -90,8 +94,7 @@ public class TicketView {
                 '}';
     }
 
-    public TicketView(int id, String title, String description, String priority, String status, String departmentName, String createdBy, String assignedToName) {
-
+    public TicketView(int id, String title, String description, String priority, String status, String departmentName, String createdBy, String assignedToName, LocalDateTime lastUpdated, LocalDateTime dateCreated, LocalDateTime deadline) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -100,5 +103,8 @@ public class TicketView {
         this.departmentName = departmentName;
         this.createdBy = createdBy;
         this.assignedToName = assignedToName;
+        this.lastUpdated = lastUpdated;
+        this.dateCreated = dateCreated;
+        this.deadline = deadline;
     }
 }

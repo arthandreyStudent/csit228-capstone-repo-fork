@@ -2,6 +2,8 @@ package com.csit228.capstone.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,37 +15,21 @@ public class Ticket implements Serializable {
     private int ticketId;
     private String title;
     private String description;
-    private String category;
     private TicketPriority priority;
-    private LocalDate deadline;
+    private LocalDateTime deadline;
     private TicketStatus status;
-    private User createdBy;
-    private Member assignedTo;
-    private LocalDate dateCreated;
-    private LocalDate lastUpdated;
-    private int departmentId;
-    public int getDepartmentId() {
+    private Integer createdBy;
+    private Integer assignedTo;
+    private LocalDateTime dateCreated;
+    private LocalDateTime lastUpdated;
+    private Integer departmentId;
+
+
+    public Integer getDepartmentId() {
         return departmentId;
     }
 
     public void setDepartmentId(int departmentId) {
-        this.departmentId = departmentId;
-    }
-
-
-
-    public Ticket(int ticketId, String title, String description, String category, TicketPriority priority, LocalDate deadline, TicketStatus status, User createdBy, Member assignedTo, LocalDate dateCreated, LocalDate lastUpdated, int departmentId) {
-        this.ticketId = ticketId;
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.priority = priority;
-        this.deadline = deadline;
-        this.status = status;
-        this.createdBy = createdBy;
-        this.assignedTo = assignedTo;
-        this.dateCreated = dateCreated;
-        this.lastUpdated = lastUpdated;
         this.departmentId = departmentId;
     }
 
@@ -53,33 +39,37 @@ public class Ticket implements Serializable {
     public Ticket() {
         this.status = TicketStatus.OPEN;
         this.priority = TicketPriority.MEDIUM;
-        this.dateCreated = LocalDate.now();
-        this.lastUpdated = LocalDate.now();
+        this.dateCreated = LocalDateTime.now();
+        this.lastUpdated = LocalDateTime.now();
     }
-
-
-    public Ticket(int ticketId, String title, String description, String category,
-                  TicketPriority priority, LocalDate deadline, TicketStatus status,
-                  User createdBy, Member assignedTo,
-                  LocalDate dateCreated, LocalDate lastUpdated) {
+    public Ticket(
+            int ticketId,
+            String title,
+            String description,
+            TicketPriority priority,
+            LocalDateTime deadline,
+            TicketStatus status,
+            Integer createdBy,
+            Integer assignedTo,
+            LocalDateTime dateCreated,
+            LocalDateTime lastUpdated,
+            Integer departmentId
+    ) {
         this.ticketId = ticketId;
         this.title = title;
         this.description = description;
-        this.category = category;
-        this.priority = priority != null ? priority : TicketPriority.MEDIUM;
+        this.priority = priority;
         this.deadline = deadline;
-        this.status = status != null ? status : TicketStatus.OPEN;
+        this.status = status;
         this.createdBy = createdBy;
         this.assignedTo = assignedTo;
-        this.dateCreated = dateCreated != null ? dateCreated : LocalDate.now();
-        this.lastUpdated = lastUpdated != null ? lastUpdated : LocalDate.now();
+        this.dateCreated = dateCreated;
+        this.lastUpdated = lastUpdated;
+        this.departmentId = departmentId;
     }
-
-
-
-    public TicketMemento createMemento() {
-        return new TicketMemento(title, description, category, priority, deadline);
-    }
+//    //public TicketMemento createMemento() {
+//        return new TicketMemento(title, description, priority, deadline);
+//    }
 
     public void restore(TicketMemento m) {
         if (m == null) {
@@ -88,21 +78,12 @@ public class Ticket implements Serializable {
 
         this.title = m.getTitle();
         this.description = m.getDescription();
-        this.category = m.getCategory();
+
         this.priority = m.getPriority();
-        this.deadline = m.getDeadline();
+        this.deadline = m.getDeadline().atStartOfDay();
         touch();
     }
 
-    public void assignTo(Member m) {
-        this.assignedTo = m;
-
-        if (m != null) {
-            this.status = TicketStatus.IN_PROGRESS;
-        }
-
-        touch();
-    }
 
     public void markInProgress() {
         this.status = TicketStatus.IN_PROGRESS;
@@ -128,6 +109,17 @@ public class Ticket implements Serializable {
         touch();
     }
 
+    public int getCreatedBy() {
+        return createdBy;
+    }
+
+    public int getAssignedTo() {
+        if(assignedTo==-1){
+            return  -1;
+        }
+        return assignedTo;
+    }
+
     public boolean removeAttachment(Attachment a) {
         if (a == null) {
             return false;
@@ -142,23 +134,16 @@ public class Ticket implements Serializable {
         return removed;
     }
 
-    public boolean isAssigned() {
-        return assignedTo != null;
-    }
-
-    public boolean isAvailableForVolunteer() {
-        return assignedTo == null && status == TicketStatus.OPEN;
-    }
 
     public boolean isOverdue() {
         return deadline != null
-                && LocalDate.now().isAfter(deadline)
+                && LocalDate.now().isAfter(ChronoLocalDate.from(deadline))
                 && status != TicketStatus.COMPLETED
                 && status != TicketStatus.RESOLVED;
     }
 
     public void touch() {
-        this.lastUpdated = LocalDate.now();
+        this.lastUpdated = LocalDate.now().atStartOfDay();
     }
 
     public int getTicketId() {
@@ -195,14 +180,7 @@ public class Ticket implements Serializable {
         touch();
     }
 
-    public String getCategory() {
-        return category;
-    }
 
-    public void setCategory(String category) {
-        this.category = category;
-        touch();
-    }
 
     public TicketPriority getPriority() {
         return priority;
@@ -217,12 +195,12 @@ public class Ticket implements Serializable {
         touch();
     }
 
-    public LocalDate getDeadline() {
+    public LocalDateTime getDeadline() {
         return deadline;
     }
 
     public void setDeadline(LocalDate deadline) {
-        this.deadline = deadline;
+        this.deadline = deadline.atStartOfDay();
         touch();
     }
 
@@ -239,39 +217,7 @@ public class Ticket implements Serializable {
         touch();
     }
 
-    public User getCreatedBy() {
-        return createdBy;
-    }
 
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-        touch();
-    }
-
-    public Member getAssignedTo() {
-        return assignedTo;
-    }
-
-    public void setAssignedTo(Member assignedTo) {
-        this.assignedTo = assignedTo;
-        touch();
-    }
-
-    public LocalDate getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(LocalDate dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public LocalDate getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(LocalDate lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
 
     public List<Attachment> getAttachments() {
         return new ArrayList<>(attachments);
@@ -287,29 +233,22 @@ public class Ticket implements Serializable {
         touch();
     }
 
-    public int getCreatedById() {
-        if (createdBy == null) {
-            return 0;
-        }
-
-        return createdBy.getUserId();
-    }
-
-    public int getAssignedToId() {
-        if (assignedTo == null) {
-            return 0;
-        }
-
-        return assignedTo.getUserId();
-    }
-
     @Override
     public String toString() {
-        if (title == null || title.trim().isEmpty()) {
-            return "Ticket " + ticketId;
-        }
-
-        return title + " - " + status;
+        return "Ticket{" +
+                "\nticketId=" + ticketId +
+                "\n, title='" + title + '\'' +
+                "\n, description='" + description + '\'' +
+                "\n, priority=" + priority +
+                "\n, deadline=" + deadline +
+                "\n, status=" + status +
+                "\n, createdBy=" + createdBy +
+                "\n, assignedTo=" + assignedTo +
+                "\n, dateCreated=" + dateCreated +
+                "\n, lastUpdated=" + lastUpdated +
+                "\n, departmentId=" + departmentId +
+                "\n, attachments=" + attachments +
+                '}';
     }
 
     @Override

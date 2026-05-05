@@ -5,6 +5,7 @@ import com.csit228.capstone.database.DBConnector;
 import com.csit228.capstone.model.*;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,15 +19,17 @@ public class TicketDAO {
         getTicketViews();
     }
 
-    public boolean assignTicket(int userId, int ticketId){
+    public boolean assignTicket(int userId, int ticketId) {
         String sql = """
-                UPDATE ticket SET assigned_to = ? WHERE id = ?;
+                UPDATE ticket 
+                SET assigned_to = ? 
+                WHERE id = ?;
                 """;
 
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            stmt.setInt(1,userId);
+            stmt.setInt(1, userId);
             stmt.setInt(2, ticketId);
             int rows = stmt.executeUpdate();
             return rows > 0;
@@ -37,6 +40,7 @@ public class TicketDAO {
         }
 
     }
+
     public static TicketDAO getTicketDAO() {
         if (ticketDAO == null) {
             ticketDAO = new TicketDAO();
@@ -68,10 +72,10 @@ public class TicketDAO {
             stmt.setString(3, ticket.getPriority().toString());
             stmt.setString(4, ticket.getStatus().toString());
             stmt.setInt(5, ticket.getDepartmentId());
-            stmt.setInt(6, ticket.getCreatedBy().getId());
+            stmt.setInt(6, ticket.getCreatedBy());
 
-            if (ticket.getAssignedTo() != null) {
-                stmt.setInt(7, ticket.getAssignedTo().getId());
+            if (ticket.getAssignedTo() != -1) {
+                stmt.setInt(7, ticket.getAssignedTo());
             } else {
                 stmt.setNull(7, Types.INTEGER);
             }
@@ -88,31 +92,87 @@ public class TicketDAO {
         }
     }
 
-    public void getTicketViews() {
+    public Ticket getTicketById(int ticketId) {
         String sql = """
-                    SELECT
-                        t.id,
-                        t.title,
-                        t.description,
-                        t.priority,
-                        t.status,
-                        d.name AS department_name,
-                
-                        CONCAT( c.firstname,' ',c.lastname) AS created_by,
-                        CONCAT(u.firstname,' ',u.lastname) AS assigned_to_name
-                
-                        FROM ticket t
-                        LEFT JOIN department d ON t.department_id = d.id
-                        LEFT JOIN user u ON t.assigned_to = u.id
-                        LEFT JOIN user c ON t.created_by = c.id
-                        ORDER BY t.date_created DESC
-                """;
+                    SELECT *
+                    FROM ticket t
+                    WHERE t.id = ?
+                    """;
 
 
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()
+
         ) {
+            stmt.setInt(1, ticketId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+
+                    String priorityString = rs.getString("priority");
+                    TicketPriority priority = priorityString != null
+                            ? TicketPriority.valueOf(priorityString)
+                            : null;
+
+                    String statusString = rs.getString("status");
+                    TicketStatus status = statusString != null
+                            ? TicketStatus.valueOf(statusString)
+                            : null;
+
+                    Integer assignedTo = rs.getObject("assigned_to", Integer.class);
+                    Integer departmentId = rs.getObject("department_id", Integer.class);
+
+                    LocalDateTime deadline = rs.getObject("deadline", LocalDateTime.class);
+                    LocalDateTime dateCreated = rs.getObject("date_created", LocalDateTime.class);
+                    LocalDateTime lastUpdated = rs.getObject("last_updated", LocalDateTime.class);
+
+                    return new Ticket(
+                            rs.getInt("id"),
+                            rs.getString("title"),
+                            rs.getString("description"),
+                            priority,
+                            deadline,
+                            status,
+                            rs.getInt("created_by"),
+                            assignedTo,
+                            dateCreated,
+                            lastUpdated,
+                            departmentId
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void getTicketViews() {
+        tickets.clear();
+
+        String sql = """
+            SELECT
+                t.id,
+                t.title,
+                t.description,
+                t.last_updated,
+                t.date_created,
+                t.deadline,
+                t.priority,
+                t.status,
+                d.name AS department_name,
+                CONCAT(c.firstname, ' ', c.lastname) AS created_by,
+                CONCAT(u.firstname, ' ', u.lastname) AS assigned_to_name
+            FROM ticket t
+            LEFT JOIN department d ON t.department_id = d.id
+            LEFT JOIN user u ON t.assigned_to = u.id
+            LEFT JOIN user c ON t.created_by = c.id
+            ORDER BY t.date_created DESC
+            """;
+
+        try (Connection connection = DBConnector.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
                 tickets.add(new TicketView(
                         rs.getInt("id"),
@@ -122,20 +182,26 @@ public class TicketDAO {
                         rs.getString("status"),
                         rs.getString("department_name"),
                         rs.getString("created_by"),
-                        rs.getString("assigned_to_name")
+                        rs.getString("assigned_to_name"),
+                        rs.getObject("last_updated", LocalDateTime.class),
+                        rs.getObject("date_created", LocalDateTime.class),
+                        rs.getObject("deadline", LocalDateTime.class)
                 ));
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public static void main(String[] args) {
         TicketDAO ticketDAO = TicketDAO.getTicketDAO();
-
+        Ticket t = ticketDAO.getTicketById(4);
+        System.out.println(t);
 
     }
 
 }
+
+
+
