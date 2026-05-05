@@ -78,7 +78,6 @@ public class UserDAO {
     }
 
     public static void fetchTypes() {
-
         try (Connection connection = DBConnector.getConnection();
              Statement statement = connection.createStatement();
         ) {
@@ -120,7 +119,7 @@ public class UserDAO {
     }
 
     public List<User> getUserByDepartment(int id) {
-        List<User> res = new ArrayList<>();
+        List<User>res = new ArrayList<>();
         if (users == null) {
             fetchUsers();
         }
@@ -146,7 +145,6 @@ public class UserDAO {
     }
 
     public void fetchUsers() {
-        users = new ArrayList<>();
         try (Connection connection = DBConnector.getConnection()
              ; Statement statement = connection.createStatement();) {
 

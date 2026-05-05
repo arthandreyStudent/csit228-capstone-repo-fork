@@ -15,6 +15,7 @@ target/
 
 .idea/
 .env
+user.ser
 
 ### Eclipse ###
 .apt_generated
