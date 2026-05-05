@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static com.csit228.capstone.utils.Formatter.formatDate;
 
 public class Ticket implements Serializable {
 
@@ -235,22 +238,22 @@ public class Ticket implements Serializable {
 
     @Override
     public String toString() {
+
         return "Ticket{" +
                 "\nticketId=" + ticketId +
                 "\n, title='" + title + '\'' +
                 "\n, description='" + description + '\'' +
                 "\n, priority=" + priority +
-                "\n, deadline=" + deadline +
+                "\n, deadline=" + formatDate(deadline) +
                 "\n, status=" + status +
                 "\n, createdBy=" + createdBy +
-                "\n, assignedTo=" + assignedTo +
-                "\n, dateCreated=" + dateCreated +
-                "\n, lastUpdated=" + lastUpdated +
+                "\n, assignedTo=" + (assignedTo != null ? assignedTo : "Unassigned") +
+                "\n, dateCreated=" + formatDate(dateCreated) +
+                "\n, lastUpdated=" + formatDate(lastUpdated) +
                 "\n, departmentId=" + departmentId +
                 "\n, attachments=" + attachments +
-                '}';
+                "\n}";
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -3,6 +3,8 @@ package com.csit228.capstone.model;
 
 import java.time.LocalDateTime;
 
+import static com.csit228.capstone.utils.Formatter.formatDate;
+
 public class TicketView {
     private int id;
     private String title;
@@ -84,13 +86,16 @@ public class TicketView {
     public String toString() {
         return "TicketView{" +
                 "\nid=" + id +
-                ", \ntitle='" + title + '\'' +
-                ", \ndescription='" + description + '\'' +
-                ", \npriority='" + priority + '\'' +
-                ", \nstatus='" + status + '\'' +
-                ",\ndepartmentName='" + departmentName + '\'' +
-                ", \ncreatedBy='" + createdBy + '\'' +
-                ", \nassignedToName='" + assignedToName + '\'' +
+                "\n, title='" + title + '\'' +
+                "\n, description='" + description + '\'' +
+                "\n, priority='" + priority + '\'' +
+                "\n, status='" + status + '\'' +
+                "\n, departmentName='" + departmentName + '\'' +
+                "\n, createdBy='" + createdBy + '\'' +
+                "\n, assignedTo=" + (assignedToName != null? assignedToName : "Unassigned") +
+                "\n, lastUpdated=" + formatDate(lastUpdated) +
+                "\n, dateCreated=" + formatDate(dateCreated) +
+                "\n, deadline=" + formatDate(deadline) +
                 '}';
     }
 

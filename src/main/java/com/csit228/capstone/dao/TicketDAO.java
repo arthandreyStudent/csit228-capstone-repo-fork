@@ -73,13 +73,7 @@ public class TicketDAO {
             stmt.setString(4, ticket.getStatus().toString());
             stmt.setInt(5, ticket.getDepartmentId());
             stmt.setInt(6, ticket.getCreatedBy());
-
-            if (ticket.getAssignedTo() != -1) {
-                stmt.setInt(7, ticket.getAssignedTo());
-            } else {
-                stmt.setNull(7, Types.INTEGER);
-            }
-
+            stmt.setInt(7, ticket.getAssignedTo());
             stmt.setTimestamp(8, Timestamp.valueOf(LocalDateTime.now()));
 
             int rows = stmt.executeUpdate();
@@ -98,8 +92,6 @@ public class TicketDAO {
                     FROM ticket t
                     WHERE t.id = ?
                     """;
-
-
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
 
