@@ -193,10 +193,16 @@ public class TicketDAO {
             e.printStackTrace();
         }
     }
-
+    public List<TicketView> getViews(){
+        return tickets;
+    }
     public static void main(String[] args) {
         TicketDAO ticketDAO = TicketDAO.getTicketDAO();
         Ticket t = ticketDAO.getTicketById(4);
+        List<TicketView> tv =ticketDAO.getViews();
+        for (TicketView e : tv){
+            System.out.println(e);
+        }
         System.out.println(t);
 
     }
