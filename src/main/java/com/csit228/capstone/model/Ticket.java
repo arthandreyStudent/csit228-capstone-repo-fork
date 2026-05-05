@@ -21,6 +21,33 @@ public class Ticket implements Serializable {
     private Member assignedTo;
     private LocalDate dateCreated;
     private LocalDate lastUpdated;
+    private int departmentId;
+    public int getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
+    }
+
+
+
+    public Ticket(int ticketId, String title, String description, String category, TicketPriority priority, LocalDate deadline, TicketStatus status, User createdBy, Member assignedTo, LocalDate dateCreated, LocalDate lastUpdated, int departmentId) {
+        this.ticketId = ticketId;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.priority = priority;
+        this.deadline = deadline;
+        this.status = status;
+        this.createdBy = createdBy;
+        this.assignedTo = assignedTo;
+        this.dateCreated = dateCreated;
+        this.lastUpdated = lastUpdated;
+        this.departmentId = departmentId;
+    }
+
+
     private final List<Attachment> attachments = new ArrayList<>();
 
     public Ticket() {
@@ -30,21 +57,6 @@ public class Ticket implements Serializable {
         this.lastUpdated = LocalDate.now();
     }
 
-    public Ticket(int ticketId, String title, String description, String category,
-                  TicketPriority priority, LocalDate deadline, TicketStatus status,
-                  User createdBy, Member assignedTo) {
-        this.ticketId = ticketId;
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.priority = priority != null ? priority : TicketPriority.MEDIUM;
-        this.deadline = deadline;
-        this.status = status != null ? status : TicketStatus.OPEN;
-        this.createdBy = createdBy;
-        this.assignedTo = assignedTo;
-        this.dateCreated = LocalDate.now();
-        this.lastUpdated = LocalDate.now();
-    }
 
     public Ticket(int ticketId, String title, String description, String category,
                   TicketPriority priority, LocalDate deadline, TicketStatus status,
@@ -62,6 +74,8 @@ public class Ticket implements Serializable {
         this.dateCreated = dateCreated != null ? dateCreated : LocalDate.now();
         this.lastUpdated = lastUpdated != null ? lastUpdated : LocalDate.now();
     }
+
+
 
     public TicketMemento createMemento() {
         return new TicketMemento(title, description, category, priority, deadline);
