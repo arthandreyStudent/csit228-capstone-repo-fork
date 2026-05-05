@@ -8,6 +8,7 @@ module com.csit228.capstone {
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
     requires java.desktop;
+    requires mysql.connector.j;
 
 
     exports com.csit228.capstone.controller;

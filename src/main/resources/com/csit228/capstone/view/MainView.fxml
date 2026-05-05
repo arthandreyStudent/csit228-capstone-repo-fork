@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.MainViewController">
    <children>
       <VBox prefHeight="200.0" prefWidth="250.0" spacing="30.0" style="-fx-background-color: #111827;">
          <children>
@@ -73,7 +73,7 @@
                      <children>
                         <StackPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #2563EB; -fx-background-radius: 50;">
                            <children>
-                              <Label text="JN" textFill="WHITE">
+                              <Label fx:id="lblInitials" text="JN" textFill="WHITE">
                                  <font>
                                     <Font name="Calibri Bold" size="20.0" />
                                  </font>
@@ -82,12 +82,12 @@
                         </StackPane>
                         <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <Label text="Joshua N." textFill="WHITE">
+                              <Label fx:id="lblName" text="Joshua N." textFill="WHITE">
                                  <font>
                                     <Font name="Calibri Bold" size="18.0" />
                                  </font>
                               </Label>
-                              <Label text="Org Member" textFill="WHITE">
+                              <Label fx:id="lblDepartment" text="Org Member" textFill="WHITE">
                                  <font>
                                     <Font name="Calibri" size="12.0" />
                                  </font>
@@ -96,7 +96,7 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <Button mnemonicParsing="false" style="-fx-background-color: #e83535; -fx-background-radius: 5;" text="Logout" textFill="WHITE">
+                  <Button fx:id="btnLogout" mnemonicParsing="false" onAction="#Logout" style="-fx-background-color: #e83535; -fx-background-radius: 5;" text="Logout" textFill="WHITE">
                      <font>
                         <Font name="Calibri Bold" size="14.0" />
                      </font>
