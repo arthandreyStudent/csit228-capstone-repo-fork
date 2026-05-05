@@ -1,6 +1,10 @@
 
 package com.csit228.capstone.model;
 
+import java.time.LocalDateTime;
+
+import static com.csit228.capstone.utils.Formatter.formatDate;
+
 public class TicketView {
     private int id;
     private String title;
@@ -10,7 +14,9 @@ public class TicketView {
     private String departmentName;
     private String createdBy;
     private String assignedToName;
-
+    private LocalDateTime lastUpdated;
+    private LocalDateTime dateCreated;
+    private LocalDateTime deadline;
 
     public int getId() {
         return id;
@@ -80,18 +86,20 @@ public class TicketView {
     public String toString() {
         return "TicketView{" +
                 "\nid=" + id +
-                ", \ntitle='" + title + '\'' +
-                ", \ndescription='" + description + '\'' +
-                ", \npriority='" + priority + '\'' +
-                ", \nstatus='" + status + '\'' +
-                ",\ndepartmentName='" + departmentName + '\'' +
-                ", \ncreatedBy='" + createdBy + '\'' +
-                ", \nassignedToName='" + assignedToName + '\'' +
+                "\n, title='" + title + '\'' +
+                "\n, description='" + description + '\'' +
+                "\n, priority='" + priority + '\'' +
+                "\n, status='" + status + '\'' +
+                "\n, departmentName='" + departmentName + '\'' +
+                "\n, createdBy='" + createdBy + '\'' +
+                "\n, assignedTo=" + (assignedToName != null? assignedToName : "Unassigned") +
+                "\n, lastUpdated=" + formatDate(lastUpdated) +
+                "\n, dateCreated=" + formatDate(dateCreated) +
+                "\n, deadline=" + formatDate(deadline) +
                 '}';
     }
 
-    public TicketView(int id, String title, String description, String priority, String status, String departmentName, String createdBy, String assignedToName) {
-
+    public TicketView(int id, String title, String description, String priority, String status, String departmentName, String createdBy, String assignedToName, LocalDateTime lastUpdated, LocalDateTime dateCreated, LocalDateTime deadline) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -100,5 +108,8 @@ public class TicketView {
         this.departmentName = departmentName;
         this.createdBy = createdBy;
         this.assignedToName = assignedToName;
+        this.lastUpdated = lastUpdated;
+        this.dateCreated = dateCreated;
+        this.deadline = deadline;
     }
 }

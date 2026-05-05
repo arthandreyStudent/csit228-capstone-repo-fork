@@ -20,43 +20,12 @@ public class Member extends User {
         // connect this to VolunteerBoardController or VolunteerBoard screen
     }
 
-    public boolean volunteerForTicket(Ticket t) {
-        if (t == null) {
-            return false;
-        }
-
-        if (!t.isAvailableForVolunteer()) {
-            return false;
-        }
-
-        t.assignTo(this);
-        return true;
-    }
 
     public List<Ticket> viewMyTasks() {
         //return tickets assigned to this member from TicketDAO
         return new ArrayList<>();
     }
 
-    public boolean updateTaskStatus(Ticket t) {
-        if (t == null) {
-            return false;
-        }
-
-        if (t.getAssignedTo() == null) {
-            return false;
-        }
-
-        if (t.getAssignedTo().getUserId() != getUserId()) {
-            return false;
-        }
-
-        if (t.getStatus() == TicketStatus.OPEN) {
-            t.markInProgress();
-        }
-
-        return true;
-    }
 
     public void receiveNotification(Notification n) {
         //iconnect sa notification display or NotificationDAO
