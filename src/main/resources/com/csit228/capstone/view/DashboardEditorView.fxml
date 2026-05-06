@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<HBox alignment="CENTER_LEFT"
+      prefHeight="758.0"
+      prefWidth="1215.0"
+      style="-fx-background-color: #eef2fb;"
+      xmlns="http://javafx.com/javafx/26"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.csit228.capstone.controller.DashboardEditorController">
+
+    <children>
+
+        <VBox prefHeight="758.0"
+              prefWidth="250.0"
+              spacing="18.0"
+              style="-fx-background-color: #121d49;">
+            <padding>
+                <Insets bottom="18.0" left="16.0" right="16.0" top="22.0" />
+            </padding>
+
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <children>
+                        <Circle fill="white" radius="22.0" />
+                        <Label style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" text="TIX.org" />
+                    </children>
+                </HBox>
+
+                <Label style="-fx-text-fill: #6f7aa7; -fx-font-size: 11px; -fx-font-weight: bold;" text="MAIN">
+                    <VBox.margin>
+                        <Insets left="20.0" top="30.0" />
+                    </VBox.margin>
+                </Label>
+
+                <HBox alignment="CENTER_LEFT"
+                      prefHeight="42.0"
+                      prefWidth="218.0"
+                      spacing="12.0"
+                      style="-fx-background-color: #2b376b; -fx-background-radius: 10;">
+                    <padding>
+                        <Insets left="18.0" />
+                    </padding>
+                    <children>
+                        <Label style="-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;" text="⌂" />
+                        <Label style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="Dashboard" />
+                    </children>
+                </HBox>
+
+                <Label style="-fx-text-fill: #6f7aa7; -fx-font-size: 11px; -fx-font-weight: bold;" text="EDITOR">
+                    <VBox.margin>
+                        <Insets left="20.0" top="14.0" />
+                    </VBox.margin>
+                </Label>
+
+                <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="12.0">
+                    <padding>
+                        <Insets left="18.0" />
+                    </padding>
+                    <children>
+                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="▧" />
+                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="Review Queue" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="reviewQueueCountLabel"
+                               alignment="CENTER"
+                               prefHeight="18.0"
+                               prefWidth="24.0"
+                               style="-fx-background-color: #8b642b; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;"
+                               text="0" />
+                    </children>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="14.0">
+                    <padding>
+                        <Insets left="18.0" />
+                    </padding>
+                    <children>
+                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="▥" />
+                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="Department" />
+                    </children>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="14.0">
+                    <padding>
+                        <Insets left="18.0" />
+                    </padding>
+                    <children>
+                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="♟" />
+                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="Notifications" />
+                    </children>
+                </HBox>
+
+                <Region VBox.vgrow="ALWAYS" />
+
+                <VBox prefHeight="120.0"
+                      prefWidth="218.0"
+                      spacing="12.0"
+                      style="-fx-background-color: #1d2a5a; -fx-background-radius: 12;">
+                    <padding>
+                        <Insets bottom="14.0" left="14.0" right="14.0" top="16.0" />
+                    </padding>
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <StackPane prefHeight="40.0" prefWidth="40.0">
+                                    <children>
+                                        <Circle fill="#8b642b" radius="20.0" />
+                                        <Label fx:id="profileInitialsLabel" style="-fx-text-fill: #ff9900; -fx-font-size: 12px; -fx-font-weight: bold;" text="NA" />
+                                    </children>
+                                </StackPane>
+
+                                <VBox alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label fx:id="profileNameLabel" style="-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;" text="Editor User" />
+                                        <Label fx:id="profileRoleLabel" style="-fx-text-fill: #ff9900; -fx-font-size: 10px; -fx-font-weight: bold;" text="EDITOR" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="8.0">
+                            <children>
+                                <Button prefHeight="30.0"
+                                        prefWidth="82.0"
+                                        style="-fx-background-color: #e6f0ff; -fx-background-radius: 18; -fx-text-fill: #1b2b5f; -fx-font-size: 12px; -fx-font-weight: bold;"
+                                        text="Profile" />
+                                <Button prefHeight="30.0"
+                                        prefWidth="96.0"
+                                        style="-fx-background-color: #ef4c56; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;"
+                                        text="Logout" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+
+        <AnchorPane prefHeight="758.0"
+                    prefWidth="965.0"
+                    style="-fx-background-color: #eef2fb;">
+
+            <children>
+                <VBox layoutX="20.0" layoutY="20.0" spacing="2.0">
+                    <children>
+                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Pages / Dashboard" />
+                        <Label style="-fx-text-fill: #1c2b63; -fx-font-size: 28px; -fx-font-weight: bold;" text="Dashboard" />
+                    </children>
+                </VBox>
+
+                <HBox alignment="CENTER_LEFT"
+                      layoutX="700.0"
+                      layoutY="28.0"
+                      prefHeight="36.0"
+                      prefWidth="235.0"
+                      spacing="8.0"
+                      style="-fx-background-color: white; -fx-background-radius: 24;">
+                    <padding>
+                        <Insets left="14.0" right="10.0" />
+                    </padding>
+                    <children>
+                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 16px;" text="⌕" />
+                        <TextField fx:id="searchField"
+                                   prefWidth="180.0"
+                                   promptText="Search tickets..."
+                                   style="-fx-background-color: transparent; -fx-text-fill: #1c2b63; -fx-prompt-text-fill: #9faad2;" />
+                    </children>
+                </HBox>
+
+                <HBox layoutX="20.0" layoutY="90.0" spacing="10.0">
+                    <children>
+                        <AnchorPane prefHeight="92.0" prefWidth="220.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                            <children>
+                                <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Awaiting Review" />
+                                <Label fx:id="awaitingReviewLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #ff9900; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                                <StackPane layoutX="164.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #ffedcc; -fx-background-radius: 50;">
+                                    <children>
+                                        <Label style="-fx-text-fill: #ff9900; -fx-font-size: 24px; -fx-font-weight: bold;" text="⌕" />
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </AnchorPane>
+
+                        <AnchorPane prefHeight="92.0" prefWidth="220.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                            <children>
+                                <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="In Progress" />
+                                <Label fx:id="inProgressLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                                <StackPane layoutX="164.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #dceeff; -fx-background-radius: 50;">
+                                    <children>
+                                        <Label style="-fx-text-fill: #2f95ff; -fx-font-size: 22px;" text="⠿" />
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </AnchorPane>
+
+                        <AnchorPane prefHeight="92.0" prefWidth="220.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                            <children>
+                                <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Approved Today" />
+                                <Label fx:id="approvedTodayLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #4bcc8a; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                                <StackPane layoutX="164.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #dcffef; -fx-background-radius: 50;">
+                                    <children>
+                                        <Label style="-fx-text-fill: #4bcc8a; -fx-font-size: 28px; -fx-font-weight: bold;" text="✓" />
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </AnchorPane>
+
+                        <AnchorPane prefHeight="92.0" prefWidth="220.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                            <children>
+                                <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Sent Back" />
+                                <Label fx:id="sentBackLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #f14d5a; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                                <StackPane layoutX="164.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #ffedcc; -fx-background-radius: 50;">
+                                    <children>
+                                        <Label style="-fx-text-fill: #f14d5a; -fx-font-size: 28px; -fx-font-weight: bold;" text="↶" />
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </HBox>
+
+                <AnchorPane layoutX="20.0" layoutY="205.0" prefHeight="535.0" prefWidth="610.0" style="-fx-background-color: white; -fx-background-radius: 16;">
+                    <children>
+                        <Label layoutX="18.0" layoutY="18.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Review Queue" />
+
+                        <Button fx:id="createTicketButton"
+                                layoutX="445.0"
+                                layoutY="18.0"
+                                onAction="#createTicket"
+                                prefHeight="28.0"
+                                prefWidth="130.0"
+                                style="-fx-background-color: #4bcc8a; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;"
+                                text="+ Create Ticket" />
+
+                        <HBox layoutX="18.0" layoutY="56.0" spacing="8.0">
+                            <children>
+                                <Button fx:id="allFilterButton"
+                                        onAction="#showAllTickets"
+                                        prefHeight="28.0"
+                                        prefWidth="50.0"
+                                        style="-fx-background-color: #ff9900; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;"
+                                        text="All" />
+
+                                <Button fx:id="openFilterButton"
+                                        onAction="#showOpenTickets"
+                                        prefHeight="28.0"
+                                        prefWidth="64.0"
+                                        style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;"
+                                        text="Open" />
+
+                                <Button fx:id="inProgressFilterButton"
+                                        onAction="#showInProgressTickets"
+                                        prefHeight="28.0"
+                                        prefWidth="90.0"
+                                        style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;"
+                                        text="In Progress" />
+
+                                <Button fx:id="completedFilterButton"
+                                        onAction="#showCompletedTickets"
+                                        prefHeight="28.0"
+                                        prefWidth="104.0"
+                                        style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;"
+                                        text="To Be Reviewed" />
+
+                                <Button fx:id="resolvedFilterButton"
+                                        onAction="#showResolvedTickets"
+                                        prefHeight="28.0"
+                                        prefWidth="78.0"
+                                        style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;"
+                                        text="Resolved" />
+                            </children>
+                        </HBox>
+
+                        <HBox alignment="CENTER_LEFT" layoutX="22.0" layoutY="102.0" prefHeight="30.0" prefWidth="590.0">
+                            <children>
+                                <Label prefWidth="150.0"
+                                       style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
+                                       text="TICKET DETAILS" />
+
+                                <Label prefWidth="150.0"
+                                       style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
+                                       text="ASSIGN TO" />
+
+                                <Label prefWidth="90.0"
+                                       style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
+                                       text="STATUS" />
+
+                                <Label prefWidth="80.0"
+                                       style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
+                                       text="PRIORITY" />
+
+                                <Label prefWidth="120.0"
+                                       style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
+                                       text="ACTIONS" />
+                            </children>
+                        </HBox>
+
+                        <ScrollPane fitToWidth="true"
+                                    hbarPolicy="NEVER"
+                                    layoutX="20.0"
+                                    layoutY="138.0"
+                                    prefHeight="395.0"
+                                    prefWidth="592.0"
+                                    style="-fx-background-color: transparent; -fx-background: transparent;"
+                                    vbarPolicy="AS_NEEDED">
+                            <content>
+                                <VBox fx:id="reviewQueueBox" prefWidth="590.0" spacing="0.0" style="-fx-background-color: transparent;" />
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </AnchorPane>
+
+                <AnchorPane layoutX="660.0" layoutY="205.0" prefHeight="250.0" prefWidth="282.0" style="-fx-background-color: white; -fx-background-radius: 16;">
+                    <children>
+                        <Label layoutX="18.0" layoutY="18.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="My Review Stats" />
+                        <Label layoutX="205.0" layoutY="23.0" style="-fx-text-fill: #9faad2; -fx-font-size: 11px;" text="Live Data" />
+
+                        <Label fx:id="reviewApprovalPercentLabel" layoutX="18.0" layoutY="90.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 20px; -fx-font-weight: bold;" text="0%" />
+                        <Label layoutX="20.0" layoutY="116.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px;" text="approved" />
+
+                        <VBox layoutX="100.0" layoutY="58.0" prefWidth="170.0" spacing="14.0">
+                            <children>
+                                <HBox>
+                                    <children>
+                                        <Label prefWidth="120.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Approved" />
+                                        <Label fx:id="approvedStatLabel" style="-fx-text-fill: #4bcc8a; -fx-font-size: 13px; -fx-font-weight: bold;" text="0" />
+                                    </children>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label prefWidth="120.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Sent Back" />
+                                        <Label fx:id="sentBackStatLabel" style="-fx-text-fill: #f14d5a; -fx-font-size: 13px; -fx-font-weight: bold;" text="0" />
+                                    </children>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label prefWidth="120.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Edited" />
+                                        <Label fx:id="editedStatLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 13px; -fx-font-weight: bold;" text="0" />
+                                    </children>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label prefWidth="120.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Total Reviews" />
+                                        <Label fx:id="totalReviewsStatLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 13px; -fx-font-weight: bold;" text="0" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+
+                <AnchorPane layoutX="660.0" layoutY="470.0" prefHeight="270.0" prefWidth="282.0" style="-fx-background-color: white; -fx-background-radius: 16;">
+                    <children>
+                        <Label layoutX="18.0" layoutY="18.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Recent Activity" />
+
+                        <ScrollPane fitToWidth="true"
+                                    hbarPolicy="NEVER"
+                                    layoutX="18.0"
+                                    layoutY="55.0"
+                                    prefHeight="205.0"
+                                    prefWidth="246.0"
+                                    style="-fx-background-color: transparent; -fx-background: transparent;"
+                                    vbarPolicy="AS_NEEDED">
+                            <content>
+                                <VBox fx:id="recentActivityBox" prefWidth="245.0" spacing="10.0" style="-fx-background-color: transparent;" />
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </AnchorPane>
+            </children>
+        </AnchorPane>
+    </children>
+</HBox>

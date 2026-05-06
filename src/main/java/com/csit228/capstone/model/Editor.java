@@ -10,8 +10,6 @@ public class Editor extends User {
         super(userId, firstName, lastName, username, passwordHash, Role.EDITOR, department_id);
     }
 
-
-
     public boolean editTicket(Ticket t) {
         // TO DO: update ticket details once TicketDAO or controller logic is created
         return t != null;
