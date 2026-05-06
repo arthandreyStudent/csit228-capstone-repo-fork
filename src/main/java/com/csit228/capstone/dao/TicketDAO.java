@@ -41,6 +41,28 @@ public class TicketDAO {
 
     }
 
+    public boolean updateStatus(int ticketId, TicketStatus ticketStatus) {
+        String sql = """
+                UPDATE ticket 
+                SET status = ? 
+                WHERE id = ?;
+                """;
+
+        try (Connection connection = DBConnector.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, ticketStatus.toString());
+            stmt.setInt(2, ticketId);
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
     public static TicketDAO getTicketDAO() {
         if (ticketDAO == null) {
             ticketDAO = new TicketDAO();
@@ -179,6 +201,7 @@ public class TicketDAO {
                         rs.getObject("date_created", LocalDateTime.class),
                         rs.getObject("deadline", LocalDateTime.class)
                 ));
+                System.out.println("added ticket" );
             }
 
         } catch (SQLException e) {
@@ -189,14 +212,36 @@ public class TicketDAO {
         return tickets;
     }
     public static void main(String[] args) {
-        TicketDAO ticketDAO = TicketDAO.getTicketDAO();
-        Ticket t = ticketDAO.getTicketById(4);
-        List<TicketView> tv =ticketDAO.getViews();
-        for (TicketView e : tv){
-            System.out.println(e);
-        }
-        System.out.println(t);
 
+//        TicketDAO ticketDAO = TicketDAO.getTicketDAO();
+//        Ticket t = ticketDAO.getTicketById(4);
+//        List<TicketView> tv =ticketDAO.getViews();
+//        for (TicketView e : tv){
+//            System.out.println(e);
+//        }
+//        System.out.println(t);
+
+
+//        Ticket t = new Ticket(
+//            0,
+//            "Ken Horigome BDAY Caption",
+//            "Make a bday caption for KEN HORIGOME",
+//            TicketPriority.HIGH,
+//            LocalDateTime.now(),
+//            TicketStatus.OPEN,
+//            13,
+//            1,
+//            LocalDateTime.now(),
+//            null,
+//            1
+//        );
+//
+        TicketDAO td = getTicketDAO();
+        td.getTicketViews();
+
+        for(TicketView ticketView : tickets){
+            System.out.println(ticketView.toString());
+        }
     }
 
 }
