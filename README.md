@@ -50,7 +50,7 @@ To avoid the error `The JavaFX runtime is not configured...`, run the project th
 2. In IntelliJ, import the project as a Maven project so dependencies are resolved automatically.
    - If IntelliJ still shows the JavaFX runtime warning, right-click `pom.xml` and choose **Add as Maven Project**.
 3. Run the Maven goal `javafx:run`.
-4. The application starts from `com.csit228.capstone.application.MainApplication`, which opens `LoginView.fxml` first.
+4. The application starts from `com.csit228.capstone.MainApplication`, which opens `LoginView.fxml` first.
 
 #### 3.UML: Use Case and Class Diagram included:
 The Use Case Diagram presents the main interactions within the TIX.org system through two primary actors: Head / Executive and Member. The Head / Executive is associated with functions such as logging in, viewing the dashboard, creating tickets, assigning tickets, managing members, and viewing analytics. The Member is associated with functions such as logging in, viewing the dashboard, viewing the volunteer board, viewing assigned tasks, volunteering for tickets, and receiving priority alerts. Include and extend relationships are also shown to represent dependent actions within the system, such as assigning a ticket after creating it, volunteering through the volunteer board, and receiving alerts when necessary.
