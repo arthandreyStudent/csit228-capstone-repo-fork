@@ -1,6 +1,6 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.application.TixApp;
+import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.dao.UserDAO;
@@ -121,7 +121,7 @@ public class DashboardEditorController {
     }
 
     private void setupProfile() {
-        User user = TixApp.currentUser;
+        User user = AppSession.currentUser;
 
         if (user == null) {
             profileInitialsLabel.setText("NA");
@@ -606,7 +606,7 @@ public class DashboardEditorController {
     }
 
     private int getCurrentUserId() {
-        return TixApp.currentUser != null ? TixApp.currentUser.getUserId() : 0;
+        return AppSession.currentUser != null ? AppSession.currentUser.getUserId() : 0;
     }
 
     private String getInitials(User user) {

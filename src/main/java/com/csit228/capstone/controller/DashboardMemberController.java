@@ -1,6 +1,6 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.application.TixApp;
+import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.model.TicketStatus;
@@ -190,7 +190,7 @@ public class DashboardMemberController {
     }
 
     private void takeTicket(TicketView ticket) {
-        User currentUser = TixApp.currentUser;
+        User currentUser = AppSession.currentUser;
 
         if (currentUser == null) {
             showError("No logged-in user found.");
@@ -221,7 +221,7 @@ public class DashboardMemberController {
     }
 
     private boolean isAssignedToCurrentUser(TicketView ticket) {
-        User currentUser = TixApp.currentUser;
+        User currentUser = AppSession.currentUser;
 
         if (currentUser == null || ticket.getAssignedToName() == null) {
             return false;
@@ -267,7 +267,7 @@ public class DashboardMemberController {
     }
 
     private int getCurrentUserId() {
-        return TixApp.currentUser != null ? TixApp.currentUser.getUserId() : 0;
+        return AppSession.currentUser != null ? AppSession.currentUser.getUserId() : 0;
     }
 
     private String safe(String value) {
