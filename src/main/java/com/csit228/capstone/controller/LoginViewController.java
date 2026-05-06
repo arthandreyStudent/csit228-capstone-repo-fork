@@ -48,7 +48,25 @@ public class LoginViewController {
                     TixApp.currentUser = u;
                     TixApp.serializer.setUser(u);
                     TixApp.serializer.serialize();
-                    Controls.switchScreen("MainView.fxml");
+                    if (u != null) {
+                        switch (u.getRole()) {
+                            case MEMBER:
+                                Controls.switchScreen("DashboardMemberView.fxml");
+                                break;
+
+                            case EXECUTIVE:
+                                Controls.switchScreen("DashboardExecutiveView.fxml");
+                                break;
+
+                            case EDITOR:
+                                Controls.switchScreen("DashboardEditorView.fxml");
+                                break;
+
+                            default:
+                                Controls.switchScreen("LoginView.fxml");
+                                break;
+                        }
+                    }
                 }
             } catch (InvalidCredentialsException e) {
                 showError("Invalid Credentials.");

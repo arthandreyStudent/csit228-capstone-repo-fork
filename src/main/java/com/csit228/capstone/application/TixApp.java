@@ -1,5 +1,6 @@
 package com.csit228.capstone.application;
 
+import com.csit228.capstone.model.Role;
 import com.csit228.capstone.model.Serializer;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.Controls;
@@ -19,8 +20,24 @@ public class TixApp extends Application {
     public void start(Stage primaryStage) throws IOException {
         stage = primaryStage;
         initialize();
-        if(currentUser != null){
-            Controls.switchScreen("MainView.fxml");
+        if (currentUser != null) {
+            switch (currentUser.getRole()) {
+                case MEMBER:
+                    Controls.switchScreen("DashboardMemberView.fxml");
+                    break;
+
+                case EXECUTIVE:
+                    Controls.switchScreen("DashboardExecutiveView.fxml");
+                    break;
+
+                case EDITOR:
+                    Controls.switchScreen("DashboardEditorView.fxml");
+                    break;
+
+                default:
+                    Controls.switchScreen("LoginView.fxml");
+                    break;
+            }
         } else {
             Controls.switchScreen("LoginView.fxml");
         }
