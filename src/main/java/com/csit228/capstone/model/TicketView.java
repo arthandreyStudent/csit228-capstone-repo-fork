@@ -112,4 +112,8 @@ public class TicketView {
         this.dateCreated = dateCreated;
         this.deadline = deadline;
     }
+
+    public LocalDateTime getDeadline() {
+        return deadline;
+    }
 }
