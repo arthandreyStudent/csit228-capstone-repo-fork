@@ -5,9 +5,11 @@ import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.model.*;
-import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.ListRowItem;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,8 +17,12 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -146,7 +152,7 @@ public class DashboardExecutiveController {
 
             Button departmentButton = createDepartmentTabButton(
                     departmentName,
-                    selectedDepartmentName != null && departmentName.equalsIgnoreCase(selectedDepartmentName)
+                    departmentName.equalsIgnoreCase(selectedDepartmentName)
             );
 
             departmentButton.setOnAction(event -> {
@@ -190,7 +196,6 @@ public class DashboardExecutiveController {
     }
 
     private void refreshDashboard() {
-        ticketDAO.getTicketViews();
         tickets = new ArrayList<>(ticketDAO.getViews());
 
         updateSummaryCardsAndResolutionRate();
@@ -407,8 +412,10 @@ public class DashboardExecutiveController {
     }
 
     private boolean isOverdue(TicketView ticketView) {
-        Ticket ticket = ticketDAO.getTicketById(ticketView.getId());
-        return ticket != null && ticket.isOverdue();
+        return ticketView != null
+                && ticketView.getDeadline() != null
+                && LocalDate.now().isAfter(ticketView.getDeadline().toLocalDate())
+                && !isResolved(ticketView);
     }
 
     private String buildActivityMessage(TicketView ticket) {
@@ -428,11 +435,36 @@ public class DashboardExecutiveController {
     @FXML
     public void handleCreateTicket() {
         try {
-            Controls.switchScreen("AddTicketView.fxml");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/CreateTicketModalExecView.fxml"));
+            Parent root = loader.load();
+            CreateTicketModalExecController controller = loader.getController();
+
+            Window ownerWindow = getOwnerWindow();
+            Stage modalStage = new Stage();
+            modalStage.setTitle("Create New Ticket");
+            if (ownerWindow != null) {
+                modalStage.initOwner(ownerWindow);
+                modalStage.initModality(Modality.WINDOW_MODAL);
+            } else {
+                modalStage.initModality(Modality.APPLICATION_MODAL);
+            }
+            modalStage.setScene(new Scene(root));
+            modalStage.setResizable(false);
+            modalStage.centerOnScreen();
+            modalStage.showAndWait();
+
+            if (controller != null && controller.isSubmitted()) {
+                refreshDashboard();
+            }
         } catch (IOException e) {
-            showError("Unable to open Add Ticket screen.");
-            e.printStackTrace();
+            showError("Unable to open Create Ticket modal.");
         }
+    }
+
+    private Window getOwnerWindow() {
+        return createTicketButton != null && createTicketButton.getScene() != null
+                ? createTicketButton.getScene().getWindow()
+                : null;
     }
 
     private double getRate(int value, int total) {

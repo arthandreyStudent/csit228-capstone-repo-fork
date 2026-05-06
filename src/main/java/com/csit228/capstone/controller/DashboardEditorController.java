@@ -222,7 +222,6 @@ public class DashboardEditorController {
     }
 
     private void refreshDashboard() {
-        ticketDAO.getTicketViews();
         tickets = new ArrayList<>(ticketDAO.getViews());
 
         updateSummaryCardsAndReviewStats();

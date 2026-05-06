@@ -5,7 +5,6 @@ import com.csit228.capstone.database.DBConnector;
 import com.csit228.capstone.model.*;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +12,18 @@ import java.util.List;
 public class TicketDAO {
     private static TicketDAO ticketDAO;
     private static List<TicketView> tickets;
+    private static boolean ticketsLoaded;
+    private static boolean ticketsDirty;
 
     private TicketDAO() {
         tickets = new ArrayList<>();
-        getTicketViews();
+        ticketsLoaded = false;
+        ticketsDirty = true;
     }
 
     public boolean assignTicket(int userId, int ticketId) {
         String sql = """
-                UPDATE ticket 
+                UPDATE ticket
                 SET assigned_to = ? 
                 WHERE id = ?;
                 """;
@@ -32,6 +34,9 @@ public class TicketDAO {
             stmt.setInt(1, userId);
             stmt.setInt(2, ticketId);
             int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                ticketsDirty = true;
+            }
             return rows > 0;
 
         } catch (SQLException e) {
@@ -43,7 +48,7 @@ public class TicketDAO {
 
     public boolean updateStatus(int ticketId, TicketStatus ticketStatus) {
         String sql = """
-                UPDATE ticket 
+                UPDATE ticket
                 SET status = ? 
                 WHERE id = ?;
                 """;
@@ -54,6 +59,9 @@ public class TicketDAO {
             stmt.setString(1, ticketStatus.toString());
             stmt.setInt(2, ticketId);
             int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                ticketsDirty = true;
+            }
             return rows > 0;
 
         } catch (SQLException e) {
@@ -100,6 +108,10 @@ public class TicketDAO {
 
             int rows = stmt.executeUpdate();
 
+            if (rows > 0) {
+                ticketsDirty = true;
+            }
+
             return rows > 0;
 
         } catch (SQLException e) {
@@ -115,9 +127,7 @@ public class TicketDAO {
                     WHERE t.id = ?
                     """;
         try (Connection connection = DBConnector.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql);
-
-        ) {
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, ticketId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -161,6 +171,10 @@ public class TicketDAO {
     }
 
     public void getTicketViews() {
+        refreshTicketViews();
+    }
+
+    private void refreshTicketViews() {
         tickets.clear();
 
         String sql = """
@@ -201,14 +215,17 @@ public class TicketDAO {
                         rs.getObject("date_created", LocalDateTime.class),
                         rs.getObject("deadline", LocalDateTime.class)
                 ));
-                System.out.println("added ticket" );
             }
+
+            ticketsLoaded = true;
+            ticketsDirty = false;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     public List<TicketView> getViews(){
+        ensureTicketViewsLoaded();
         return tickets;
     }
     public static void main(String[] args) {
@@ -238,9 +255,11 @@ public class TicketDAO {
 //
         TicketDAO td = getTicketDAO();
         td.getTicketViews();
+    }
 
-        for(TicketView ticketView : tickets){
-            System.out.println(ticketView.toString());
+    private void ensureTicketViewsLoaded() {
+        if (!ticketsLoaded || ticketsDirty) {
+            refreshTicketViews();
         }
     }
 

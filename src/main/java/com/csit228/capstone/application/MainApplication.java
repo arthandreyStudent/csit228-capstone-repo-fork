@@ -18,8 +18,6 @@ public class MainApplication extends Application {
 
         Controls.setPrimaryStage(stage);    // This method sets the primary stage that the Controls util will be referencing with the current stage provided by the JavaFX runtime.
 
-        stage.setMinWidth(400);
-        stage.setMinHeight(500);
         AppSession.loadSession();   // Calls the load session method from the AppSession class that's now a utility class.
 
         Controls.switchScreen(AppSession.getInitialScreen());   // Switches to the initial screen based on whether the user is logged in or not, which is determined by the loadSession method that sets the currentUser variable in AppSession.

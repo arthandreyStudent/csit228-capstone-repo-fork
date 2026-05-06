@@ -1,6 +1,7 @@
 package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.DepartmentDAO;
+import com.csit228.capstone.dao.JobDAO;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.exceptions.UsernameAlreadyTakenException;
 import com.csit228.capstone.model.*;
@@ -22,6 +23,7 @@ public class RegisterViewController implements Initializable {
 
     private UserDAO userDAO = UserDAO.getUserDAO();
     private DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
+    private JobDAO jobDAO = JobDAO.getJobDAO();
 
     public TextField tfFirstname;
     public TextField tfLastname;
@@ -97,6 +99,7 @@ public class RegisterViewController implements Initializable {
 
         if (selectedDepartment != null) {
             jobs.clear();
+            jobDAO.getJobByDepartment(selectedDepartment);
             jobs.addAll(selectedDepartment.getJobs());
 
             cbJob.getSelectionModel().clearSelection();
