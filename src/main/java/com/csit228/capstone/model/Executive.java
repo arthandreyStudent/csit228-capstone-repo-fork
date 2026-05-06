@@ -15,15 +15,6 @@ public class Executive extends User {
         return t != null;
     }
 
-    public boolean assignTicket(Ticket t, Member m) {
-        if (t == null || m == null) {
-            return false;
-        }
-
-        t.assignTo(m);
-        return true;
-    }
-
     public void manageUsers() {
         // TO DO: connect this to user management screen or UserDAO
     }
