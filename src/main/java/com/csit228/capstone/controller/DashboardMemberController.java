@@ -1,17 +1,19 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
+import com.csit228.capstone.utils.TicketDeadlineComparator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -23,50 +25,32 @@ import java.util.List;
 
 public class DashboardMemberController {
 
-    @FXML
-    private TextField searchField;
-
-    @FXML
-    private Label profileInitialsLabel;
-
-    @FXML
-    private Label profileNameLabel;
-
-    @FXML
-    private Label profileRoleLabel;
-
-    @FXML
-    private Label openTasksLabel;
-
-    @FXML
-    private Label inProgressLabel;
-
-    @FXML
-    private Label completedLabel;
-
-    @FXML
-    private Label overdueLabel;
-
-    @FXML
-    private VBox availableTicketsBox;
-
-    @FXML
-    private VBox volunteerBoardBox;
-
-    @FXML
-    private VBox activityBox;
-
-    @FXML
-    private Button buttonLogout;
+    @FXML private TextField searchField;
+    @FXML private Label profileInitialsLabel;
+    @FXML private Label profileNameLabel;
+    @FXML private Label profileRoleLabel;
+    @FXML private Label openTasksLabel;
+    @FXML private Label inProgressLabel;
+    @FXML private Label completedLabel;
+    @FXML private Label overdueLabel;
+    @FXML private VBox availableTicketsBox;
+    @FXML private VBox volunteerBoardBox;
+    @FXML private VBox activityBox;
+    @FXML private Button buttonLogout;
+    @FXML private ComboBox<String> deadlineSortComboBox;
 
     private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
 
     private List<TicketView> tickets = new ArrayList<>();
 
+
+
+
     @FXML
     public void initialize() {
         setupProfile();
         setupSearch();
+        setupDeadlineSortComboBox();
         refreshDashboard();
     }
 
@@ -103,7 +87,23 @@ public class DashboardMemberController {
         });
     }
 
+    private void setupDeadlineSortComboBox() {
+        if (deadlineSortComboBox == null) {
+            return;
+        }
+
+        deadlineSortComboBox.getItems().setAll("Nearest Deadline", "Farthest Deadline");
+        deadlineSortComboBox.setValue("Nearest Deadline");
+    }
+
+    @FXML
+    public void onDeadlineSortChanged() {
+        loadAvailableTickets();
+        loadVolunteerBoard();
+    }
+
     private void refreshDashboard() {
+        ticketDAO.getTicketViews();
         tickets = new ArrayList<>(ticketDAO.getViews());
 
         updateSummaryCards();
@@ -123,15 +123,15 @@ public class DashboardMemberController {
                 continue;
             }
 
-            if (isStatus(ticket, "OPEN")) {
+            if (isStatus(ticket, TicketStatus.OPEN.name())) {
                 openTasks++;
             }
 
-            if (isStatus(ticket, "IN_PROGRESS")) {
+            if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) {
                 inProgress++;
             }
 
-            if (isStatus(ticket, "COMPLETED") || isStatus(ticket, "RESOLVED")) {
+            if (isStatus(ticket, TicketStatus.COMPLETED.name()) || isStatus(ticket, TicketStatus.RESOLVED.name())) {
                 completed++;
             }
 
@@ -151,8 +151,12 @@ public class DashboardMemberController {
 
         String keyword = searchField != null ? searchField.getText() : "";
 
-        for (TicketView ticket : tickets) {
+        for (TicketView ticket : getSortedTicketsByDeadline()) {
             if (!isAvailableTicket(ticket)) {
+                continue;
+            }
+
+            if (isVolunteerTicket(ticket)) {
                 continue;
             }
 
@@ -161,7 +165,6 @@ public class DashboardMemberController {
             }
 
             ListRowItem row = ListRowItem.forMemberAvailableTicket(ticket);
-
             row.setAction(event -> takeTicket(ticket));
 
             availableTicketsBox.getChildren().add(row);
@@ -174,8 +177,12 @@ public class DashboardMemberController {
         String keyword = searchField != null ? searchField.getText() : "";
         int count = 0;
 
-        for (TicketView ticket : tickets) {
+        for (TicketView ticket : getSortedTicketsByDeadline()) {
             if (!isAvailableTicket(ticket)) {
+                continue;
+            }
+
+            if (!isVolunteerTicket(ticket)) {
                 continue;
             }
 
@@ -184,17 +191,28 @@ public class DashboardMemberController {
             }
 
             ListRowItem row = ListRowItem.forMemberVolunteerTicket(ticket);
-
             row.setAction(event -> takeTicket(ticket));
 
             volunteerBoardBox.getChildren().add(row);
-
             count++;
 
             if (count >= 8) {
                 break;
             }
         }
+    }
+
+    private List<TicketView> getSortedTicketsByDeadline() {
+        List<TicketView> sortedTickets = new ArrayList<>(tickets);
+
+        TicketDeadlineComparator.SortMode sortMode =
+                TicketDeadlineComparator.getSortModeFromText(
+                        deadlineSortComboBox != null ? deadlineSortComboBox.getValue() : null
+                );
+
+        sortedTickets.sort(new TicketDeadlineComparator(sortMode));
+
+        return sortedTickets;
     }
 
     private void loadActivity() {
@@ -217,7 +235,6 @@ public class DashboardMemberController {
             );
 
             activityBox.getChildren().add(ListRowItem.forActivity(notification));
-
             count++;
 
             if (count >= 8) {
@@ -234,10 +251,10 @@ public class DashboardMemberController {
             return;
         }
 
-        boolean success = ticketDAO.assignTicket(currentUser.getUserId(), ticket.getId());
+        boolean assigned = ticketDAO.assignTicket(currentUser.getUserId(), ticket.getId());
         boolean updated = ticketDAO.updateStatus(ticket.getId(), TicketStatus.IN_PROGRESS);
 
-        if (success && updated) {
+        if (assigned && updated) {
             showInfo("Ticket added to your tasks.");
             refreshDashboard();
         } else {
@@ -254,7 +271,20 @@ public class DashboardMemberController {
             return false;
         }
 
-        return isStatus(ticket, "OPEN") || isStatus(ticket, "IN_PROGRESS");
+        return isStatus(ticket, TicketStatus.OPEN.name()) || isStatus(ticket, TicketStatus.IN_PROGRESS.name());
+    }
+
+    private boolean isVolunteerTicket(TicketView ticket) {
+        if (ticket == null) {
+            return false;
+        }
+
+        String departmentName = ticket.getDepartmentName();
+
+        return departmentName == null
+                || departmentName.trim().isEmpty()
+                || departmentName.equalsIgnoreCase("N/A")
+                || departmentName.equalsIgnoreCase("Volunteer");
     }
 
     private boolean isAssignedToCurrentUser(TicketView ticket) {
@@ -272,11 +302,11 @@ public class DashboardMemberController {
     }
 
     private boolean isOverdue(TicketView ticket) {
-        if (ticket.getDeadline() == null) {
+        if (ticket == null || ticket.getDeadline() == null) {
             return false;
         }
 
-        if (isStatus(ticket, "COMPLETED") || isStatus(ticket, "RESOLVED")) {
+        if (isStatus(ticket, TicketStatus.COMPLETED.name()) || isStatus(ticket, TicketStatus.RESOLVED.name())) {
             return false;
         }
 
@@ -284,7 +314,7 @@ public class DashboardMemberController {
     }
 
     private boolean isStatus(TicketView ticket, String status) {
-        return ticket.getStatus() != null && ticket.getStatus().equalsIgnoreCase(status);
+        return ticket != null && ticket.getStatus() != null && ticket.getStatus().equalsIgnoreCase(status);
     }
 
     private boolean matchesTicketSearch(TicketView ticket, String keyword) {

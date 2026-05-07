@@ -2,27 +2,34 @@ package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
-import com.csit228.capstone.model.*;
+import com.csit228.capstone.model.Department;
+import com.csit228.capstone.model.Ticket;
+import com.csit228.capstone.model.TicketPriority;
+import com.csit228.capstone.model.TicketStatus;
+import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.FormValidator;
-import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Objects;
-import javafx.util.StringConverter;
 
 public class CreateTicketModalExecController {
+
+    private static final int VOLUNTEER_DEPARTMENT_ID = 0;
+    private static final String VOLUNTEER_DEPARTMENT_NAME = "Volunteer";
 
     private boolean submitted;
 
@@ -38,7 +45,6 @@ public class CreateTicketModalExecController {
 
     @FXML private TextField textfieldTicketTitle;
     @FXML private TextArea textAreaTicketDesc;
-
     @FXML private DatePicker datePickerDeadline;
 
     private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
@@ -51,13 +57,24 @@ public class CreateTicketModalExecController {
         populateHourComboBox();
         populateMinuteComboBox();
         populateAmPmComboBox();
+        configureDepartmentDisplay();
         configurePriorityDisplay();
         submitted = false;
     }
 
     private void populateDepartmentComboBox() {
         DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
-        ObservableList<Department> departments = FXCollections.observableArrayList(departmentDAO.getDepartments());
+
+        ObservableList<Department> departments =
+                FXCollections.observableArrayList(departmentDAO.getDepartments());
+
+        Department volunteerDepartment = new Department(
+                VOLUNTEER_DEPARTMENT_ID,
+                VOLUNTEER_DEPARTMENT_NAME,
+                "Tickets available for any member to volunteer"
+        );
+
+        departments.add(0, volunteerDepartment);
 
         comboBoxDepartment.setItems(departments);
     }
@@ -68,23 +85,63 @@ public class CreateTicketModalExecController {
 
     private void populateHourComboBox() {
         ObservableList<String> hours = FXCollections.observableArrayList();
+
         for (int i = 1; i <= 12; i++) {
             hours.add(String.format("%02d", i));
         }
+
         comboBoxHour.setItems(hours);
     }
 
     private void populateMinuteComboBox() {
         ObservableList<String> minutes = FXCollections.observableArrayList();
-        for (int i = 0; i <= 60; i++) {
+
+        for (int i = 0; i < 60; i++) {
             minutes.add(String.format("%02d", i));
         }
+
         comboBoxMinute.setItems(minutes);
     }
 
     private void populateAmPmComboBox() {
         ObservableList<String> amPm = FXCollections.observableArrayList("AM", "PM");
         comboBoxAmPm.setItems(amPm);
+    }
+
+    private void configureDepartmentDisplay() {
+        StringConverter<Department> converter = new StringConverter<>() {
+            @Override
+            public String toString(Department department) {
+                if (department == null) {
+                    return "";
+                }
+
+                return department.getName();
+            }
+
+            @Override
+            public Department fromString(String string) {
+                return null;
+            }
+        };
+
+        comboBoxDepartment.setConverter(converter);
+
+        comboBoxDepartment.setButtonCell(new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(Department item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getName());
+            }
+        });
+
+        comboBoxDepartment.setCellFactory(listView -> new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(Department item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getName());
+            }
+        });
     }
 
     private void configurePriorityDisplay() {
@@ -110,6 +167,7 @@ public class CreateTicketModalExecController {
         };
 
         comboBoxPriority.setConverter(converter);
+
         comboBoxPriority.setButtonCell(new javafx.scene.control.ListCell<>() {
             @Override
             protected void updateItem(TicketPriority item, boolean empty) {
@@ -117,6 +175,7 @@ public class CreateTicketModalExecController {
                 setText(empty || item == null ? null : converter.toString(item));
             }
         });
+
         comboBoxPriority.setCellFactory(listView -> new javafx.scene.control.ListCell<>() {
             @Override
             protected void updateItem(TicketPriority item, boolean empty) {
@@ -148,7 +207,6 @@ public class CreateTicketModalExecController {
         return LocalDateTime.of(date, LocalTime.of(hour, minute));
     }
 
-
     @FXML
     public void onClickedButtonClose() {
         closeModal(buttonClose);
@@ -161,14 +219,6 @@ public class CreateTicketModalExecController {
 
     @FXML
     public void onClickedCreateTicket() {
-        String title = textfieldTicketTitle != null ? textfieldTicketTitle.getText() : "";
-        String description = textAreaTicketDesc != null ? textAreaTicketDesc.getText() : "";
-        Department department = comboBoxDepartment != null ? comboBoxDepartment.getValue() : null;
-        TicketPriority priority = comboBoxPriority != null ? comboBoxPriority.getValue() : null;
-        LocalDateTime deadline = getDeadlineDateTime() != null ? getDeadlineDateTime() : null;
-
-        submitTicketForm(title, description, department, priority, deadline);
-
         boolean isValidSubmission = FormValidator.validateRequired(
                 textfieldTicketTitle,
                 textAreaTicketDesc,
@@ -196,40 +246,73 @@ public class CreateTicketModalExecController {
                 comboBoxAmPm
         );
 
-        System.out.println("Ticket successfully created!");
-        closeModal(buttonCreateTicket);
+        String title = textfieldTicketTitle.getText();
+        String description = textAreaTicketDesc.getText();
+        Department department = comboBoxDepartment.getValue();
+        TicketPriority priority = comboBoxPriority.getValue();
+        LocalDateTime deadline = getDeadlineDateTime();
+
+        submitTicketForm(title, description, department, priority, deadline);
+
+        if (submitted) {
+            System.out.println("Ticket successfully created!");
+            closeModal(buttonCreateTicket);
+        }
     }
 
     public boolean isSubmitted() {
         return submitted;
     }
 
-    private void submitTicketForm(String title, String description, Department department, TicketPriority priority, LocalDateTime deadline) {
+    private void submitTicketForm(
+            String title,
+            String description,
+            Department department,
+            TicketPriority priority,
+            LocalDateTime deadline
+    ) {
         boolean hasValues = (title != null && !title.isBlank())
                 && (description != null && !description.isBlank())
                 && Objects.nonNull(department)
                 && Objects.nonNull(priority)
-                && deadline != null;
+                && deadline != null
+                && currentUser != null;
 
-        if (hasValues) {
-            LocalDateTime now = LocalDateTime.now();
-
-            ticketDAO.createTicket(new Ticket(
-                    0,
-                    title,
-                    description,
-                    priority,
-                    deadline,
-                    TicketStatus.OPEN,
-                    currentUser.getUserId(),
-                    null,
-                    now,
-                    now,
-                    department.getId()
-            ));
-
-            submitted = true;
+        if (!hasValues) {
+            submitted = false;
+            return;
         }
+
+        LocalDateTime now = LocalDateTime.now();
+
+        Integer departmentId = isVolunteerDepartment(department)
+                ? null
+                : department.getId();
+
+        ticketDAO.createTicket(new Ticket(
+                0,
+                title,
+                description,
+                priority,
+                deadline,
+                TicketStatus.OPEN,
+                currentUser.getUserId(),
+                null,
+                now,
+                now,
+                departmentId
+        ));
+
+        submitted = true;
+    }
+
+    private boolean isVolunteerDepartment(Department department) {
+        if (department == null) {
+            return false;
+        }
+
+        return department.getId() == VOLUNTEER_DEPARTMENT_ID
+                || department.getName().equalsIgnoreCase(VOLUNTEER_DEPARTMENT_NAME);
     }
 
     private void closeModal(Button sourceButton) {
@@ -239,5 +322,4 @@ public class CreateTicketModalExecController {
             stage.close();
         }
     }
-
 }

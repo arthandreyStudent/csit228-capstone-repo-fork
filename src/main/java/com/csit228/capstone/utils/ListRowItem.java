@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -21,41 +22,39 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ListRowItem extends VBox {
 
-    private static final DateTimeFormatter DEADLINE_FORMATTER =
-            DateTimeFormatter.ofPattern("MMM dd");
+    private static final DateTimeFormatter DEADLINE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, hh:mm a");
+    private static final DateTimeFormatter ACTIVITY_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, hh:mm a");
 
-    private static final DateTimeFormatter ACTIVITY_TIME_FORMATTER =
-            DateTimeFormatter.ofPattern("MMM dd, hh:mm a");
+    private static final double TABLE_ROW_WIDTH = 850.0;
 
-    private static final double TABLE_ROW_WIDTH = 590.0;
+    private static final double MEMBER_DETAILS_WIDTH = 300.0;
+    private static final double MEMBER_PRIORITY_WIDTH = 110.0;
+    private static final double MEMBER_DEADLINE_WIDTH = 170.0;
+    private static final double MEMBER_STATUS_WIDTH = 140.0;
+    private static final double MEMBER_ACTION_WIDTH = 110.0;
 
-    private static final double MEMBER_DETAILS_WIDTH = 190.0;
-    private static final double MEMBER_PRIORITY_WIDTH = 100.0;
-    private static final double MEMBER_DEADLINE_WIDTH = 90.0;
-    private static final double MEMBER_STATUS_WIDTH = 110.0;
-    private static final double MEMBER_ACTION_WIDTH = 100.0;
+    private static final double EXEC_DETAILS_WIDTH = 230.0;
+    private static final double EXEC_DEPT_WIDTH = 122.0;
+    private static final double EXEC_PRIORITY_WIDTH = 90.0;
+    private static final double EXEC_DEADLINE_WIDTH = 130.0;
+    private static final double EXEC_ASSIGN_WIDTH = 160.0;
+    private static final double EXEC_ACTION_WIDTH = 65.0;
 
-    private static final double EXEC_DETAILS_WIDTH = 190.0;
-    private static final double EXEC_DEPT_WIDTH = 80.0;
-    private static final double EXEC_PRIORITY_WIDTH = 80.0;
-    private static final double EXEC_ASSIGN_WIDTH = 140.0;
-    private static final double EXEC_ACTION_WIDTH = 100.0;
-
-    private static final double EDITOR_DETAILS_WIDTH = 160.0;
-    private static final double EDITOR_ASSIGN_WIDTH = 150.0;
-    private static final double EDITOR_STATUS_WIDTH = 90.0;
-    private static final double EDITOR_PRIORITY_WIDTH = 80.0;
+    private static final double EDITOR_DETAILS_WIDTH = 210.0;
+    private static final double EDITOR_ASSIGN_WIDTH = 160.0;
+    private static final double EDITOR_STATUS_WIDTH = 95.0;
+    private static final double EDITOR_PRIORITY_WIDTH = 85.0;
+    private static final double EDITOR_DEADLINE_WIDTH = 170.0;
     private static final double EDITOR_ACTIONS_WIDTH = 110.0;
 
-    private static final double SMALL_CARD_WIDTH = 245.0;
-    private static final double SMALL_CARD_TEXT_WIDTH = 190.0;
+    private static final double SMALL_CARD_WIDTH = 299.0;
+    private static final double SMALL_CARD_TEXT_WIDTH = 244.0;
 
     private Object sourceObject;
     private Button actionButton;
@@ -77,16 +76,12 @@ public class ListRowItem extends VBox {
         VBox taskDetailsBox = item.createTicketDetailsBox(
                 ticketView,
                 MEMBER_DETAILS_WIDTH,
-                "By " + safeText(ticketView.getCreatedBy(), "Unknown") +
-                        " • #TIX-" + formatTicketId(ticketView.getId())
+                "By " + safeText(ticketView.getCreatedBy(), "Unknown") + " • #TIX-" + formatTicketId(ticketView.getId())
         );
 
         HBox priorityBox = createFixedBox(
                 MEMBER_PRIORITY_WIDTH,
-                createBadge(
-                        safeText(ticketView.getPriority(), "MEDIUM"),
-                        getPriorityStyle(ticketView.getPriority())
-                )
+                createBadge(safeText(ticketView.getPriority(), "MEDIUM"), getPriorityStyle(ticketView.getPriority()))
         );
 
         Label deadlineLabel = createDeadlineLabel(ticketView);
@@ -96,29 +91,13 @@ public class ListRowItem extends VBox {
 
         HBox statusBox = createFixedBox(
                 MEMBER_STATUS_WIDTH,
-                createBadge(
-                        displayEnum(safeText(ticketView.getStatus(), "OPEN")),
-                        getStatusStyle(ticketView.getStatus())
-                )
+                createBadge(displayEnum(safeText(ticketView.getStatus(), "OPEN")), getStatusStyle(ticketView.getStatus()))
         );
 
-        item.actionButton = createActionButton(
-                "Start",
-                70,
-                "#2f95ff",
-                "white"
-        );
-
+        item.actionButton = createActionButton("Start", 82, "#2f95ff", "white");
         HBox actionBox = createFixedBox(MEMBER_ACTION_WIDTH, item.actionButton);
 
-        row.getChildren().addAll(
-                taskDetailsBox,
-                priorityBox,
-                deadlineLabel,
-                statusBox,
-                actionBox
-        );
-
+        row.getChildren().addAll(taskDetailsBox, priorityBox, deadlineLabel, statusBox, actionBox);
         item.addHoverEffect(row);
         item.getChildren().add(row);
 
@@ -146,15 +125,11 @@ public class ListRowItem extends VBox {
         HBox topRow = new HBox();
         topRow.setAlignment(Pos.CENTER_LEFT);
 
-        Label priorityBadge = createBadge(
-                safeText(ticketView.getPriority(), "MEDIUM"),
-                getPriorityStyle(ticketView.getPriority())
-        );
-
+        Label priorityBadge = createBadge(safeText(ticketView.getPriority(), "MEDIUM"), getPriorityStyle(ticketView.getPriority()));
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Label departmentLabel = new Label(shortenText(safeText(ticketView.getDepartmentName(), "General"), 12));
+        Label departmentLabel = new Label("Volunteer");
         departmentLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 10px;");
 
         topRow.getChildren().addAll(priorityBadge, spacer, departmentLabel);
@@ -162,25 +137,14 @@ public class ListRowItem extends VBox {
         Label titleLabel = createTitleLabel(safeText(ticketView.getTitle(), "Untitled Ticket"));
         titleLabel.setMaxWidth(SMALL_CARD_WIDTH - 24);
 
-        Label descriptionLabel = createSubtitleLabel(
-                safeText(ticketView.getDescription(), "No ticket description available.")
-        );
+        Label descriptionLabel = createSubtitleLabel(safeText(ticketView.getDescription(), "No ticket description available."));
         descriptionLabel.setMaxWidth(SMALL_CARD_WIDTH - 24);
 
-        item.actionButton = createActionButton(
-                "Volunteer",
-                SMALL_CARD_WIDTH - 24,
-                "#4bcc8a",
-                "white"
-        );
+        Label deadlineLabel = createDeadlineLabel(ticketView);
 
-        card.getChildren().addAll(
-                topRow,
-                titleLabel,
-                descriptionLabel,
-                item.actionButton
-        );
+        item.actionButton = createActionButton("Volunteer", SMALL_CARD_WIDTH - 24, "#4bcc8a", "white");
 
+        card.getChildren().addAll(topRow, titleLabel, descriptionLabel, deadlineLabel, item.actionButton);
         item.addCardHoverEffect(card);
         item.getChildren().add(card);
 
@@ -196,32 +160,32 @@ public class ListRowItem extends VBox {
         VBox ticketDetailsBox = item.createTicketDetailsBox(
                 ticketView,
                 EXEC_DETAILS_WIDTH,
-                "By " + safeText(ticketView.getCreatedBy(), "Unknown") +
-                        " • #TIX-" + formatTicketId(ticketView.getId())
+                "By " + safeText(ticketView.getCreatedBy(), "Unknown") + " • #TIX-" + formatTicketId(ticketView.getId())
         );
 
-        Label departmentLabel = new Label(shortenText(safeText(ticketView.getDepartmentName(), "General"), 9));
+        String departmentText = safeText(ticketView.getDepartmentName(), "Volunteer");
+        Label departmentLabel = new Label(departmentText);
         departmentLabel.setPrefWidth(EXEC_DEPT_WIDTH);
         departmentLabel.setMinWidth(EXEC_DEPT_WIDTH);
         departmentLabel.setMaxWidth(EXEC_DEPT_WIDTH);
-        departmentLabel.setStyle(
-                "-fx-text-fill: #1c2b63;" +
-                        "-fx-font-size: 11px;" +
-                        "-fx-font-weight: bold;"
-        );
+        departmentLabel.setWrapText(true);
+        departmentLabel.setTooltip(new Tooltip(departmentText));
+        departmentLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 11px; -fx-font-weight: bold;");
 
         HBox priorityBox = createFixedBox(
                 EXEC_PRIORITY_WIDTH,
-                createBadge(
-                        safeText(ticketView.getPriority(), "MEDIUM"),
-                        getPriorityStyle(ticketView.getPriority())
-                )
+                createBadge(safeText(ticketView.getPriority(), "MEDIUM"), getPriorityStyle(ticketView.getPriority()))
         );
+
+        Label deadlineLabel = createDeadlineLabel(ticketView);
+        deadlineLabel.setPrefWidth(EXEC_DEADLINE_WIDTH);
+        deadlineLabel.setMinWidth(EXEC_DEADLINE_WIDTH);
+        deadlineLabel.setMaxWidth(EXEC_DEADLINE_WIDTH);
 
         item.assignComboBox = new ComboBox<>();
         item.assignComboBox.setItems(FXCollections.observableArrayList(assignableUsers));
         item.assignComboBox.setPromptText("Assign");
-        item.assignComboBox.setPrefWidth(125);
+        item.assignComboBox.setPrefWidth(140);
         item.assignComboBox.setPrefHeight(28);
         item.assignComboBox.setStyle(
                 "-fx-background-color: white;" +
@@ -233,7 +197,6 @@ public class ListRowItem extends VBox {
         );
 
         String assignedName = safeText(ticketView.getAssignedToName(), "");
-
         if (assignableUsers != null && !assignedName.isBlank()) {
             for (User user : assignableUsers) {
                 if (user != null && user.getFullName().equalsIgnoreCase(assignedName)) {
@@ -244,24 +207,10 @@ public class ListRowItem extends VBox {
         }
 
         HBox assignBox = createFixedBox(EXEC_ASSIGN_WIDTH, item.assignComboBox);
-
-        item.actionButton = createActionButton(
-                "Save",
-                58,
-                "#2f95ff",
-                "white"
-        );
-
+        item.actionButton = createActionButton("Save", 52, "#2f95ff", "white");
         HBox actionBox = createFixedBox(EXEC_ACTION_WIDTH, item.actionButton);
 
-        row.getChildren().addAll(
-                ticketDetailsBox,
-                departmentLabel,
-                priorityBox,
-                assignBox,
-                actionBox
-        );
-
+        row.getChildren().addAll(ticketDetailsBox, departmentLabel, priorityBox, deadlineLabel, assignBox, actionBox);
         item.addHoverEffect(row);
         item.getChildren().add(row);
 
@@ -280,22 +229,21 @@ public class ListRowItem extends VBox {
 
         VBox ticketDetailsBox = item.createTicketDetailsBox(
                 ticketView,
-                150,
-                "#TIX-" + formatTicketId(ticketView.getId()) +
-                        " • " + safeText(ticketView.getDepartmentName(), "General")
+                EDITOR_DETAILS_WIDTH,
+                "#TIX-" + formatTicketId(ticketView.getId()) + " • " + safeText(ticketView.getDepartmentName(), "Volunteer")
         );
 
         HBox assignToBox = new HBox();
-        assignToBox.setPrefWidth(150);
-        assignToBox.setMinWidth(150);
-        assignToBox.setMaxWidth(150);
+        assignToBox.setPrefWidth(EDITOR_ASSIGN_WIDTH);
+        assignToBox.setMinWidth(EDITOR_ASSIGN_WIDTH);
+        assignToBox.setMaxWidth(EDITOR_ASSIGN_WIDTH);
         assignToBox.setAlignment(Pos.CENTER_LEFT);
 
         String assignedName = safeText(ticketView.getAssignedToName(), "");
 
         item.assignComboBox = new ComboBox<>();
         item.assignComboBox.setPromptText("Assign");
-        item.assignComboBox.setPrefWidth(130);
+        item.assignComboBox.setPrefWidth(120);
         item.assignComboBox.setPrefHeight(28);
         item.assignComboBox.setStyle(
                 "-fx-background-color: white;" +
@@ -308,7 +256,6 @@ public class ListRowItem extends VBox {
 
         if (assignableUsers != null) {
             item.assignComboBox.setItems(FXCollections.observableArrayList(assignableUsers));
-
             if (!assignedName.isBlank()) {
                 for (User user : assignableUsers) {
                     if (user != null && user.getFullName().equalsIgnoreCase(assignedName)) {
@@ -322,63 +269,34 @@ public class ListRowItem extends VBox {
         assignToBox.getChildren().add(item.assignComboBox);
 
         HBox statusBox = createFixedBox(
-                90,
-                createBadge(
-                        displayEnum(safeText(ticketView.getStatus(), "OPEN")),
-                        getStatusStyle(ticketView.getStatus())
-                )
+                EDITOR_STATUS_WIDTH,
+                createBadge(displayEnum(safeText(ticketView.getStatus(), "OPEN")), getStatusStyle(ticketView.getStatus()))
         );
 
         HBox priorityBox = createFixedBox(
-                80,
-                createBadge(
-                        safeText(ticketView.getPriority(), "MEDIUM"),
-                        getPriorityStyle(ticketView.getPriority())
-                )
+                EDITOR_PRIORITY_WIDTH,
+                createBadge(safeText(ticketView.getPriority(), "MEDIUM"), getPriorityStyle(ticketView.getPriority()))
         );
 
+        Label deadlineLabel = createDeadlineLabel(ticketView);
+        deadlineLabel.setPrefWidth(EDITOR_DEADLINE_WIDTH);
+        deadlineLabel.setMinWidth(EDITOR_DEADLINE_WIDTH);
+        deadlineLabel.setMaxWidth(EDITOR_DEADLINE_WIDTH);
+
         HBox actionsBox = new HBox();
-        actionsBox.setPrefWidth(120);
-        actionsBox.setMinWidth(120);
-        actionsBox.setMaxWidth(120);
+        actionsBox.setPrefWidth(EDITOR_ACTIONS_WIDTH);
+        actionsBox.setMinWidth(EDITOR_ACTIONS_WIDTH);
+        actionsBox.setMaxWidth(EDITOR_ACTIONS_WIDTH);
         actionsBox.setAlignment(Pos.CENTER_LEFT);
         actionsBox.setSpacing(5);
 
-        item.secondaryActionButton = createActionButton(
-                "Save",
-                42,
-                "#eef3ff",
-                "#1c2b63"
-        );
+        item.secondaryActionButton = createActionButton("Save", 38, "#eef3ff", "#1c2b63");
+        item.actionButton = createActionButton("✓", 28, "#4bcc8a", "white");
+        item.thirdActionButton = createIconButton("↶", 28, "#ffe0e5", "#f14d5a");
 
-        item.actionButton = createActionButton(
-                "✓",
-                30,
-                "#4bcc8a",
-                "white"
-        );
+        actionsBox.getChildren().addAll(item.secondaryActionButton, item.actionButton, item.thirdActionButton);
 
-        item.thirdActionButton = createIconButton(
-                "↶",
-                30,
-                "#ffe0e5",
-                "#f14d5a"
-        );
-
-        actionsBox.getChildren().addAll(
-                item.secondaryActionButton,
-                item.actionButton,
-                item.thirdActionButton
-        );
-
-        row.getChildren().addAll(
-                ticketDetailsBox,
-                assignToBox,
-                statusBox,
-                priorityBox,
-                actionsBox
-        );
-
+        row.getChildren().addAll(ticketDetailsBox, assignToBox, statusBox, priorityBox, deadlineLabel, actionsBox);
         item.addHoverEffect(row);
         item.getChildren().add(row);
 
@@ -400,11 +318,7 @@ public class ListRowItem extends VBox {
 
         String initials = getNotificationInitials(notification);
 
-        StackPane avatar = createAvatar(
-                initials,
-                getNotificationCircleColor(notification),
-                getNotificationTextColor(notification)
-        );
+        StackPane avatar = createAvatar(initials, getNotificationCircleColor(notification), getNotificationTextColor(notification));
 
         VBox textBox = new VBox();
         textBox.setAlignment(Pos.CENTER_LEFT);
@@ -415,11 +329,7 @@ public class ListRowItem extends VBox {
         Label messageLabel = new Label(safeText(notification.getMessage(), "No notification message."));
         messageLabel.setWrapText(true);
         messageLabel.setMaxWidth(SMALL_CARD_TEXT_WIDTH);
-        messageLabel.setStyle(
-                "-fx-text-fill: #1c2b63;" +
-                        "-fx-font-size: 11px;" +
-                        "-fx-font-weight: bold;"
-        );
+        messageLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 11px; -fx-font-weight: bold;");
 
         Label timeLabel = new Label(formatNotificationTime(notification));
         timeLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 9px;");
@@ -445,19 +355,10 @@ public class ListRowItem extends VBox {
         row.setSpacing(8);
         row.setPadding(new Insets(8, 10, 8, 10));
         row.setCursor(Cursor.HAND);
-        row.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #eef2fb;" +
-                        "-fx-border-width: 0 0 1 0;"
-        );
+        row.setStyle("-fx-background-color: white; -fx-border-color: #eef2fb; -fx-border-width: 0 0 1 0;");
 
         String initials = getUserInitials(user);
-
-        StackPane avatar = createAvatar(
-                initials,
-                getAvatarBackground(initials),
-                getAvatarTextColor(initials)
-        );
+        StackPane avatar = createAvatar(initials, getAvatarBackground(initials), getAvatarTextColor(initials));
 
         VBox textBox = new VBox();
         textBox.setAlignment(Pos.CENTER_LEFT);
@@ -490,7 +391,6 @@ public class ListRowItem extends VBox {
                         "-fx-border-width: 1 0 0 0;" +
                         "-fx-padding: 0 0 0 0;"
         );
-
         return row;
     }
 
@@ -509,43 +409,29 @@ public class ListRowItem extends VBox {
         subtitleLabel.setMaxWidth(width - 8);
 
         box.getChildren().addAll(titleLabel, subtitleLabel);
-
         return box;
     }
 
     private static Label createTitleLabel(String title) {
         Label titleLabel = new Label(safeText(title, "Untitled"));
         titleLabel.setWrapText(true);
-        titleLabel.setStyle(
-                "-fx-text-fill: #1c2b63;" +
-                        "-fx-font-size: 12px;" +
-                        "-fx-font-weight: bold;"
-        );
-
+        titleLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;");
         return titleLabel;
     }
 
     private static Label createSubtitleLabel(String subtitle) {
         Label subtitleLabel = new Label(safeText(subtitle, ""));
         subtitleLabel.setWrapText(true);
-        subtitleLabel.setStyle(
-                "-fx-text-fill: #9faad2;" +
-                        "-fx-font-size: 10px;"
-        );
-
+        subtitleLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 10px;");
         return subtitleLabel;
     }
 
     private static Label createDeadlineLabel(TicketView ticketView) {
         String deadline = formatDeadline(ticketView);
-
         Label deadlineLabel = new Label(deadline);
-        deadlineLabel.setStyle(
-                "-fx-text-fill: " + getDeadlineColor(ticketView) + ";" +
-                        "-fx-font-size: 11px;" +
-                        "-fx-font-weight: bold;"
-        );
-
+        deadlineLabel.setWrapText(true);
+        deadlineLabel.setAlignment(Pos.CENTER_LEFT);
+        deadlineLabel.setStyle("-fx-text-fill: " + getDeadlineColor(ticketView) + "; -fx-font-size: 10px; -fx-font-weight: bold;");
         return deadlineLabel;
     }
 
@@ -555,13 +441,7 @@ public class ListRowItem extends VBox {
         badge.setMinWidth(44);
         badge.setPrefHeight(22);
         badge.setPadding(new Insets(0, 7, 0, 7));
-        badge.setStyle(
-                style +
-                        "-fx-background-radius: 6;" +
-                        "-fx-font-size: 9px;" +
-                        "-fx-font-weight: bold;"
-        );
-
+        badge.setStyle(style + "-fx-background-radius: 6; -fx-font-size: 9px; -fx-font-weight: bold;");
         return badge;
     }
 
@@ -579,26 +459,11 @@ public class ListRowItem extends VBox {
                         "-fx-font-size: 11px;" +
                         "-fx-font-weight: bold;"
         );
-
         return button;
     }
 
     private static Button createIconButton(String text, double width, String backgroundColor, String textColor) {
-        Button button = new Button(text);
-        button.setPrefWidth(width);
-        button.setMinWidth(width);
-        button.setMaxWidth(width);
-        button.setPrefHeight(28);
-        button.setCursor(Cursor.HAND);
-        button.setStyle(
-                "-fx-background-color: " + backgroundColor + ";" +
-                        "-fx-background-radius: 7;" +
-                        "-fx-text-fill: " + textColor + ";" +
-                        "-fx-font-size: 11px;" +
-                        "-fx-font-weight: bold;"
-        );
-
-        return button;
+        return createActionButton(text, width, backgroundColor, textColor);
     }
 
     private static StackPane createAvatar(String initials, String circleColor, String textColor) {
@@ -612,14 +477,9 @@ public class ListRowItem extends VBox {
         circle.setStyle("-fx-fill: " + circleColor + ";");
 
         Label initialsLabel = new Label(safeText(initials, "NA"));
-        initialsLabel.setStyle(
-                "-fx-text-fill: " + textColor + ";" +
-                        "-fx-font-size: 9px;" +
-                        "-fx-font-weight: bold;"
-        );
+        initialsLabel.setStyle("-fx-text-fill: " + textColor + "; -fx-font-size: 9px; -fx-font-weight: bold;");
 
         avatar.getChildren().addAll(circle, initialsLabel);
-
         return avatar;
     }
 
@@ -630,42 +490,24 @@ public class ListRowItem extends VBox {
         box.setMaxWidth(width);
         box.setAlignment(Pos.CENTER_LEFT);
         box.getChildren().add(node);
-
         return box;
     }
 
     private void addHoverEffect(Node node) {
         String normalStyle = node.getStyle();
-
-        node.setOnMouseEntered(event -> node.setStyle(
-                normalStyle.replace("-fx-background-color: white;", "-fx-background-color: #f8faff;")
-        ));
-
+        node.setOnMouseEntered(event -> node.setStyle(normalStyle.replace("-fx-background-color: white;", "-fx-background-color: #f8faff;")));
         node.setOnMouseExited(event -> node.setStyle(normalStyle));
     }
 
     private void addCardHoverEffect(Node node) {
         String normalStyle = node.getStyle();
-
-        node.setOnMouseEntered(event -> node.setStyle(
-                "-fx-background-color: #f8faff;" +
-                        "-fx-border-color: #d7e4fb;" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-background-radius: 12;"
-        ));
-
+        node.setOnMouseEntered(event -> node.setStyle("-fx-background-color: #f8faff; -fx-border-color: #d7e4fb; -fx-border-radius: 12; -fx-background-radius: 12;"));
         node.setOnMouseExited(event -> node.setStyle(normalStyle));
     }
 
     private void addActivityHoverEffect(Node node) {
         String normalStyle = node.getStyle();
-
-        node.setOnMouseEntered(event -> node.setStyle(
-                "-fx-background-color: #f8faff;" +
-                        "-fx-background-radius: 10;" +
-                        "-fx-padding: 4 6 4 6;"
-        ));
-
+        node.setOnMouseEntered(event -> node.setStyle("-fx-background-color: #f8faff; -fx-background-radius: 10; -fx-padding: 4 6 4 6;"));
         node.setOnMouseExited(event -> node.setStyle(normalStyle));
     }
 
@@ -716,7 +558,6 @@ public class ListRowItem extends VBox {
         if (isOverdue(ticketView)) {
             return "#f14d5a";
         }
-
         return "#1c2b63";
     }
 
@@ -733,8 +574,6 @@ public class ListRowItem extends VBox {
             case "MC":
             case "MB":
                 return "#ffedcc";
-            case "AE":
-            case "AP":
             default:
                 return "#dceeff";
         }
@@ -753,8 +592,6 @@ public class ListRowItem extends VBox {
             case "MC":
             case "MB":
                 return "#ff9900";
-            case "AE":
-            case "AP":
             default:
                 return "#2f95ff";
         }
@@ -779,12 +616,7 @@ public class ListRowItem extends VBox {
         }
 
         int userId = notification.getUserId();
-
-        if (userId > 0) {
-            return "U" + userId;
-        }
-
-        return "NA";
+        return userId > 0 ? "U" + userId : "NA";
     }
 
     private static String getNotificationCircleColor(Notification notification) {
@@ -841,20 +673,6 @@ public class ListRowItem extends VBox {
         }
     }
 
-    private static String getInitialsFromName(String name) {
-        if (name == null || name.trim().isEmpty() || name.equalsIgnoreCase("Unassigned")) {
-            return "NA";
-        }
-
-        String[] parts = name.trim().split("\\s+");
-
-        if (parts.length == 1) {
-            return parts[0].substring(0, Math.min(2, parts[0].length())).toUpperCase();
-        }
-
-        return (parts[0].substring(0, 1) + parts[1].substring(0, 1)).toUpperCase();
-    }
-
     private static String getUserInitials(User user) {
         if (user == null) {
             return "NA";
@@ -863,31 +681,21 @@ public class ListRowItem extends VBox {
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
 
-        String firstInitial = "";
-        String lastInitial = "";
-
-        if (firstName != null && !firstName.trim().isEmpty()) {
-            firstInitial = firstName.trim().substring(0, 1).toUpperCase();
-        }
-
-        if (lastName != null && !lastName.trim().isEmpty()) {
-            lastInitial = lastName.trim().substring(0, 1).toUpperCase();
-        }
+        String firstInitial = firstName != null && !firstName.trim().isEmpty()
+                ? firstName.trim().substring(0, 1).toUpperCase()
+                : "";
+        String lastInitial = lastName != null && !lastName.trim().isEmpty()
+                ? lastName.trim().substring(0, 1).toUpperCase()
+                : "";
 
         String initials = firstInitial + lastInitial;
-
-        if (initials.isBlank()) {
-            return "NA";
-        }
-
-        return initials;
+        return initials.isBlank() ? "NA" : initials;
     }
 
     private static String getUserRoleText(User user) {
         if (user == null || user.getRole() == null) {
             return "USER";
         }
-
         return user.getRole().toString();
     }
 
@@ -895,7 +703,6 @@ public class ListRowItem extends VBox {
         if (ticketId <= 0) {
             return "000";
         }
-
         return String.format("%03d", ticketId);
     }
 
@@ -905,14 +712,12 @@ public class ListRowItem extends VBox {
         }
 
         LocalDateTime deadlineDateTime = ticketView.getDeadline();
-        LocalDate deadline = deadlineDateTime.toLocalDate();
 
-        String formattedDeadline = deadline.format(DEADLINE_FORMATTER);
+        String formattedDeadline = deadlineDateTime.format(DEADLINE_FORMATTER);
 
         if (isOverdue(ticketView)) {
             return formattedDeadline + " !";
         }
-
         return formattedDeadline;
     }
 
@@ -936,7 +741,6 @@ public class ListRowItem extends VBox {
         if (notification == null || notification.getCreatedAt() == null) {
             return "No date";
         }
-
         return notification.getCreatedAt().format(ACTIVITY_TIME_FORMATTER);
     }
 
@@ -944,15 +748,13 @@ public class ListRowItem extends VBox {
         if (value == null) {
             return "";
         }
-
         return value.replace("_", " ");
     }
 
     private static String safeText(String value, String fallback) {
-        if (value == null || value.trim().isEmpty()) {
+        if (value == null || value.trim().isEmpty() || value.equalsIgnoreCase("N/A")) {
             return fallback;
         }
-
         return value.trim();
     }
 
@@ -986,7 +788,6 @@ public class ListRowItem extends VBox {
         if (sourceObject instanceof TicketView) {
             return (TicketView) sourceObject;
         }
-
         return null;
     }
 
@@ -994,7 +795,6 @@ public class ListRowItem extends VBox {
         if (sourceObject instanceof Notification) {
             return (Notification) sourceObject;
         }
-
         return null;
     }
 
@@ -1002,7 +802,6 @@ public class ListRowItem extends VBox {
         if (sourceObject instanceof User) {
             return (User) sourceObject;
         }
-
         return null;
     }
 
@@ -1030,7 +829,6 @@ public class ListRowItem extends VBox {
         if (assignComboBox == null) {
             return null;
         }
-
         return assignComboBox.getValue();
     }
 
