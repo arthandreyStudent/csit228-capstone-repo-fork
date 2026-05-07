@@ -6,14 +6,17 @@ import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +56,9 @@ public class DashboardMemberController {
     @FXML
     private VBox activityBox;
 
+    @FXML
+    private Button buttonLogout;
+
     private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
 
     private List<TicketView> tickets = new ArrayList<>();
@@ -62,6 +68,12 @@ public class DashboardMemberController {
         setupProfile();
         setupSearch();
         refreshDashboard();
+    }
+
+    @FXML
+    public void onClickedLogout() throws IOException {
+        AppSession.clearSession();
+        Controls.switchScreen("LoginView.fxml");
     }
 
     private void setupProfile() {

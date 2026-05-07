@@ -5,10 +5,12 @@ import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.model.*;
+import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -67,6 +69,9 @@ public class DashboardExecutiveController {
 
     @FXML
     private Button createTicketButton;
+
+    @FXML
+    private Button buttonLogout;
 
     @FXML
     private Label resolutionRateLabel;
@@ -170,6 +175,7 @@ public class DashboardExecutiveController {
         Button button = new Button(text);
         button.setPrefHeight(32.0);
         button.setMinWidth(58.0);
+        button.setCursor(Cursor.HAND);
 
         if (selected) {
             button.setStyle(
@@ -452,7 +458,8 @@ public class DashboardExecutiveController {
             }
             modalStage.setScene(new Scene(root));
             modalStage.setResizable(false);
-            modalStage.centerOnScreen();
+            modalStage.sizeToScene();
+            modalStage.setOnShown(event -> modalStage.centerOnScreen());
             modalStage.showAndWait();
 
             if (controller != null && controller.isSubmitted()) {
@@ -461,6 +468,12 @@ public class DashboardExecutiveController {
         } catch (IOException e) {
             showError("Unable to open Create Ticket modal.");
         }
+    }
+
+    @FXML
+    public void onClickedLogout() throws IOException {
+        AppSession.clearSession();
+        Controls.switchScreen("LoginView.fxml");
     }
 
     private Window getOwnerWindow() {

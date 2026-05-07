@@ -101,6 +101,9 @@ public class DashboardEditorController {
     @FXML
     private Button resolvedFilterButton;
 
+    @FXML
+    private Button buttonLogout;
+
     private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
     private final DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
     private final UserDAO userDAO = UserDAO.getUserDAO();
@@ -577,7 +580,8 @@ public class DashboardEditorController {
             }
             modalStage.setScene(new Scene(root));
             modalStage.setResizable(false);
-            modalStage.centerOnScreen();
+            modalStage.sizeToScene();
+            modalStage.setOnShown(event -> modalStage.centerOnScreen());
             modalStage.showAndWait();
 
             if (controller != null && controller.isSubmitted()) {
@@ -586,6 +590,12 @@ public class DashboardEditorController {
         } catch (IOException e) {
             showError("Unable to open Create Ticket modal.");
         }
+    }
+
+    @FXML
+    public void onClickedLogout() throws IOException {
+        AppSession.clearSession();
+        Controls.switchScreen("LoginView.fxml");
     }
 
     private Window getOwnerWindow() {
