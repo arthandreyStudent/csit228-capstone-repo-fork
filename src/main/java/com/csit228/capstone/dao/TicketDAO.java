@@ -89,9 +89,11 @@ public class TicketDAO {
                     department_id,
                     created_by,
                     assigned_to,
-                    date_created
+                    date_created,
+                    last_updated,
+                    deadline        
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (Connection connection = DBConnector.getConnection();
@@ -103,8 +105,28 @@ public class TicketDAO {
             stmt.setString(4, ticket.getStatus().toString());
             stmt.setInt(5, ticket.getDepartmentId());
             stmt.setInt(6, ticket.getCreatedBy());
-            stmt.setInt(7, ticket.getAssignedTo());
-            stmt.setTimestamp(8, Timestamp.valueOf(LocalDateTime.now()));
+            if (ticket.getAssignedTo() == null) {
+                stmt.setNull(7, Types.INTEGER);
+            } else {
+                stmt.setInt(7, ticket.getAssignedTo());
+            }
+            if (ticket.getDateCreated() == null) {
+                stmt.setNull(8, Types.TIMESTAMP);
+            } else {
+                stmt.setTimestamp(8, Timestamp.valueOf(ticket.getDateCreated()));
+            }
+            if (ticket.getLastUpdated() == null) {
+                stmt.setNull(9, Types.TIMESTAMP);
+            } else {
+                stmt.setTimestamp(9, Timestamp.valueOf(ticket.getLastUpdated()));
+            }
+
+            // --- ADDED THE DEADLINE BINDING HERE (Index 10) ---
+            if (ticket.getDeadline() == null) {
+                stmt.setNull(10, Types.TIMESTAMP);
+            } else {
+                stmt.setTimestamp(10, Timestamp.valueOf(ticket.getDeadline()));
+            }
 
             int rows = stmt.executeUpdate();
 
