@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -141,10 +140,7 @@ public class Ticket implements Serializable {
         return createdBy;
     }
 
-    public int getAssignedTo() {
-        if(assignedTo==-1){
-            return  -1;
-        }
+    public Integer getAssignedTo() {
         return assignedTo;
     }
 
@@ -225,6 +221,14 @@ public class Ticket implements Serializable {
 
     public LocalDateTime getDeadline() {
         return deadline;
+    }
+
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
     }
 
     public void setDeadline(LocalDate deadline) {

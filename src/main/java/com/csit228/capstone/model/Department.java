@@ -1,5 +1,7 @@
 package com.csit228.capstone.model;
 
+import com.csit228.capstone.utils.Formatter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,16 +14,18 @@ public class Department {
 
     public Department(int id, String name, String description) {
         this.id = id;
-        this.name = name;
+        this.name = Formatter.formatDepartmentName(name);
         this.description = description;
     }
 
     public int getId() {
         return id;
     }
+
     public String getName() {
         return name;
     }
+
     public String getDescription() {
         return description;
     }

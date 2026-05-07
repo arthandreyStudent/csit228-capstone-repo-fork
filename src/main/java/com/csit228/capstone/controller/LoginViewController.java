@@ -1,10 +1,8 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.application.TixApp;
+import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.exceptions.InvalidCredentialsException;
-import com.csit228.capstone.model.Serializer;
-import com.csit228.capstone.model.Ticket;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.Controls;
 import javafx.fxml.FXML;
@@ -45,28 +43,9 @@ public class LoginViewController {
             try{
                 User u = userDAO.login(username, password);
                 if(u != null){
-                    TixApp.currentUser = u;
-                    TixApp.serializer.setUser(u);
-                    TixApp.serializer.serialize();
-                    if (u != null) {
-                        switch (u.getRole()) {
-                            case MEMBER:
-                                Controls.switchScreen("DashboardMemberView.fxml");
-                                break;
-
-                            case EXECUTIVE:
-                                Controls.switchScreen("DashboardExecutiveView.fxml");
-                                break;
-
-                            case EDITOR:
-                                Controls.switchScreen("DashboardEditorView.fxml");
-                                break;
-
-                            default:
-                                Controls.switchScreen("LoginView.fxml");
-                                break;
-                        }
-                    }
+                    // Simplified the logic by using the newly implemented methods of saving session, and switching to the correct screen based on the user's role.
+                    AppSession.saveSession(u);
+                    Controls.switchScreen(AppSession.getInitialScreen());
                 }
             } catch (InvalidCredentialsException e) {
                 showError("Invalid Credentials.");

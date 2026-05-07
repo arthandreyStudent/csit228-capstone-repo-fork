@@ -1,0 +1,225 @@
+.text-area {
+    -fx-background-color: #f3f3fb;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #d0d7e9;
+    -fx-font-family: "Inter 18pt";
+    -fx-font-size: 12px;
+    -fx-prompt-text-fill: #7a809c;
+}
+
+.text-area:hover {
+    -fx-background-color: #ebeef8;
+}
+
+.text-area .content {
+    -fx-background-color: #f3f3fb;
+    -fx-background-radius: 15;
+}
+
+.text-area:hover .content {
+    -fx-background-color: #ebeef8;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.text-field {
+    -fx-background-color: #f3f3fb;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #d0d7e9;
+    -fx-font-family: "Inter 18pt";
+    -fx-font-size: 12px;
+    -fx-prompt-text-fill: #7a809c;
+}
+
+.text-field:hover {
+    -fx-background-color: #ebeef8;
+}
+
+.text-field-dept {
+    -fx-padding: 11px 14px 11px 14px;
+    -fx-text-fill: #6d7291;
+}
+
+.icon-button {
+    -fx-background-color: #eff0f7;
+    -fx-background-radius: 50;
+    -fx-cursor: hand;
+}
+
+.icon-button:hover {
+    -fx-background-color: #dddff4;
+}
+
+.icon-button:hover .fontIcon-x-mark {
+    -fx-icon-color: #68789a;
+}
+
+.combo-box  {
+    -fx-background-color: #f3f3fb;
+    -fx-background-radius: 15;
+    -fx-border-color: #d0d7e9;
+    -fx-border-radius: 15;
+    -fx-font-family: "Inter 18pt";
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.combo-box:hover {
+    -fx-background-color: #e3e7f2;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #323648;
+}
+
+.combo-box-popup {
+    -fx-background-color: #f3f3fb;
+    -fx-background-radius: 15;
+    -fx-border-color: #d0d7e9;
+    -fx-border-radius: 15;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #f3f3fb;
+    -fx-background-insets: 0;
+    -fx-background-radius: 15;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #f3f3fb;
+    -fx-text-fill: #323648;
+    -fx-font-family: "Inter 18pt";
+    -fx-font-size: 12px;
+    -fx-padding: 8px 15px 8px 15px;
+    -fx-cursor: hand;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #c6d7f2;
+}
+
+.date-picker {
+    -fx-background-color: #f3f3fb;
+    -fx-background-radius: 15;
+    -fx-border-color: #d0d7e9;
+    -fx-border-radius: 15;
+    -fx-font-family: "Inter 18pt";
+    -fx-font-size: 12px;
+    -fx-padding: 4px 8px 4px 8px;
+    -fx-cursor: hand;
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-prompt-text-fill: #7a809c;
+    -fx-text-fill: #323648;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: #f3f3fb;
+    -fx-background-radius: 0 15 15 0;
+}
+
+.date-picker .arrow {
+    -fx-background-color: #535a7a;
+}
+
+.date-picker:hover {
+    -fx-background-color: #e3e7f2;
+}
+
+.date-picker:hover .arrow-button{
+    -fx-background-color: #e3e7f2;
+}
+
+.date-picker-popup {
+    -fx-background-color: #f3f3fb;
+    -fx-border-color: #d0d7e9;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+}
+
+.date-picker-popup .calendar-grid {
+    -fx-background-color: #f3f3fb;
+}
+
+.date-picker-popup .day-cell {
+    -fx-background-color: #f3f3fb;
+    -fx-text-fill: #323648;
+    -fx-font-family: "Inter 18pt";
+    -fx-font-size: 13px;
+}
+
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #c6d7f2;
+}
+
+.date-picker-popup .day-cell:selected {
+    -fx-background-color: #6eacfd;
+    -fx-text-fill: white;
+}
+
+.button {
+    -fx-cursor: hand;
+}
+
+.button-createTicket {
+    -fx-background-color: #2991fa;
+    -fx-background-radius: 10;
+    -fx-font-family: "Inter 18pt ExtraBold";
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    -fx-padding: 10px 25px 10px 25px;
+    -fx-cursor: hand;
+}
+
+.button-createTicket:hover {
+    -fx-opacity: 80%;
+}
+
+.button-cancel {
+    -fx-background-color: #fbf2f3;
+    -fx-background-radius: 10;
+    -fx-border-color: #fdb7b7;
+    -fx-border-radius: 10;
+    -fx-font-family: "Inter 18pt ExtraBold";
+    -fx-font-size: 12px;
+    -fx-text-fill: #f68989;
+    -fx-padding: 10px 25px 10px 25px;
+    -fx-cursor: hand;
+}
+
+.button-cancel:hover {
+    -fx-background-color: #fbf2f3;
+    -fx-background-radius: 10;
+    -fx-border-color: #ff4646;
+    -fx-border-radius: 10;
+    -fx-text-fill: #ff2c2c;
+    -fx-padding: 10px 25px 10px 25px;
+    -fx-cursor: hand;
+}
+
+/* Adds a red border and a slight red glow to empty fields */
+.error-field {
+    -fx-border-color: #f48e8e;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgb(237, 102, 102, 0.4), 5, 0, 0, 0);
+}
+
+
+
+
+
+

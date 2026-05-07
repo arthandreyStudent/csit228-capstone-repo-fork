@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -12,20 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<HBox alignment="CENTER_LEFT"
-      prefHeight="758.0"
-      prefWidth="1215.0"
-      style="-fx-background-color: #eef2fb;"
-      xmlns="http://javafx.com/javafx/26"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.csit228.capstone.controller.DashboardMemberController">
+<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1215.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.DashboardMemberController">
 
     <children>
 
-        <VBox prefHeight="758.0"
-              prefWidth="250.0"
-              spacing="18.0"
-              style="-fx-background-color: #121d49;">
+        <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #121d49;">
             <padding>
                 <Insets bottom="18.0" left="16.0" right="16.0" top="22.0" />
             </padding>
@@ -44,11 +36,7 @@
                     </VBox.margin>
                 </Label>
 
-                <HBox alignment="CENTER_LEFT"
-                      prefHeight="42.0"
-                      prefWidth="218.0"
-                      spacing="12.0"
-                      style="-fx-background-color: #2b376b; -fx-background-radius: 10;">
+                <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #2b376b; -fx-background-radius: 10;">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
@@ -56,6 +44,9 @@
                         <Label style="-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;" text="⌂" />
                         <Label style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="Dashboard" />
                     </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
                 </HBox>
 
                 <Label style="-fx-text-fill: #6f7aa7; -fx-font-size: 11px; -fx-font-weight: bold;" text="MEMBER">
@@ -72,12 +63,11 @@
                         <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="☷" />
                         <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="My Tasks" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label alignment="CENTER"
-                               prefHeight="18.0"
-                               prefWidth="24.0"
-                               style="-fx-background-color: #8b642b; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;"
-                               text="0" />
+                        <Label alignment="CENTER" prefHeight="18.0" prefWidth="24.0" style="-fx-background-color: #8b642b; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;" text="0" />
                     </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="14.0">
@@ -88,6 +78,9 @@
                         <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="☁" />
                         <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="Volunteer Board" />
                     </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="14.0">
@@ -98,6 +91,9 @@
                         <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="▥" />
                         <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="Department" />
                     </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="14.0">
@@ -108,14 +104,14 @@
                         <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="♟" />
                         <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="Notifications" />
                     </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
                 </HBox>
 
                 <Region VBox.vgrow="ALWAYS" />
 
-                <VBox prefHeight="120.0"
-                      prefWidth="218.0"
-                      spacing="12.0"
-                      style="-fx-background-color: #1d2a5a; -fx-background-radius: 12;">
+                <VBox prefHeight="120.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #1d2a5a; -fx-background-radius: 12;">
                     <padding>
                         <Insets bottom="14.0" left="14.0" right="14.0" top="16.0" />
                     </padding>
@@ -125,14 +121,14 @@
                                 <StackPane prefHeight="40.0" prefWidth="40.0">
                                     <children>
                                         <Circle fill="#183f63" radius="20.0" />
-                                        <Label style="-fx-text-fill: #4bd06f; -fx-font-size: 12px; -fx-font-weight: bold;" text="JT" />
+                                        <Label fx:id="profileInitialsLabel" style="-fx-text-fill: #4bd06f; -fx-font-size: 12px; -fx-font-weight: bold;" text="NA" />
                                     </children>
                                 </StackPane>
 
                                 <VBox alignment="CENTER_LEFT">
                                     <children>
-                                        <Label style="-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;" text="Joshua Ticketer" />
-                                        <Label style="-fx-text-fill: #4bd06f; -fx-font-size: 10px; -fx-font-weight: bold;" text="MEMBER" />
+                                        <Label fx:id="profileNameLabel" style="-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;" text="Member User" />
+                                        <Label fx:id="profileRoleLabel" style="-fx-text-fill: #4bd06f; -fx-font-size: 10px; -fx-font-weight: bold;" text="MEMBER" />
                                     </children>
                                 </VBox>
                             </children>
@@ -140,14 +136,14 @@
 
                         <HBox spacing="8.0">
                             <children>
-                                <Button prefHeight="30.0"
-                                        prefWidth="82.0"
-                                        style="-fx-background-color: #e6f0ff; -fx-background-radius: 18; -fx-text-fill: #1b2b5f; -fx-font-size: 12px; -fx-font-weight: bold;"
-                                        text="Profile" />
-                                <Button prefHeight="30.0"
-                                        prefWidth="96.0"
-                                        style="-fx-background-color: #ef4c56; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;"
-                                        text="Logout" />
+                                <Button prefHeight="30.0" prefWidth="82.0" style="-fx-background-color: #e6f0ff; -fx-background-radius: 18; -fx-text-fill: #1b2b5f; -fx-font-size: 12px; -fx-font-weight: bold;" text="Profile">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
+                                <Button fx:id="buttonLogout" onAction="#onClickedLogout" prefHeight="30.0" prefWidth="96.0" style="-fx-background-color: #ef4c56; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;" text="Logout">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
                             </children>
                         </HBox>
                     </children>
@@ -155,9 +151,7 @@
             </children>
         </VBox>
 
-        <AnchorPane prefHeight="758.0"
-                    prefWidth="965.0"
-                    style="-fx-background-color: #eef2fb;">
+        <AnchorPane prefHeight="758.0" prefWidth="965.0" style="-fx-background-color: #eef2fb;">
 
             <children>
                 <VBox layoutX="20.0" layoutY="20.0" spacing="2.0">
@@ -167,22 +161,13 @@
                     </children>
                 </VBox>
 
-                <HBox alignment="CENTER_LEFT"
-                      layoutX="700.0"
-                      layoutY="28.0"
-                      prefHeight="36.0"
-                      prefWidth="235.0"
-                      spacing="8.0"
-                      style="-fx-background-color: white; -fx-background-radius: 24;">
+                <HBox alignment="CENTER_LEFT" layoutX="700.0" layoutY="28.0" prefHeight="36.0" prefWidth="235.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 24;">
                     <padding>
                         <Insets left="14.0" right="10.0" />
                     </padding>
                     <children>
                         <Label style="-fx-text-fill: #9faad2; -fx-font-size: 16px;" text="⌕" />
-                        <TextField fx:id="searchField"
-                                   prefWidth="180.0"
-                                   promptText="Search my tasks..."
-                                   style="-fx-background-color: transparent; -fx-text-fill: #1c2b63; -fx-prompt-text-fill: #9faad2;" />
+                        <TextField fx:id="searchField" prefWidth="180.0" promptText="Search my tasks..." style="-fx-background-color: transparent; -fx-text-fill: #1c2b63; -fx-prompt-text-fill: #9faad2;" />
                     </children>
                 </HBox>
 
@@ -244,10 +229,22 @@
 
                         <HBox layoutX="18.0" layoutY="56.0" spacing="8.0">
                             <children>
-                                <Button prefHeight="28.0" prefWidth="44.0" style="-fx-background-color: #4bcc8a; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;" text="All" />
-                                <Button prefHeight="28.0" prefWidth="62.0" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="Open" />
-                                <Button prefHeight="28.0" prefWidth="90.0" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="In Progress" />
-                                <Button prefHeight="28.0" prefWidth="70.0" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="Urgent" />
+                                <Button prefHeight="28.0" prefWidth="44.0" style="-fx-background-color: #4bcc8a; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;" text="All">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
+                                <Button prefHeight="28.0" prefWidth="62.0" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="Open">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
+                                <Button prefHeight="28.0" prefWidth="90.0" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="In Progress">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
+                                <Button prefHeight="28.0" prefWidth="70.0" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="Urgent">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
                             </children>
                         </HBox>
 
@@ -261,14 +258,7 @@
                             </children>
                         </HBox>
 
-                        <ScrollPane fitToWidth="true"
-                                    hbarPolicy="NEVER"
-                                    layoutX="20.0"
-                                    layoutY="138.0"
-                                    prefHeight="395.0"
-                                    prefWidth="592.0"
-                                    style="-fx-background-color: transparent; -fx-background: transparent;"
-                                    vbarPolicy="AS_NEEDED">
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="20.0" layoutY="138.0" prefHeight="395.0" prefWidth="592.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
                             <content>
                                 <VBox fx:id="availableTicketsBox" prefWidth="590.0" spacing="0.0" style="-fx-background-color: transparent;" />
                             </content>
@@ -281,14 +271,7 @@
                         <Label layoutX="18.0" layoutY="18.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Volunteer Board" />
                         <Label layoutX="18.0" layoutY="45.0" style="-fx-text-fill: #9faad2; -fx-font-size: 11px;" text="Pick up an open ticket." />
 
-                        <ScrollPane fitToWidth="true"
-                                    hbarPolicy="NEVER"
-                                    layoutX="18.0"
-                                    layoutY="65.0"
-                                    prefHeight="175.0"
-                                    prefWidth="246.0"
-                                    style="-fx-background-color: transparent; -fx-background: transparent;"
-                                    vbarPolicy="AS_NEEDED">
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="18.0" layoutY="65.0" prefHeight="175.0" prefWidth="246.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
                             <content>
                                 <VBox fx:id="volunteerBoardBox" prefWidth="245.0" spacing="10.0" style="-fx-background-color: transparent;" />
                             </content>
@@ -300,14 +283,7 @@
                     <children>
                         <Label layoutX="18.0" layoutY="18.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="My Activity" />
 
-                        <ScrollPane fitToWidth="true"
-                                    hbarPolicy="NEVER"
-                                    layoutX="18.0"
-                                    layoutY="55.0"
-                                    prefHeight="205.0"
-                                    prefWidth="246.0"
-                                    style="-fx-background-color: transparent; -fx-background: transparent;"
-                                    vbarPolicy="AS_NEEDED">
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="18.0" layoutY="55.0" prefHeight="205.0" prefWidth="246.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
                             <content>
                                 <VBox fx:id="activityBox" prefWidth="245.0" spacing="10.0" style="-fx-background-color: transparent;" />
                             </content>

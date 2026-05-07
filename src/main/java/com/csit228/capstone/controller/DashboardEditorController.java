@@ -1,6 +1,6 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.application.TixApp;
+import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.dao.UserDAO;
@@ -11,13 +11,20 @@ import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.Controls;
+import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -94,6 +101,9 @@ public class DashboardEditorController {
     @FXML
     private Button resolvedFilterButton;
 
+    @FXML
+    private Button buttonLogout;
+
     private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
     private final DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
     private final UserDAO userDAO = UserDAO.getUserDAO();
@@ -121,7 +131,7 @@ public class DashboardEditorController {
     }
 
     private void setupProfile() {
-        User user = TixApp.currentUser;
+        User user = AppSession.currentUser;
 
         if (user == null) {
             profileInitialsLabel.setText("NA");
@@ -130,7 +140,7 @@ public class DashboardEditorController {
             return;
         }
 
-        profileInitialsLabel.setText(getInitials(user));
+        profileInitialsLabel.setText(Formatter.getInitials(user));
         profileNameLabel.setText(user.getFullName());
         profileRoleLabel.setText(user.getRole() != null ? user.getRole().toString() : "EDITOR");
     }
@@ -222,7 +232,6 @@ public class DashboardEditorController {
     }
 
     private void refreshDashboard() {
-        ticketDAO.getTicketViews();
         tickets = new ArrayList<>(ticketDAO.getViews());
 
         updateSummaryCardsAndReviewStats();
@@ -271,7 +280,7 @@ public class DashboardEditorController {
         totalReviewsStatLabel.setText(String.valueOf(totalReviews));
 
         double approvalRate = totalReviews <= 0 ? 0 : (double) resolved / totalReviews;
-        reviewApprovalPercentLabel.setText(formatPercent(approvalRate));
+        reviewApprovalPercentLabel.setText(Formatter.formatPercent(approvalRate));
 
         reviewQueueCountLabel.setText(String.valueOf(getFilteredTicketCount()));
     }
@@ -483,7 +492,7 @@ public class DashboardEditorController {
             Notification notification = new Notification(
                     ticket.getId(),
                     buildActivityMessage(ticket),
-                    safe(ticket.getStatus()),
+                    Formatter.trimOrNA(ticket.getStatus()),
                     false,
                     LocalDateTime.now(),
                     getCurrentUserId()
@@ -551,14 +560,48 @@ public class DashboardEditorController {
         return ticket.getAssignedToName() == null || ticket.getAssignedToName().trim().isEmpty();
     }
 
+    // TODO: Refactor this to open a form within the dashboard instead of switching screens
+    // STATUS: DONE!
     @FXML
-    public void createTicket() {
+    public void handleCreateTicket() {
         try {
-            Controls.switchScreen("AddTicketView.fxml");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/CreateTicketModalEditorView.fxml"));
+            Parent root = loader.load();
+            CreateTicketModalEditorController controller = loader.getController();
+
+            Window ownerWindow = getOwnerWindow();
+            Stage modalStage = new Stage();
+            modalStage.setTitle("Create New Ticket");
+            if (ownerWindow != null) {
+                modalStage.initOwner(ownerWindow);
+                modalStage.initModality(Modality.WINDOW_MODAL);
+            } else {
+                modalStage.initModality(Modality.APPLICATION_MODAL);
+            }
+            modalStage.setScene(new Scene(root));
+            modalStage.setResizable(false);
+            modalStage.sizeToScene();
+            modalStage.setOnShown(event -> modalStage.centerOnScreen());
+            modalStage.showAndWait();
+
+            if (controller != null && controller.isSubmitted()) {
+                refreshDashboard();
+            }
         } catch (IOException e) {
-            showError("Unable to open Add Ticket screen.");
-            e.printStackTrace();
+            showError("Unable to open Create Ticket modal.");
         }
+    }
+
+    @FXML
+    public void onClickedLogout() throws IOException {
+        AppSession.clearSession();
+        Controls.switchScreen("LoginView.fxml");
+    }
+
+    private Window getOwnerWindow() {
+        return createTicketButton != null && createTicketButton.getScene() != null
+                ? createTicketButton.getScene().getWindow()
+                : null;
     }
 
     private boolean isStatus(TicketView ticket, String status) {
@@ -572,13 +615,13 @@ public class DashboardEditorController {
 
         String search = keyword.trim().toLowerCase();
 
-        return safe(ticket.getTitle()).toLowerCase().contains(search)
-                || safe(ticket.getDescription()).toLowerCase().contains(search)
-                || safe(ticket.getDepartmentName()).toLowerCase().contains(search)
-                || safe(ticket.getPriority()).toLowerCase().contains(search)
-                || safe(ticket.getStatus()).toLowerCase().contains(search)
-                || safe(ticket.getCreatedBy()).toLowerCase().contains(search)
-                || safe(ticket.getAssignedToName()).toLowerCase().contains(search);
+        return Formatter.trimOrNA(ticket.getTitle()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getDescription()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getDepartmentName()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getPriority()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getStatus()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getCreatedBy()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getAssignedToName()).toLowerCase().contains(search);
     }
 
     private String buildActivityMessage(TicketView ticket) {
@@ -598,39 +641,11 @@ public class DashboardEditorController {
             return "\"" + ticket.getTitle() + "\" is still in progress";
         }
 
-        return "\"" + ticket.getTitle() + "\" has status " + safe(ticket.getStatus());
-    }
-
-    private String formatPercent(double rate) {
-        return Math.round(rate * 100) + "%";
+        return "\"" + ticket.getTitle() + "\" has status " + Formatter.trimOrNA(ticket.getStatus());
     }
 
     private int getCurrentUserId() {
-        return TixApp.currentUser != null ? TixApp.currentUser.getUserId() : 0;
-    }
-
-    private String getInitials(User user) {
-        if (user == null) {
-            return "NA";
-        }
-
-        String firstName = safe(user.getFirstName());
-        String lastName = safe(user.getLastName());
-
-        String firstInitial = firstName.equals("N/A") ? "" : firstName.substring(0, 1);
-        String lastInitial = lastName.equals("N/A") ? "" : lastName.substring(0, 1);
-
-        String initials = firstInitial + lastInitial;
-
-        return initials.isBlank() ? "NA" : initials.toUpperCase();
-    }
-
-    private String safe(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return "N/A";
-        }
-
-        return value.trim();
+        return AppSession.currentUser != null ? AppSession.currentUser.getUserId() : 0;
     }
 
     private void showInfo(String message) {

@@ -1,18 +1,22 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.application.TixApp;
+import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import com.csit228.capstone.utils.Controls;
+import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +25,15 @@ public class DashboardMemberController {
 
     @FXML
     private TextField searchField;
+
+    @FXML
+    private Label profileInitialsLabel;
+
+    @FXML
+    private Label profileNameLabel;
+
+    @FXML
+    private Label profileRoleLabel;
 
     @FXML
     private Label openTasksLabel;
@@ -43,14 +56,39 @@ public class DashboardMemberController {
     @FXML
     private VBox activityBox;
 
+    @FXML
+    private Button buttonLogout;
+
     private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
 
     private List<TicketView> tickets = new ArrayList<>();
 
     @FXML
     public void initialize() {
+        setupProfile();
         setupSearch();
         refreshDashboard();
+    }
+
+    @FXML
+    public void onClickedLogout() throws IOException {
+        AppSession.clearSession();
+        Controls.switchScreen("LoginView.fxml");
+    }
+
+    private void setupProfile() {
+        User user = AppSession.currentUser;
+
+        if (user == null) {
+            profileInitialsLabel.setText("NA");
+            profileNameLabel.setText("Member User");
+            profileRoleLabel.setText("MEMBER");
+            return;
+        }
+
+        profileInitialsLabel.setText(Formatter.getInitials(user));
+        profileNameLabel.setText(user.getFullName());
+        profileRoleLabel.setText(user.getRole() != null ? user.getRole().toString() : "MEMBER");
     }
 
     private void setupSearch() {
@@ -66,7 +104,6 @@ public class DashboardMemberController {
     }
 
     private void refreshDashboard() {
-        ticketDAO.getTicketViews();
         tickets = new ArrayList<>(ticketDAO.getViews());
 
         updateSummaryCards();
@@ -190,7 +227,7 @@ public class DashboardMemberController {
     }
 
     private void takeTicket(TicketView ticket) {
-        User currentUser = TixApp.currentUser;
+        User currentUser = AppSession.currentUser;
 
         if (currentUser == null) {
             showError("No logged-in user found.");
@@ -221,7 +258,7 @@ public class DashboardMemberController {
     }
 
     private boolean isAssignedToCurrentUser(TicketView ticket) {
-        User currentUser = TixApp.currentUser;
+        User currentUser = AppSession.currentUser;
 
         if (currentUser == null || ticket.getAssignedToName() == null) {
             return false;
@@ -267,7 +304,7 @@ public class DashboardMemberController {
     }
 
     private int getCurrentUserId() {
-        return TixApp.currentUser != null ? TixApp.currentUser.getUserId() : 0;
+        return AppSession.currentUser != null ? AppSession.currentUser.getUserId() : 0;
     }
 
     private String safe(String value) {

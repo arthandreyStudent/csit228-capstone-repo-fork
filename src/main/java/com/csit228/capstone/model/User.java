@@ -13,8 +13,6 @@ public abstract class User implements Serializable {
     private String username;
     private transient String passwordHash;
     private Role role;
-
-
     private int department_id;
 
     public User() {
@@ -55,15 +53,7 @@ public abstract class User implements Serializable {
         return userId;
     }
 
-    public int getId() {
-        return userId;
-    }
-
     public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public void setId(int userId) {
         this.userId = userId;
     }
 
@@ -71,28 +61,12 @@ public abstract class User implements Serializable {
         return firstName;
     }
 
-    public String getFirstname() {
-        return firstName;
-    }
-
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setFirstname(String firstName) {
         this.firstName = firstName;
     }
 
     public String getLastName() {
         return lastName;
-    }
-
-    public String getLastname() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public void setLastname(String lastName) {
@@ -115,8 +89,6 @@ public abstract class User implements Serializable {
     public String getUsername() {
         return username;
     }
-
-
 
     public String getPasswordHash() {
         return passwordHash;

@@ -4,7 +4,6 @@ import com.csit228.capstone.database.DBConnector;
 import com.csit228.capstone.model.Department;
 import com.csit228.capstone.model.Job;
 
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,20 +11,23 @@ import java.util.List;
 public class DepartmentDAO {
 
     private static List<Department> departments;
-
+    private static boolean departmentsLoaded;
     private static DepartmentDAO departmentDAO;
-    private JobDAO jobDAO = JobDAO.getJobDAO();
+    private final JobDAO jobDAO = JobDAO.getJobDAO();
 
     private DepartmentDAO(){
         departments = new ArrayList<>();
-        fetchDepartments();
+        departmentsLoaded = false;
     }
 
     public List<Department> getDepartments() {
+        ensureDepartmentsLoaded();
         return departments;
     }
 
     public Department getDepartmentByID(int id){
+        ensureDepartmentsLoaded();
+
         for(Department d : departments){
             if(d.getId() == id) return d;
         }
@@ -41,7 +43,7 @@ public class DepartmentDAO {
 
     public void addDepartment(Department department){
         try(Connection c = DBConnector.getConnection();
-            PreparedStatement ps = c.prepareStatement("INSERT INTO department (name, description) VALUES (?,?)");){
+            PreparedStatement ps = c.prepareStatement("INSERT INTO department (name, description) VALUES (?,?)")){
 
             ps.setString(1, department.getName());
             ps.setString(2, department.getDescription());
@@ -57,13 +59,16 @@ public class DepartmentDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        fetchDepartments();
+
+        if (departmentsLoaded) {
+            fetchDepartments();
+        }
     }
 
     public void fetchDepartments(){
         departments.clear();
         try(Connection c = DBConnector.getConnection();
-            Statement s = c.createStatement();){
+            Statement s = c.createStatement()){
 
             ResultSet resultSet = s.executeQuery("SELECT * from department");
 
@@ -73,15 +78,23 @@ public class DepartmentDAO {
                         resultSet.getString("name"),
                         resultSet.getString("description")
                 ));
-                System.out.println("Added to List (departments): " + resultSet.getString("name"));
+//                System.out.println("Added to List (departments): " + resultSet.getString("name"));
             }
             // ari siya ga populate sa jobs
             for(Department d : departments){
                 jobDAO.getJobByDepartment(d);
             }
 
+            departmentsLoaded = true;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void ensureDepartmentsLoaded() {
+        if (!departmentsLoaded) {
+            fetchDepartments();
         }
     }
 
