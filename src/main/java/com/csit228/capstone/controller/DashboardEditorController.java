@@ -1,6 +1,5 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.dao.UserDAO;
@@ -10,15 +9,18 @@ import com.csit228.capstone.model.Role;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
+import com.csit228.capstone.utils.TicketDeadlineComparator;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -35,74 +37,30 @@ import java.util.Map;
 
 public class DashboardEditorController {
 
-    @FXML
-    private Label reviewQueueCountLabel;
-
-    @FXML
-    private Label profileInitialsLabel;
-
-    @FXML
-    private Label profileNameLabel;
-
-    @FXML
-    private Label profileRoleLabel;
-
-    @FXML
-    private TextField searchField;
-
-    @FXML
-    private Label awaitingReviewLabel;
-
-    @FXML
-    private Label inProgressLabel;
-
-    @FXML
-    private Label approvedTodayLabel;
-
-    @FXML
-    private Label sentBackLabel;
-
-    @FXML
-    private Button createTicketButton;
-
-    @FXML
-    private VBox reviewQueueBox;
-
-    @FXML
-    private Label reviewApprovalPercentLabel;
-
-    @FXML
-    private Label approvedStatLabel;
-
-    @FXML
-    private Label sentBackStatLabel;
-
-    @FXML
-    private Label editedStatLabel;
-
-    @FXML
-    private Label totalReviewsStatLabel;
-
-    @FXML
-    private VBox recentActivityBox;
-
-    @FXML
-    private Button allFilterButton;
-
-    @FXML
-    private Button openFilterButton;
-
-    @FXML
-    private Button inProgressFilterButton;
-
-    @FXML
-    private Button completedFilterButton;
-
-    @FXML
-    private Button resolvedFilterButton;
-
-    @FXML
-    private Button buttonLogout;
+    @FXML private Label reviewQueueCountLabel;
+    @FXML private Label profileInitialsLabel;
+    @FXML private Label profileNameLabel;
+    @FXML private Label profileRoleLabel;
+    @FXML private TextField searchField;
+    @FXML private Label awaitingReviewLabel;
+    @FXML private Label inProgressLabel;
+    @FXML private Label approvedTodayLabel;
+    @FXML private Label sentBackLabel;
+    @FXML private Button createTicketButton;
+    @FXML private VBox reviewQueueBox;
+    @FXML private Label reviewApprovalPercentLabel;
+    @FXML private Label approvedStatLabel;
+    @FXML private Label sentBackStatLabel;
+    @FXML private Label editedStatLabel;
+    @FXML private Label totalReviewsStatLabel;
+    @FXML private VBox recentActivityBox;
+    @FXML private Button allFilterButton;
+    @FXML private Button openFilterButton;
+    @FXML private Button inProgressFilterButton;
+    @FXML private Button completedFilterButton;
+    @FXML private Button resolvedFilterButton;
+    @FXML private Button buttonLogout;
+    @FXML private ComboBox<String> deadlineSortComboBox;
 
     private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
     private final DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
@@ -113,6 +71,7 @@ public class DashboardEditorController {
 
     private ReviewQueueFilter currentFilter = ReviewQueueFilter.ALL;
 
+
     private enum ReviewQueueFilter {
         ALL,
         OPEN,
@@ -121,11 +80,14 @@ public class DashboardEditorController {
         RESOLVED
     }
 
+
+
     @FXML
     public void initialize() {
         setupProfile();
         setupSearch();
         setupFilterButtons();
+        setupDeadlineSortComboBox();
         loadDepartments();
         refreshDashboard();
     }
@@ -156,6 +118,20 @@ public class DashboardEditorController {
 
     private void setupFilterButtons() {
         setActiveFilterButton(allFilterButton);
+    }
+
+    private void setupDeadlineSortComboBox() {
+        if (deadlineSortComboBox == null) {
+            return;
+        }
+
+        deadlineSortComboBox.getItems().setAll("Nearest Deadline", "Farthest Deadline");
+        deadlineSortComboBox.setValue("Nearest Deadline");
+    }
+
+    @FXML
+    public void onDeadlineSortChanged() {
+        loadReviewQueue();
     }
 
     @FXML
@@ -232,6 +208,7 @@ public class DashboardEditorController {
     }
 
     private void refreshDashboard() {
+        ticketDAO.getTicketViews();
         tickets = new ArrayList<>(ticketDAO.getViews());
 
         updateSummaryCardsAndReviewStats();
@@ -240,7 +217,6 @@ public class DashboardEditorController {
     }
 
     private void updateSummaryCardsAndReviewStats() {
-        int open = 0;
         int inProgress = 0;
         int toBeReviewed = 0;
         int resolved = 0;
@@ -249,10 +225,6 @@ public class DashboardEditorController {
         int totalReviews = 0;
 
         for (TicketView ticket : tickets) {
-            if (isUnassigned(ticket)) {
-                open++;
-            }
-
             if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) {
                 inProgress++;
                 edited++;
@@ -290,7 +262,11 @@ public class DashboardEditorController {
 
         String keyword = searchField != null ? searchField.getText() : "";
 
-        for (TicketView ticket : tickets) {
+        for (TicketView ticket : getSortedTicketsByDeadline()) {
+            if (isVolunteerTicket(ticket) && isUnassigned(ticket)) {
+                continue;
+            }
+
             if (!matchesCurrentFilter(ticket)) {
                 continue;
             }
@@ -308,7 +284,6 @@ public class DashboardEditorController {
                 continue;
             }
 
-            // Save button, used for assigning or reassigning.
             row.setSecondaryAction(event -> {
                 if (isStatus(ticket, TicketStatus.RESOLVED.name())) {
                     showInfo("This ticket is already resolved and closed.");
@@ -333,39 +308,32 @@ public class DashboardEditorController {
                 }
             });
 
-            /*
-             * If the ticket is still OPEN or IN_PROGRESS,
-             * hide the approve and return buttons.
-             * The editor can only assign or reassign it.
-             */
             if (!isStatus(ticket, TicketStatus.COMPLETED.name())) {
                 hideReviewActionButtons(row);
                 reviewQueueBox.getChildren().add(row);
                 continue;
             }
 
-            // Check button, only visible for COMPLETED tickets.
-            row.setAction(event -> {
-                updateTicketStatus(
-                        ticket,
-                        TicketStatus.RESOLVED,
-                        "Ticket marked as resolved."
-                );
-            });
-
-            // Return button, only visible for COMPLETED tickets.
-            row.setThirdAction(event -> {
-                updateTicketStatus(
-                        ticket,
-                        TicketStatus.IN_PROGRESS,
-                        "Ticket returned to in progress."
-                );
-            });
+            row.setAction(event -> updateTicketStatus(ticket, TicketStatus.RESOLVED, "Ticket marked as resolved."));
+            row.setThirdAction(event -> updateTicketStatus(ticket, TicketStatus.IN_PROGRESS, "Ticket returned to in progress."));
 
             reviewQueueBox.getChildren().add(row);
         }
 
         reviewQueueCountLabel.setText(String.valueOf(reviewQueueBox.getChildren().size()));
+    }
+
+    private List<TicketView> getSortedTicketsByDeadline() {
+        List<TicketView> sortedTickets = new ArrayList<>(tickets);
+
+        TicketDeadlineComparator.SortMode sortMode =
+                TicketDeadlineComparator.getSortModeFromText(
+                        deadlineSortComboBox != null ? deadlineSortComboBox.getValue() : null
+                );
+
+        sortedTickets.sort(new TicketDeadlineComparator(sortMode));
+
+        return sortedTickets;
     }
 
     private void hideReviewActionButtons(ListRowItem row) {
@@ -394,26 +362,11 @@ public class DashboardEditorController {
         if (row.getAssignComboBox() != null) {
             row.getAssignComboBox().setDisable(true);
             row.getAssignComboBox().setPromptText("Closed");
-            row.getAssignComboBox().setStyle(
-                    "-fx-background-color: #f5f7fb;" +
-                            "-fx-border-color: #dfe7f5;" +
-                            "-fx-border-radius: 8;" +
-                            "-fx-background-radius: 8;" +
-                            "-fx-font-size: 10px;" +
-                            "-fx-text-fill: #9faad2;"
-            );
         }
 
         if (row.getSecondaryActionButton() != null) {
             row.getSecondaryActionButton().setDisable(true);
             row.getSecondaryActionButton().setText("Closed");
-            row.getSecondaryActionButton().setStyle(
-                    "-fx-background-color: #eef2fb;" +
-                            "-fx-background-radius: 7;" +
-                            "-fx-text-fill: #9faad2;" +
-                            "-fx-font-size: 10px;" +
-                            "-fx-font-weight: bold;"
-            );
         }
 
         if (row.getActionButton() != null) {
@@ -437,19 +390,14 @@ public class DashboardEditorController {
         switch (currentFilter) {
             case ALL:
                 return true;
-
             case OPEN:
                 return isUnassigned(ticket);
-
             case IN_PROGRESS:
                 return isStatus(ticket, TicketStatus.IN_PROGRESS.name());
-
             case TO_BE_REVIEWED:
                 return isStatus(ticket, TicketStatus.COMPLETED.name());
-
             case RESOLVED:
                 return isStatus(ticket, TicketStatus.RESOLVED.name());
-
             default:
                 return true;
         }
@@ -499,7 +447,6 @@ public class DashboardEditorController {
             );
 
             recentActivityBox.getChildren().add(ListRowItem.forActivity(notification));
-
             count++;
 
             if (count >= 8) {
@@ -510,7 +457,6 @@ public class DashboardEditorController {
 
     private List<User> getAssignableMembersForTicket(TicketView ticket) {
         List<User> result = new ArrayList<>();
-
         int departmentId = getDepartmentIdByName(ticket.getDepartmentName());
 
         if (departmentId > 0) {
@@ -556,12 +502,23 @@ public class DashboardEditorController {
         return -1;
     }
 
+    private boolean isVolunteerTicket(TicketView ticket) {
+        if (ticket == null) {
+            return false;
+        }
+
+        String departmentName = ticket.getDepartmentName();
+
+        return departmentName == null
+                || departmentName.trim().isEmpty()
+                || departmentName.equalsIgnoreCase("N/A")
+                || departmentName.equalsIgnoreCase("Volunteer");
+    }
+
     private boolean isUnassigned(TicketView ticket) {
         return ticket.getAssignedToName() == null || ticket.getAssignedToName().trim().isEmpty();
     }
 
-    // TODO: Refactor this to open a form within the dashboard instead of switching screens
-    // STATUS: DONE!
     @FXML
     public void handleCreateTicket() {
         try {
@@ -572,12 +529,14 @@ public class DashboardEditorController {
             Window ownerWindow = getOwnerWindow();
             Stage modalStage = new Stage();
             modalStage.setTitle("Create New Ticket");
+
             if (ownerWindow != null) {
                 modalStage.initOwner(ownerWindow);
                 modalStage.initModality(Modality.WINDOW_MODAL);
             } else {
                 modalStage.initModality(Modality.APPLICATION_MODAL);
             }
+
             modalStage.setScene(new Scene(root));
             modalStage.setResizable(false);
             modalStage.sizeToScene();

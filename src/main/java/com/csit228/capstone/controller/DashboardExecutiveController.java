@@ -1,20 +1,27 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.dao.UserDAO;
-import com.csit228.capstone.model.*;
+import com.csit228.capstone.model.Department;
+import com.csit228.capstone.model.Notification;
+import com.csit228.capstone.model.Role;
+import com.csit228.capstone.model.TicketStatus;
+import com.csit228.capstone.model.TicketView;
+import com.csit228.capstone.model.User;
+import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
-import javafx.fxml.FXMLLoader;
+import com.csit228.capstone.utils.TicketDeadlineComparator;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
@@ -34,65 +41,27 @@ import java.util.Map;
 
 public class DashboardExecutiveController {
 
-    @FXML
-    private Label profileInitialsLabel;
-
-    @FXML
-    private Label profileNameLabel;
-
-    @FXML
-    private Label profileRoleLabel;
-
-    @FXML
-    private TextField searchField;
-
-    @FXML
-    private Label unassignedLabel;
-
-    @FXML
-    private Label inProgressLabel;
-
-    @FXML
-    private Label resolvedLabel;
-
-    @FXML
-    private Label overdueLabel;
-
-    @FXML
-    private HBox departmentTabsBox;
-
-    @FXML
-    private VBox pendingAssignmentQueueBox;
-
-    @FXML
-    private VBox recentActivityBox;
-
-    @FXML
-    private Button createTicketButton;
-
-    @FXML
-    private Button buttonLogout;
-
-    @FXML
-    private Label resolutionRateLabel;
-
-    @FXML
-    private Label resolvedRatePercentLabel;
-
-    @FXML
-    private Label inProgressRatePercentLabel;
-
-    @FXML
-    private Label overdueRatePercentLabel;
-
-    @FXML
-    private ProgressBar resolvedProgressBar;
-
-    @FXML
-    private ProgressBar inProgressProgressBar;
-
-    @FXML
-    private ProgressBar overdueProgressBar;
+    @FXML private Label profileInitialsLabel;
+    @FXML private Label profileNameLabel;
+    @FXML private Label profileRoleLabel;
+    @FXML private TextField searchField;
+    @FXML private Label unassignedLabel;
+    @FXML private Label inProgressLabel;
+    @FXML private Label resolvedLabel;
+    @FXML private Label overdueLabel;
+    @FXML private HBox departmentTabsBox;
+    @FXML private VBox pendingAssignmentQueueBox;
+    @FXML private VBox recentActivityBox;
+    @FXML private Button createTicketButton;
+    @FXML private Button buttonLogout;
+    @FXML private Label resolutionRateLabel;
+    @FXML private Label resolvedRatePercentLabel;
+    @FXML private Label inProgressRatePercentLabel;
+    @FXML private Label overdueRatePercentLabel;
+    @FXML private ProgressBar resolvedProgressBar;
+    @FXML private ProgressBar inProgressProgressBar;
+    @FXML private ProgressBar overdueProgressBar;
+    @FXML private ComboBox<String> deadlineSortComboBox;
 
     private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
     private final DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
@@ -101,13 +70,15 @@ public class DashboardExecutiveController {
     private List<TicketView> tickets = new ArrayList<>();
     private List<Department> departments = new ArrayList<>();
 
+    private static final String VOLUNTEER_TAB_NAME = "Volunteer";
+
     private String selectedDepartmentName = null;
 
     @FXML
     public void initialize() {
         setupProfile();
         setupSearch();
-
+        setupDeadlineSortComboBox();
         loadDepartments();
         refreshDashboard();
     }
@@ -136,6 +107,20 @@ public class DashboardExecutiveController {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> loadPendingAssignmentQueue());
     }
 
+    private void setupDeadlineSortComboBox() {
+        if (deadlineSortComboBox == null) {
+            return;
+        }
+
+        deadlineSortComboBox.getItems().setAll("Nearest Deadline", "Farthest Deadline");
+        deadlineSortComboBox.setValue("Nearest Deadline");
+    }
+
+    @FXML
+    public void onDeadlineSortChanged() {
+        loadPendingAssignmentQueue();
+    }
+
     private void loadDepartments() {
         departments = new ArrayList<>(departmentDAO.getDepartments());
         renderDepartmentTabs();
@@ -150,15 +135,29 @@ public class DashboardExecutiveController {
             renderDepartmentTabs();
             loadPendingAssignmentQueue();
         });
-
         departmentTabsBox.getChildren().add(allButton);
+
+        Button volunteerButton = createDepartmentTabButton(
+                VOLUNTEER_TAB_NAME,
+                VOLUNTEER_TAB_NAME.equalsIgnoreCase(selectedDepartmentName)
+        );
+        volunteerButton.setOnAction(event -> {
+            selectedDepartmentName = VOLUNTEER_TAB_NAME;
+            renderDepartmentTabs();
+            loadPendingAssignmentQueue();
+        });
+        departmentTabsBox.getChildren().add(volunteerButton);
 
         for (Department department : departments) {
             String departmentName = department.getName();
 
+            if (departmentName != null && departmentName.equalsIgnoreCase(VOLUNTEER_TAB_NAME)) {
+                continue;
+            }
+
             Button departmentButton = createDepartmentTabButton(
                     departmentName,
-                    departmentName.equalsIgnoreCase(selectedDepartmentName)
+                    departmentName != null && departmentName.equalsIgnoreCase(selectedDepartmentName)
             );
 
             departmentButton.setOnAction(event -> {
@@ -203,6 +202,7 @@ public class DashboardExecutiveController {
     }
 
     private void refreshDashboard() {
+        ticketDAO.getTicketViews();
         tickets = new ArrayList<>(ticketDAO.getViews());
 
         updateSummaryCardsAndResolutionRate();
@@ -222,7 +222,7 @@ public class DashboardExecutiveController {
                 unassigned++;
             }
 
-            if (isStatus(ticket, "IN_PROGRESS")) {
+            if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) {
                 inProgress++;
             }
 
@@ -259,9 +259,8 @@ public class DashboardExecutiveController {
             return false;
         }
 
-        return !isStatus(ticket, "COMPLETED")
-                && !isStatus(ticket, "RESOLVED")
-                && !isStatus(ticket, "APPROVED");
+        return !isStatus(ticket, TicketStatus.COMPLETED.name())
+                && !isStatus(ticket, TicketStatus.RESOLVED.name());
     }
 
     private void loadPendingAssignmentQueue() {
@@ -269,7 +268,7 @@ public class DashboardExecutiveController {
 
         String keyword = searchField != null ? searchField.getText() : "";
 
-        for (TicketView ticket : tickets) {
+        for (TicketView ticket : getSortedTicketsByDeadline()) {
             if (!isAssignableTicket(ticket)) {
                 continue;
             }
@@ -293,10 +292,10 @@ public class DashboardExecutiveController {
                     return;
                 }
 
-                boolean success = ticketDAO.assignTicket(selectedUser.getUserId(), ticket.getId());
+                boolean assigned = ticketDAO.assignTicket(selectedUser.getUserId(), ticket.getId());
                 boolean updated = ticketDAO.updateStatus(ticket.getId(), TicketStatus.IN_PROGRESS);
 
-                if (success && updated) {
+                if (assigned && updated) {
                     showInfo("Ticket assigned to " + selectedUser.getFullName() + ".");
                     refreshDashboard();
                 } else {
@@ -306,6 +305,19 @@ public class DashboardExecutiveController {
 
             pendingAssignmentQueueBox.getChildren().add(row);
         }
+    }
+
+    private List<TicketView> getSortedTicketsByDeadline() {
+        List<TicketView> sortedTickets = new ArrayList<>(tickets);
+
+        TicketDeadlineComparator.SortMode sortMode =
+                TicketDeadlineComparator.getSortModeFromText(
+                        deadlineSortComboBox != null ? deadlineSortComboBox.getValue() : null
+                );
+
+        sortedTickets.sort(new TicketDeadlineComparator(sortMode));
+
+        return sortedTickets;
     }
 
     private void loadRecentActivity() {
@@ -324,7 +336,6 @@ public class DashboardExecutiveController {
             );
 
             recentActivityBox.getChildren().add(ListRowItem.forActivity(notification));
-
             count++;
 
             if (count >= 8) {
@@ -335,7 +346,6 @@ public class DashboardExecutiveController {
 
     private List<User> getAssignableMembersForTicket(TicketView ticket) {
         List<User> result = new ArrayList<>();
-
         int departmentId = getDepartmentIdByName(ticket.getDepartmentName());
 
         if (departmentId > 0) {
@@ -386,6 +396,10 @@ public class DashboardExecutiveController {
             return true;
         }
 
+        if (VOLUNTEER_TAB_NAME.equalsIgnoreCase(selectedDepartmentName)) {
+            return isVolunteerTicket(ticket);
+        }
+
         return ticket.getDepartmentName() != null
                 && ticket.getDepartmentName().equalsIgnoreCase(selectedDepartmentName);
     }
@@ -406,6 +420,19 @@ public class DashboardExecutiveController {
                 || Formatter.trimOrNA(ticket.getAssignedToName()).toLowerCase().contains(search);
     }
 
+    private boolean isVolunteerTicket(TicketView ticket) {
+        if (ticket == null) {
+            return false;
+        }
+
+        String departmentName = ticket.getDepartmentName();
+
+        return departmentName == null
+                || departmentName.trim().isEmpty()
+                || departmentName.equalsIgnoreCase("N/A")
+                || departmentName.equalsIgnoreCase("Volunteer");
+    }
+
     private boolean isUnassigned(TicketView ticket) {
         return ticket.getAssignedToName() == null || ticket.getAssignedToName().trim().isEmpty();
     }
@@ -415,7 +442,8 @@ public class DashboardExecutiveController {
     }
 
     private boolean isResolved(TicketView ticket) {
-        return isStatus(ticket, "RESOLVED") || isStatus(ticket, "COMPLETED");
+        return isStatus(ticket, TicketStatus.RESOLVED.name())
+                || isStatus(ticket, TicketStatus.COMPLETED.name());
     }
 
     private boolean isOverdue(TicketView ticketView) {
@@ -437,9 +465,6 @@ public class DashboardExecutiveController {
         return "\"" + ticket.getTitle() + "\" is assigned to " + ticket.getAssignedToName();
     }
 
-
-    // TODO: Refactor this to open a form within the dashboard instead of switching screens
-    // STATUS: DONE!
     @FXML
     public void handleCreateTicket() {
         try {
@@ -450,12 +475,14 @@ public class DashboardExecutiveController {
             Window ownerWindow = getOwnerWindow();
             Stage modalStage = new Stage();
             modalStage.setTitle("Create New Ticket");
+
             if (ownerWindow != null) {
                 modalStage.initOwner(ownerWindow);
                 modalStage.initModality(Modality.WINDOW_MODAL);
             } else {
                 modalStage.initModality(Modality.APPLICATION_MODAL);
             }
+
             modalStage.setScene(new Scene(root));
             modalStage.setResizable(false);
             modalStage.sizeToScene();
@@ -486,7 +513,6 @@ public class DashboardExecutiveController {
         if (total <= 0) {
             return 0;
         }
-
         return (double) value / total;
     }
 
