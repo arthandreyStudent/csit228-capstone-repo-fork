@@ -181,7 +181,7 @@ public class CreateTicketModalExecController {
         );
 
         if (!isValidSubmission) {
-            System.out.println("Plese fill all required fields!");
+            System.out.println("Please fill all required fields!");
             return;
         }
 
