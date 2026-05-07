@@ -33,8 +33,18 @@ public final class AppSession {
         serializer.setFilePath("user.ser");
 
         File sessionFile = new File("user.ser");
-        if (sessionFile.exists() && !sessionFile.delete()) {
-            serializer.serialize();
+
+        try {
+            if (sessionFile.exists()) {
+                boolean deleted = sessionFile.delete();
+
+                if (!deleted) {
+                    // If delete fails, empty the file instead.
+                    new java.io.FileOutputStream(sessionFile, false).close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
