@@ -1,6 +1,5 @@
 package com.csit228.capstone.dao;
 
-
 import java.sql.*;
 import com.csit228.capstone.database.DBConnector;
 import com.csit228.capstone.exceptions.InvalidCredentialsException;
@@ -14,8 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
 
-
 public class UserDAO {
+
     private static List<User> users;
     private static List<String> types;
     private static Map<Integer, List<User>> usersByDepartment;
