@@ -170,6 +170,10 @@
     -fx-text-fill: white;
 }
 
+.button {
+    -fx-cursor: hand;
+}
+
 .button-createTicket {
     -fx-background-color: #2991fa;
     -fx-background-radius: 10;
