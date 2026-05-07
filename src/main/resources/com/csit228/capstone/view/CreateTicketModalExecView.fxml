@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="500.0" style="-fx-background-color: white;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.CreateTicketModalExecController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="550.0" style="-fx-background-color: white;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.CreateTicketModalExecController">
    <opaqueInsets>
       <Insets />
    </opaqueInsets>
@@ -41,14 +41,26 @@
       </HBox>
       <VBox alignment="CENTER_LEFT">
          <children>
-            <Label text="TITLE" textFill="#7a86ab">
-               <font>
-                  <Font name="Inter 18pt ExtraBold" size="12.0" />
-               </font>
+
+            <!-- TITLE LABEL WITH RED ASTERISK -->
+            <HBox alignment="CENTER_LEFT" spacing="2.0">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
-            </Label>
+               <children>
+                  <Label text="TITLE" textFill="#7a86ab">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label text="*" textFill="#f67575">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+
             <TextField fx:id="textfieldTicketTitle" promptText="e.g., Redesign Onboarding FXML">
                <font>
                   <Font name="Inter 18pt Regular" size="12.0" />
@@ -64,14 +76,26 @@
       </VBox>
       <VBox alignment="CENTER_LEFT">
          <children>
-            <Label text="DESCRIPTION" textFill="#7a86ab">
-               <font>
-                  <Font name="Inter 18pt ExtraBold" size="12.0" />
-               </font>
+
+            <!-- DESCRIPTION LABEL WITH RED ASTERISK -->
+            <HBox alignment="CENTER_LEFT" spacing="2.0">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
-            </Label>
+               <children>
+                  <Label text="DESCRIPTION" textFill="#7a86ab">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label text="*" textFill="#f67575">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+
             <TextArea fx:id="textAreaTicketDesc" prefHeight="172.0" prefWidth="440.0" promptText="Describe the issue in detail..." wrapText="true">
                <font>
                   <Font name="Inter 18pt Regular" size="12.0" />
@@ -89,14 +113,26 @@
          <children>
             <VBox prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="DEPARTMENT" textFill="#7a86ab">
-                     <font>
-                        <Font name="Inter 18pt ExtraBold" size="12.0" />
-                     </font>
+
+                  <!-- DEPARTMENT LABEL WITH RED ASTERISK -->
+                  <HBox alignment="CENTER_LEFT" spacing="2.0">
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
-                  </Label>
+                     <children>
+                        <Label text="DEPARTMENT" textFill="#7a86ab">
+                           <font>
+                              <Font name="Inter 18pt ExtraBold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="*" textFill="#f67575">
+                           <font>
+                              <Font name="Inter 18pt ExtraBold" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+
                   <ComboBox fx:id="comboBoxDepartment" maxWidth="1.7976931348623157E308" prefWidth="230.0" promptText="Select Department" styleClass="comboBox-department">
                      <VBox.margin>
                         <Insets />
@@ -109,14 +145,26 @@
             </VBox>
             <VBox prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="PRIORITY" textFill="#7a86ab">
-                     <font>
-                        <Font name="Inter 18pt ExtraBold" size="12.0" />
-                     </font>
+
+                  <!-- PRIORITY LABEL WITH RED ASTERISK -->
+                  <HBox alignment="CENTER_LEFT" spacing="2.0">
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
-                  </Label>
+                     <children>
+                        <Label text="PRIORITY" textFill="#7a86ab">
+                           <font>
+                              <Font name="Inter 18pt ExtraBold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="*" textFill="#f67575">
+                           <font>
+                              <Font name="Inter 18pt ExtraBold" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+
                   <ComboBox fx:id="comboBoxPriority" maxWidth="1.7976931348623157E308" prefWidth="230.0" promptText="Select Priority" styleClass="comboBox-Priority">
                      <VBox.margin>
                         <Insets />
@@ -134,15 +182,50 @@
       </HBox>
       <VBox prefWidth="100.0">
          <children>
-            <Label text="DEADLINE" textFill="#7a86ab">
-               <font>
-                  <Font name="Inter 18pt ExtraBold" size="12.0" />
-               </font>
+
+            <!-- DEADLINE LABEL WITH RED ASTERISK -->
+            <HBox alignment="CENTER_LEFT" spacing="2.0">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
-            </Label>
-            <DatePicker fx:id="datePickerDeadline" editable="false" promptText="mm/dd/yy" />
+               <children>
+                  <Label text="DEADLINE" textFill="#7a86ab">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label text="*" textFill="#f67575">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+
+            <!-- DATE AND TIME PICKERS -->
+            <HBox alignment="CENTER_LEFT" spacing="8.0">
+               <children>
+                  <DatePicker fx:id="datePickerDeadline" editable="false" maxWidth="1.7976931348623157E308" promptText="mm/dd/yy" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets right="30.0" />
+                     </HBox.margin></DatePicker>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="35.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                     <children>
+      
+                        <ComboBox fx:id="comboBoxHour" prefHeight="25.0" prefWidth="68.0" promptText="HH" />
+      
+                        <Label text=":" textFill="#7a86ab">
+                           <font>
+                              <Font name="Inter 18pt ExtraBold" size="14.0" />
+                           </font>
+                        </Label>
+      
+                        <ComboBox fx:id="comboBoxMinute" prefHeight="25.0" prefWidth="67.0" promptText="MM" />
+                        <ComboBox fx:id="comboBoxAmPm" prefHeight="25.0" prefWidth="88.0" promptText="AM/PM" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
          </children>
       </VBox>
       <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="20.0">
