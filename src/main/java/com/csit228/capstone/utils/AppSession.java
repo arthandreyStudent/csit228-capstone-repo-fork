@@ -3,6 +3,8 @@ package com.csit228.capstone.utils;
 import com.csit228.capstone.model.Serializer;
 import com.csit228.capstone.model.User;
 
+import java.io.File;
+
 // CHANGES MADE: Updated the AppSession.java to be a utility class only by removing `extends Application` and making the constructor private. This allows us to use AppSession as a central place for managing user sessions and serialization without needing to launch a JavaFX application from it. The getInitialScreen method is added to determine which screen to show based on the current user's role.
 
 public final class AppSession {
@@ -27,7 +29,13 @@ public final class AppSession {
     public static void clearSession() {
         currentUser = null;
         serializer.setUser(null);
-        serializer.serialize();
+        serializer.setTicket(null);
+        serializer.setFilePath("user.ser");
+
+        File sessionFile = new File("user.ser");
+        if (sessionFile.exists() && !sessionFile.delete()) {
+            serializer.serialize();
+        }
     }
 
     // This method is what determines which screen to show based on the current user's role. This returns the path of the JavaFX FXML file that should be loaded as the initial screen when the application starts. If there is no user logged in, it defaults to the login screen.
