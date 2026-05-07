@@ -69,8 +69,8 @@ public class UserDAO {
         String sql = "INSERT INTO user(firstname,lastname,username,password_hash,user_type,department_id) VALUES (?,?,?,?,?,?);";
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, u.getFirstname());
-            preparedStatement.setString(2, u.getLastname());
+            preparedStatement.setString(1, u.getFirstName());
+            preparedStatement.setString(2, u.getLastName());
             preparedStatement.setString(3, u.getUsername());
             preparedStatement.setString(4, u.getPasswordHash());
             preparedStatement.setInt(5, getTypeRev(u.getRole()));
