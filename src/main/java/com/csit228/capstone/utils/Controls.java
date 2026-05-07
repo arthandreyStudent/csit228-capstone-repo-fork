@@ -23,9 +23,9 @@ public class Controls {
                 "Missing FXML resource: " + screen
         ));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.centerOnScreen();
         stage.setScene(scene);
         stage.sizeToScene();
+        stage.setOnShown(event -> stage.centerOnScreen());
         stage.setTitle("TIX.org");
         stage.show();
     }
