@@ -89,10 +89,9 @@ public class TicketDAO {
                     department_id,
                     created_by,
                     assigned_to,
-                    date_created,
                     deadline
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (Connection connection = DBConnector.getConnection();
@@ -102,19 +101,18 @@ public class TicketDAO {
             stmt.setString(2, ticket.getDescription());
             stmt.setString(3, ticket.getPriority().toString());
             stmt.setString(4, ticket.getStatus().toString());
-            stmt.setInt(5, ticket.getDepartmentId());
             stmt.setInt(6, ticket.getCreatedBy());
+            if(ticket.getDepartmentId()==null){
+                stmt.setNull(5,Types.INTEGER);
+            }else{
+                stmt.setInt(5,ticket.getDepartmentId());
+            }
             if(ticket.getAssignedTo()==null){
                 stmt.setNull(7,Types.INTEGER);
             }else{
                 stmt.setInt(7,ticket.getAssignedTo());
             }
-            stmt.setTimestamp(8, Timestamp.valueOf(LocalDateTime.now()));
-            if (ticket.getDeadline() == null) {
-                stmt.setNull(9, Types.TIMESTAMP);
-            } else {
-                stmt.setTimestamp(9, Timestamp.valueOf(ticket.getDeadline()));
-            }
+            stmt.setTimestamp(8, Timestamp.valueOf(ticket.getDeadline()));
             int rows = stmt.executeUpdate();
 
             if (rows > 0) {
