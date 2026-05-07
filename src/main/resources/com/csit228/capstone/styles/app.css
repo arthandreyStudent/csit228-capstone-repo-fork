@@ -197,6 +197,14 @@
     -fx-cursor: hand;
 }
 
+/* Adds a red border and a slight red glow to empty fields */
+.error-field {
+    -fx-border-color: #f48e8e;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgb(237, 102, 102, 0.4), 5, 0, 0, 0);
+}
+
 
 
 
