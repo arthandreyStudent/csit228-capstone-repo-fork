@@ -1,6 +1,9 @@
 
 package com.csit228.capstone.model;
 
+import com.csit228.capstone.utils.Formatter;
+
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 
 import static com.csit228.capstone.utils.Formatter.formatDate;
@@ -63,7 +66,7 @@ public class TicketView {
     }
 
     public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
+        this.departmentName = Formatter.formatDepartmentName(departmentName);
     }
 
     public String getCreatedBy() {
@@ -105,7 +108,7 @@ public class TicketView {
         this.description = description;
         this.priority = priority;
         this.status = status;
-        this.departmentName = departmentName;
+        this.departmentName = Formatter.formatDepartmentName(departmentName);
         this.createdBy = createdBy;
         this.assignedToName = assignedToName;
         this.lastUpdated = lastUpdated;
