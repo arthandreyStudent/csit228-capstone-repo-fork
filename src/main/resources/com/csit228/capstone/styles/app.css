@@ -3,6 +3,8 @@
     -fx-background-radius: 15;
     -fx-border-radius: 15;
     -fx-border-color: #d0d7e9;
+    -fx-font-family: "Inter 18pt";
+    -fx-font-size: 12px;
     -fx-prompt-text-fill: #7a809c;
 }
 
@@ -32,11 +34,18 @@
     -fx-background-radius: 15;
     -fx-border-radius: 15;
     -fx-border-color: #d0d7e9;
+    -fx-font-family: "Inter 18pt";
+    -fx-font-size: 12px;
     -fx-prompt-text-fill: #7a809c;
 }
 
 .text-field:hover {
     -fx-background-color: #ebeef8;
+}
+
+.text-field-dept {
+    -fx-padding: 11px 14px 11px 14px;
+    -fx-text-fill: #6d7291;
 }
 
 .icon-button {
