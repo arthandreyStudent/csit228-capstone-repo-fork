@@ -1,13 +1,18 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.application.TixApp;
+import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.model.*;
 import com.csit228.capstone.utils.Controls;
+import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,8 +20,12 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -62,6 +71,9 @@ public class DashboardExecutiveController {
     private Button createTicketButton;
 
     @FXML
+    private Button buttonLogout;
+
+    @FXML
     private Label resolutionRateLabel;
 
     @FXML
@@ -101,7 +113,7 @@ public class DashboardExecutiveController {
     }
 
     private void setupProfile() {
-        User user = TixApp.currentUser;
+        User user = AppSession.currentUser;
 
         if (user == null) {
             profileInitialsLabel.setText("NA");
@@ -110,7 +122,7 @@ public class DashboardExecutiveController {
             return;
         }
 
-        profileInitialsLabel.setText(getInitials(user));
+        profileInitialsLabel.setText(Formatter.getInitials(user));
         profileNameLabel.setText(user.getFullName());
         profileRoleLabel.setText(user.getRole() != null ? user.getRole().toString() : "EXECUTIVE");
     }
@@ -146,7 +158,7 @@ public class DashboardExecutiveController {
 
             Button departmentButton = createDepartmentTabButton(
                     departmentName,
-                    selectedDepartmentName != null && departmentName.equalsIgnoreCase(selectedDepartmentName)
+                    departmentName.equalsIgnoreCase(selectedDepartmentName)
             );
 
             departmentButton.setOnAction(event -> {
@@ -163,6 +175,7 @@ public class DashboardExecutiveController {
         Button button = new Button(text);
         button.setPrefHeight(32.0);
         button.setMinWidth(58.0);
+        button.setCursor(Cursor.HAND);
 
         if (selected) {
             button.setStyle(
@@ -190,7 +203,6 @@ public class DashboardExecutiveController {
     }
 
     private void refreshDashboard() {
-        ticketDAO.getTicketViews();
         tickets = new ArrayList<>(ticketDAO.getViews());
 
         updateSummaryCardsAndResolutionRate();
@@ -232,10 +244,10 @@ public class DashboardExecutiveController {
         double inProgressRate = getRate(inProgress, total);
         double overdueRate = getRate(overdue, total);
 
-        resolutionRateLabel.setText(formatPercent(resolvedRate));
-        resolvedRatePercentLabel.setText(formatPercent(resolvedRate));
-        inProgressRatePercentLabel.setText(formatPercent(inProgressRate));
-        overdueRatePercentLabel.setText(formatPercent(overdueRate));
+        resolutionRateLabel.setText(Formatter.formatPercent(resolvedRate));
+        resolvedRatePercentLabel.setText(Formatter.formatPercent(resolvedRate));
+        inProgressRatePercentLabel.setText(Formatter.formatPercent(inProgressRate));
+        overdueRatePercentLabel.setText(Formatter.formatPercent(overdueRate));
 
         resolvedProgressBar.setProgress(resolvedRate);
         inProgressProgressBar.setProgress(inProgressRate);
@@ -305,7 +317,7 @@ public class DashboardExecutiveController {
             Notification notification = new Notification(
                     ticket.getId(),
                     buildActivityMessage(ticket),
-                    safe(ticket.getStatus()),
+                    Formatter.trimOrNA(ticket.getStatus()),
                     false,
                     LocalDateTime.now(),
                     getCurrentUserId()
@@ -385,13 +397,13 @@ public class DashboardExecutiveController {
 
         String search = keyword.trim().toLowerCase();
 
-        return safe(ticket.getTitle()).toLowerCase().contains(search)
-                || safe(ticket.getDescription()).toLowerCase().contains(search)
-                || safe(ticket.getDepartmentName()).toLowerCase().contains(search)
-                || safe(ticket.getPriority()).toLowerCase().contains(search)
-                || safe(ticket.getStatus()).toLowerCase().contains(search)
-                || safe(ticket.getCreatedBy()).toLowerCase().contains(search)
-                || safe(ticket.getAssignedToName()).toLowerCase().contains(search);
+        return Formatter.trimOrNA(ticket.getTitle()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getDescription()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getDepartmentName()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getPriority()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getStatus()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getCreatedBy()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getAssignedToName()).toLowerCase().contains(search);
     }
 
     private boolean isUnassigned(TicketView ticket) {
@@ -407,8 +419,10 @@ public class DashboardExecutiveController {
     }
 
     private boolean isOverdue(TicketView ticketView) {
-        Ticket ticket = ticketDAO.getTicketById(ticketView.getId());
-        return ticket != null && ticket.isOverdue();
+        return ticketView != null
+                && ticketView.getDeadline() != null
+                && LocalDate.now().isAfter(ticketView.getDeadline().toLocalDate())
+                && !isResolved(ticketView);
     }
 
     private String buildActivityMessage(TicketView ticket) {
@@ -423,14 +437,49 @@ public class DashboardExecutiveController {
         return "\"" + ticket.getTitle() + "\" is assigned to " + ticket.getAssignedToName();
     }
 
+
+    // TODO: Refactor this to open a form within the dashboard instead of switching screens
+    // STATUS: DONE!
     @FXML
     public void handleCreateTicket() {
         try {
-            Controls.switchScreen("AddTicketView.fxml");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/CreateTicketModalExecView.fxml"));
+            Parent root = loader.load();
+            CreateTicketModalExecController controller = loader.getController();
+
+            Window ownerWindow = getOwnerWindow();
+            Stage modalStage = new Stage();
+            modalStage.setTitle("Create New Ticket");
+            if (ownerWindow != null) {
+                modalStage.initOwner(ownerWindow);
+                modalStage.initModality(Modality.WINDOW_MODAL);
+            } else {
+                modalStage.initModality(Modality.APPLICATION_MODAL);
+            }
+            modalStage.setScene(new Scene(root));
+            modalStage.setResizable(false);
+            modalStage.sizeToScene();
+            modalStage.setOnShown(event -> modalStage.centerOnScreen());
+            modalStage.showAndWait();
+
+            if (controller != null && controller.isSubmitted()) {
+                refreshDashboard();
+            }
         } catch (IOException e) {
-            showError("Unable to open Add Ticket screen.");
-            e.printStackTrace();
+            showError("Unable to open Create Ticket modal.");
         }
+    }
+
+    @FXML
+    public void onClickedLogout() throws IOException {
+        AppSession.clearSession();
+        Controls.switchScreen("LoginView.fxml");
+    }
+
+    private Window getOwnerWindow() {
+        return createTicketButton != null && createTicketButton.getScene() != null
+                ? createTicketButton.getScene().getWindow()
+                : null;
     }
 
     private double getRate(int value, int total) {
@@ -441,36 +490,8 @@ public class DashboardExecutiveController {
         return (double) value / total;
     }
 
-    private String formatPercent(double rate) {
-        return Math.round(rate * 100) + "%";
-    }
-
     private int getCurrentUserId() {
-        return TixApp.currentUser != null ? TixApp.currentUser.getUserId() : 0;
-    }
-
-    private String getInitials(User user) {
-        if (user == null) {
-            return "NA";
-        }
-
-        String firstName = safe(user.getFirstName());
-        String lastName = safe(user.getLastName());
-
-        String firstInitial = firstName.equals("N/A") ? "" : firstName.substring(0, 1);
-        String lastInitial = lastName.equals("N/A") ? "" : lastName.substring(0, 1);
-
-        String initials = firstInitial + lastInitial;
-
-        return initials.isBlank() ? "NA" : initials.toUpperCase();
-    }
-
-    private String safe(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return "N/A";
-        }
-
-        return value.trim();
+        return AppSession.currentUser != null ? AppSession.currentUser.getUserId() : 0;
     }
 
     private void showInfo(String message) {

@@ -12,11 +12,12 @@ import java.util.List;
 public class JobDAO {
 
     private static List<Job> jobs;
+    private static boolean jobsLoaded;
     private static JobDAO jobDAO;
 
     private JobDAO(){
         jobs = new ArrayList<>();
-        fetchJobs();
+        jobsLoaded = false;
     }
 
     public static JobDAO getJobDAO(){
@@ -41,17 +42,18 @@ public class JobDAO {
                 System.out.println("Added " + resultSet.getString("name") + " to Static List");
             }
 
+            jobsLoaded = true;
+
         } catch (SQLException e) {
             System.out.println("Unable to fetch");
+            throw new RuntimeException(e);
         }
     }
 
 
     private void addJob(Job job){
-
-
         try(Connection c = DBConnector.getConnection();
-            PreparedStatement ps = c.prepareStatement("INSERT INTO job (name) VALUES (?)");){
+            PreparedStatement ps = c.prepareStatement("INSERT INTO job (name) VALUES (?)")){
 
             ps.setString(1, job.getName());
 
@@ -65,10 +67,15 @@ public class JobDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        fetchJobs();
+
+        if (jobsLoaded) {
+            fetchJobs();
+        }
     }
 
     private Job searchJob(Job job){
+        ensureJobsLoaded();
+
         for(Job j : jobs){
             if(j.getName().equalsIgnoreCase(job.getName())){
                 return j;
@@ -91,7 +98,10 @@ public class JobDAO {
         } else{
             addJob(job);
             job = searchJob(job);
-            System.out.println("Job doesn't exists, creating and adding to database and updating List");
+        }
+
+        if (job == null) {
+            return;
         }
 
 
@@ -124,7 +134,7 @@ public class JobDAO {
         department.getJobs().clear();
         try(Connection c = DBConnector.getConnection();
             PreparedStatement ps = c.prepareStatement("SELECT j.id, j.name FROM job j INNER JOIN " +
-                    "job_department jd ON j.id = jd.job_id WHERE jd.department_id = ?");){
+                    "job_department jd ON j.id = jd.job_id WHERE jd.department_id = ?")){
 
             ps.setInt(1, department.getId());
 
@@ -135,11 +145,12 @@ public class JobDAO {
                         resultSet.getInt("id"),
                         resultSet.getString("name")
                 ));
-                System.out.println("Added to " + resultSet.getString("name") + " to " + department.getName());
+//                System.out.println("Added " + resultSet.getString("name") + " to " + department.getName());
             }
 
         } catch (SQLException e) {
             System.out.println("Unable to fetch");
+            throw new RuntimeException(e);
         }
     }
 
@@ -164,5 +175,11 @@ public class JobDAO {
         getJobDAO().addJobToDepartment(sport, new Job(1, "Sports Photographer"));
 
 
+    }
+
+    private void ensureJobsLoaded() {
+        if (!jobsLoaded) {
+            fetchJobs();
+        }
     }
 }

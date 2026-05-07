@@ -39,9 +39,18 @@ Tix.org is a ticketing system that allows organizations to create, assign, and u
 
 #### 2.GUI: JavaFX with FXML views:
 + **LoginView.fxml** - serves as the initial login screen where users authenticate before accessing the application.
-+ **MainView.fxml** - serves as the application shell with a left sidebar, user profile area, and a main content region for navigation and page switching.
++ **MainView.fxml** - serves as the application shell after login, with a left sidebar, user profile area, and a main content region for navigation and page switching.
 + **DashboardView.fxml** - presents the main dashboard overview, including ticket statistics, available tickets, pending tasks, and recent activity.
 + **AddTicketView.fxml** - provides the ticket creation form with fields for title, description, category, and deadline, along with submit and cancel actions.
+
+#### Running the JavaFX app in IntelliJ
+To avoid the error `The JavaFX runtime is not configured...`, run the project through Maven instead of using a plain Java `main()` run configuration.
+
+1. Use a JDK that matches the project source level (`Java 21`).
+2. In IntelliJ, import the project as a Maven project so dependencies are resolved automatically.
+   - If IntelliJ still shows the JavaFX runtime warning, right-click `pom.xml` and choose **Add as Maven Project**.
+3. Run the Maven goal `javafx:run`.
+4. The application starts from `com.csit228.capstone.MainApplication`, which opens `LoginView.fxml` first.
 
 #### 3.UML: Use Case and Class Diagram included:
 The Use Case Diagram presents the main interactions within the TIX.org system through two primary actors: Head / Executive and Member. The Head / Executive is associated with functions such as logging in, viewing the dashboard, creating tickets, assigning tickets, managing members, and viewing analytics. The Member is associated with functions such as logging in, viewing the dashboard, viewing the volunteer board, viewing assigned tasks, volunteering for tickets, and receiving priority alerts. Include and extend relationships are also shown to represent dependent actions within the system, such as assigning a ticket after creating it, volunteering through the volunteer board, and receiving alerts when necessary.

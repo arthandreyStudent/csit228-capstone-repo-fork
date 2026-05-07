@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="550.0" style="-fx-background-color: white;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.CreateTicketModalExecController">
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+   <children>
+      <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefWidth="440.0" spacing="20.0">
+         <children>
+            <FontIcon iconColor="#3699ff" iconLiteral="fas-ticket-alt" iconSize="22" textAlignment="CENTER" />
+            <Label prefHeight="23.0" text="Create New Ticket" textFill="#2b3674">
+               <font>
+                  <Font name="Inter 18pt Bold" size="18.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="66.0" prefWidth="194.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Button fx:id="buttonClose" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#onClickedButtonClose" prefHeight="35.0" prefWidth="35.0" styleClass="icon-button" textAlignment="CENTER">
+                     <graphic>
+                        <FontIcon fontSmoothingType="LCD" iconColor="#a8b2cd" iconLiteral="fas-times" iconSize="14" styleClass="fontIcon-x-mark" />
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </HBox>
+      <VBox alignment="CENTER_LEFT">
+         <children>
+
+            <!-- TITLE LABEL WITH RED ASTERISK -->
+            <HBox alignment="CENTER_LEFT" spacing="2.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+               <children>
+                  <Label text="TITLE" textFill="#7a86ab">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label text="*" textFill="#f67575">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+
+            <TextField fx:id="textfieldTicketTitle" promptText="e.g., Redesign Onboarding FXML">
+               <font>
+                  <Font name="Inter 18pt Regular" size="12.0" />
+               </font>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </TextField>
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </VBox>
+      <VBox alignment="CENTER_LEFT">
+         <children>
+
+            <!-- DESCRIPTION LABEL WITH RED ASTERISK -->
+            <HBox alignment="CENTER_LEFT" spacing="2.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+               <children>
+                  <Label text="DESCRIPTION" textFill="#7a86ab">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label text="*" textFill="#f67575">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+
+            <TextArea fx:id="textAreaTicketDesc" prefHeight="172.0" prefWidth="440.0" promptText="Describe the issue in detail..." wrapText="true">
+               <font>
+                  <Font name="Inter 18pt Regular" size="12.0" />
+               </font>
+               <padding>
+                  <Insets bottom="8.0" right="8.0" top="8.0" />
+               </padding>
+            </TextArea>
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </VBox>
+      <HBox prefWidth="200.0" spacing="50.0">
+         <children>
+            <VBox prefWidth="100.0" HBox.hgrow="ALWAYS">
+               <children>
+
+                  <!-- DEPARTMENT LABEL WITH RED ASTERISK -->
+                  <HBox alignment="CENTER_LEFT" spacing="2.0">
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <children>
+                        <Label text="DEPARTMENT" textFill="#7a86ab">
+                           <font>
+                              <Font name="Inter 18pt ExtraBold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="*" textFill="#f67575">
+                           <font>
+                              <Font name="Inter 18pt ExtraBold" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+
+                  <ComboBox fx:id="comboBoxDepartment" maxWidth="1.7976931348623157E308" prefWidth="230.0" promptText="Select Department" styleClass="comboBox-department">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="7.0" left="10.0" right="10.0" top="7.0" />
+                     </padding>
+                  </ComboBox>
+               </children>
+            </VBox>
+            <VBox prefWidth="100.0" HBox.hgrow="ALWAYS">
+               <children>
+
+                  <!-- PRIORITY LABEL WITH RED ASTERISK -->
+                  <HBox alignment="CENTER_LEFT" spacing="2.0">
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <children>
+                        <Label text="PRIORITY" textFill="#7a86ab">
+                           <font>
+                              <Font name="Inter 18pt ExtraBold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="*" textFill="#f67575">
+                           <font>
+                              <Font name="Inter 18pt ExtraBold" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+
+                  <ComboBox fx:id="comboBoxPriority" maxWidth="1.7976931348623157E308" prefWidth="230.0" promptText="Select Priority" styleClass="comboBox-Priority">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="7.0" left="10.0" right="10.0" top="7.0" />
+                     </padding>
+                  </ComboBox>
+               </children>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </HBox>
+      <VBox prefWidth="100.0">
+         <children>
+
+            <!-- DEADLINE LABEL WITH RED ASTERISK -->
+            <HBox alignment="CENTER_LEFT" spacing="2.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+               <children>
+                  <Label text="DEADLINE" textFill="#7a86ab">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label text="*" textFill="#f67575">
+                     <font>
+                        <Font name="Inter 18pt ExtraBold" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+
+            <!-- DATE AND TIME PICKERS -->
+            <HBox alignment="CENTER_LEFT" spacing="8.0">
+               <children>
+                  <DatePicker fx:id="datePickerDeadline" editable="false" maxWidth="1.7976931348623157E308" promptText="mm/dd/yy" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets right="30.0" />
+                     </HBox.margin></DatePicker>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="35.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                     <children>
+      
+                        <ComboBox fx:id="comboBoxHour" prefHeight="25.0" prefWidth="68.0" promptText="HH" />
+      
+                        <Label text=":" textFill="#7a86ab">
+                           <font>
+                              <Font name="Inter 18pt ExtraBold" size="14.0" />
+                           </font>
+                        </Label>
+      
+                        <ComboBox fx:id="comboBoxMinute" prefHeight="25.0" prefWidth="67.0" promptText="MM" />
+                        <ComboBox fx:id="comboBoxAmPm" prefHeight="25.0" prefWidth="88.0" promptText="AM/PM" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="20.0">
+         <VBox.margin>
+            <Insets top="50.0" />
+         </VBox.margin>
+         <children>
+            <Button fx:id="buttonCancel" mnemonicParsing="false" onAction="#onClickedCancel" styleClass="button-cancel" text="Cancel" />
+            <Button fx:id="buttonCreateTicket" mnemonicParsing="false" onAction="#onClickedCreateTicket" styleClass="button-createTicket" text="Create Ticket">
+               <graphic>
+                  <HBox>
+                     <padding>
+                        <Insets right="6.0" />
+                     </padding>
+                     <children>
+                        <FontIcon iconColor="white" iconLiteral="fas-paper-plane" iconSize="12" />
+                     </children>
+                  </HBox>
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+   </padding>
+</VBox>
