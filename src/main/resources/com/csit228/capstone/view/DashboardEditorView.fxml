@@ -236,7 +236,7 @@
                         <Button fx:id="createTicketButton"
                                 layoutX="445.0"
                                 layoutY="18.0"
-                                onAction="#createTicket"
+                                onAction="#handleCreateTicket"
                                 prefHeight="28.0"
                                 prefWidth="130.0"
                                 style="-fx-background-color: #4bcc8a; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;"

@@ -6,6 +6,7 @@ import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -21,6 +22,15 @@ public class DashboardMemberController {
 
     @FXML
     private TextField searchField;
+
+    @FXML
+    private Label profileInitialsLabel;
+
+    @FXML
+    private Label profileNameLabel;
+
+    @FXML
+    private Label profileRoleLabel;
 
     @FXML
     private Label openTasksLabel;
@@ -49,8 +59,24 @@ public class DashboardMemberController {
 
     @FXML
     public void initialize() {
+        setupProfile();
         setupSearch();
         refreshDashboard();
+    }
+
+    private void setupProfile() {
+        User user = AppSession.currentUser;
+
+        if (user == null) {
+            profileInitialsLabel.setText("NA");
+            profileNameLabel.setText("Member User");
+            profileRoleLabel.setText("MEMBER");
+            return;
+        }
+
+        profileInitialsLabel.setText(Formatter.getInitials(user));
+        profileNameLabel.setText(user.getFullName());
+        profileRoleLabel.setText(user.getRole() != null ? user.getRole().toString() : "MEMBER");
     }
 
     private void setupSearch() {

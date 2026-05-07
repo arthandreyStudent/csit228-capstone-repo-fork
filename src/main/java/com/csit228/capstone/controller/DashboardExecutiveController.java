@@ -5,6 +5,7 @@ import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.model.*;
+import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.FXML;
@@ -116,7 +117,7 @@ public class DashboardExecutiveController {
             return;
         }
 
-        profileInitialsLabel.setText(getInitials(user));
+        profileInitialsLabel.setText(Formatter.getInitials(user));
         profileNameLabel.setText(user.getFullName());
         profileRoleLabel.setText(user.getRole() != null ? user.getRole().toString() : "EXECUTIVE");
     }
@@ -237,10 +238,10 @@ public class DashboardExecutiveController {
         double inProgressRate = getRate(inProgress, total);
         double overdueRate = getRate(overdue, total);
 
-        resolutionRateLabel.setText(formatPercent(resolvedRate));
-        resolvedRatePercentLabel.setText(formatPercent(resolvedRate));
-        inProgressRatePercentLabel.setText(formatPercent(inProgressRate));
-        overdueRatePercentLabel.setText(formatPercent(overdueRate));
+        resolutionRateLabel.setText(Formatter.formatPercent(resolvedRate));
+        resolvedRatePercentLabel.setText(Formatter.formatPercent(resolvedRate));
+        inProgressRatePercentLabel.setText(Formatter.formatPercent(inProgressRate));
+        overdueRatePercentLabel.setText(Formatter.formatPercent(overdueRate));
 
         resolvedProgressBar.setProgress(resolvedRate);
         inProgressProgressBar.setProgress(inProgressRate);
@@ -310,7 +311,7 @@ public class DashboardExecutiveController {
             Notification notification = new Notification(
                     ticket.getId(),
                     buildActivityMessage(ticket),
-                    safe(ticket.getStatus()),
+                    Formatter.trimOrNA(ticket.getStatus()),
                     false,
                     LocalDateTime.now(),
                     getCurrentUserId()
@@ -390,13 +391,13 @@ public class DashboardExecutiveController {
 
         String search = keyword.trim().toLowerCase();
 
-        return safe(ticket.getTitle()).toLowerCase().contains(search)
-                || safe(ticket.getDescription()).toLowerCase().contains(search)
-                || safe(ticket.getDepartmentName()).toLowerCase().contains(search)
-                || safe(ticket.getPriority()).toLowerCase().contains(search)
-                || safe(ticket.getStatus()).toLowerCase().contains(search)
-                || safe(ticket.getCreatedBy()).toLowerCase().contains(search)
-                || safe(ticket.getAssignedToName()).toLowerCase().contains(search);
+        return Formatter.trimOrNA(ticket.getTitle()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getDescription()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getDepartmentName()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getPriority()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getStatus()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getCreatedBy()).toLowerCase().contains(search)
+                || Formatter.trimOrNA(ticket.getAssignedToName()).toLowerCase().contains(search);
     }
 
     private boolean isUnassigned(TicketView ticket) {
@@ -432,6 +433,7 @@ public class DashboardExecutiveController {
 
 
     // TODO: Refactor this to open a form within the dashboard instead of switching screens
+    // STATUS: DONE!
     @FXML
     public void handleCreateTicket() {
         try {
@@ -475,36 +477,8 @@ public class DashboardExecutiveController {
         return (double) value / total;
     }
 
-    private String formatPercent(double rate) {
-        return Math.round(rate * 100) + "%";
-    }
-
     private int getCurrentUserId() {
         return AppSession.currentUser != null ? AppSession.currentUser.getUserId() : 0;
-    }
-
-    private String getInitials(User user) {
-        if (user == null) {
-            return "NA";
-        }
-
-        String firstName = safe(user.getFirstName());
-        String lastName = safe(user.getLastName());
-
-        String firstInitial = firstName.equals("N/A") ? "" : firstName.substring(0, 1);
-        String lastInitial = lastName.equals("N/A") ? "" : lastName.substring(0, 1);
-
-        String initials = firstInitial + lastInitial;
-
-        return initials.isBlank() ? "NA" : initials.toUpperCase();
-    }
-
-    private String safe(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return "N/A";
-        }
-
-        return value.trim();
     }
 
     private void showInfo(String message) {
