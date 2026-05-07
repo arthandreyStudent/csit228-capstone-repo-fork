@@ -90,10 +90,9 @@ public class TicketDAO {
                     created_by,
                     assigned_to,
                     date_created,
-                    last_updated,
-                    deadline        
+                    deadline
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (Connection connection = DBConnector.getConnection();
@@ -105,29 +104,17 @@ public class TicketDAO {
             stmt.setString(4, ticket.getStatus().toString());
             stmt.setInt(5, ticket.getDepartmentId());
             stmt.setInt(6, ticket.getCreatedBy());
-            if (ticket.getAssignedTo() == null) {
-                stmt.setNull(7, Types.INTEGER);
-            } else {
-                stmt.setInt(7, ticket.getAssignedTo());
+            if(ticket.getAssignedTo()==null){
+                stmt.setNull(7,Types.INTEGER);
+            }else{
+                stmt.setInt(7,ticket.getAssignedTo());
             }
-            if (ticket.getDateCreated() == null) {
-                stmt.setNull(8, Types.TIMESTAMP);
-            } else {
-                stmt.setTimestamp(8, Timestamp.valueOf(ticket.getDateCreated()));
-            }
-            if (ticket.getLastUpdated() == null) {
+            stmt.setTimestamp(8, Timestamp.valueOf(LocalDateTime.now()));
+            if (ticket.getDeadline() == null) {
                 stmt.setNull(9, Types.TIMESTAMP);
             } else {
-                stmt.setTimestamp(9, Timestamp.valueOf(ticket.getLastUpdated()));
+                stmt.setTimestamp(9, Timestamp.valueOf(ticket.getDeadline()));
             }
-
-            // --- ADDED THE DEADLINE BINDING HERE (Index 10) ---
-            if (ticket.getDeadline() == null) {
-                stmt.setNull(10, Types.TIMESTAMP);
-            } else {
-                stmt.setTimestamp(10, Timestamp.valueOf(ticket.getDeadline()));
-            }
-
             int rows = stmt.executeUpdate();
 
             if (rows > 0) {
@@ -196,6 +183,11 @@ public class TicketDAO {
         refreshTicketViews();
     }
 
+    private void ensureTicketViewsLoaded(){
+        if(!ticketsLoaded || ticketsDirty){
+            refreshTicketViews();
+        }
+    }
     private void refreshTicketViews() {
         tickets.clear();
 
@@ -209,7 +201,10 @@ public class TicketDAO {
                 t.deadline,
                 t.priority,
                 t.status,
-                d.name AS department_name,
+                CASE
+                    WHEN d.name IS NULL THEN 'volunteer'
+                    ELSE d.name
+                END AS department_name,
                 CONCAT(c.firstname, ' ', c.lastname) AS created_by,
                 CONCAT(u.firstname, ' ', u.lastname) AS assigned_to_name
             FROM ticket t
@@ -237,6 +232,7 @@ public class TicketDAO {
                         rs.getObject("date_created", LocalDateTime.class),
                         rs.getObject("deadline", LocalDateTime.class)
                 ));
+                System.out.println("added ticket" );
             }
 
             ticketsLoaded = true;
@@ -252,36 +248,23 @@ public class TicketDAO {
     }
     public static void main(String[] args) {
 
-//        TicketDAO ticketDAO = TicketDAO.getTicketDAO();
-//        Ticket t = ticketDAO.getTicketById(4);
-//        List<TicketView> tv =ticketDAO.getViews();
-//        for (TicketView e : tv){
-//            System.out.println(e);
-//        }
-//        System.out.println(t);
-
-
-//        Ticket t = new Ticket(
-//            0,
-//            "Ken Horigome BDAY Caption",
-//            "Make a bday caption for KEN HORIGOME",
-//            TicketPriority.HIGH,
-//            LocalDateTime.now(),
-//            TicketStatus.OPEN,
-//            13,
-//            1,
-//            LocalDateTime.now(),
-//            null,
-//            1
-//        );
-//
         TicketDAO td = getTicketDAO();
         td.getTicketViews();
-    }
+        td.createTicket(
+                new Ticket(
+                        "JEK GWAPO",
+                        "WAL TEST 2 A LANG TEST LANG",
+                        TicketPriority.HIGH,
+                        LocalDateTime.now(),
+                        TicketStatus.OPEN,
+                        15,
+                        3,
+                        LocalDateTime.now(),
+                        LocalDateTime.now(),
+                        1));
 
-    private void ensureTicketViewsLoaded() {
-        if (!ticketsLoaded || ticketsDirty) {
-            refreshTicketViews();
+        for(TicketView ticketView : tickets){
+            System.out.println(ticketView.toString());
         }
     }
 

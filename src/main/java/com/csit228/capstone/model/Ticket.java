@@ -45,6 +45,31 @@ public class Ticket implements Serializable {
         this.lastUpdated = LocalDateTime.now();
     }
     public Ticket(
+
+            String title,
+            String description,
+            TicketPriority priority,
+            LocalDateTime deadline,
+            TicketStatus status,
+            Integer createdBy,
+            Integer assignedTo,
+            LocalDateTime dateCreated,
+            LocalDateTime lastUpdated,
+            Integer departmentId
+    ) {
+
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.deadline = deadline;
+        this.status = status;
+        this.createdBy = createdBy;
+        this.assignedTo = assignedTo;
+        this.dateCreated = dateCreated;
+        this.lastUpdated = lastUpdated;
+        this.departmentId = departmentId;
+    }
+    public Ticket(
             int ticketId,
             String title,
             String description,
