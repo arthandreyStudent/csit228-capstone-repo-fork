@@ -1,86 +1,69 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.dao.DepartmentDAO;
-import com.csit228.capstone.dao.TicketDAO;
-import com.csit228.capstone.dao.UserDAO;
-import com.csit228.capstone.model.Department;
-import com.csit228.capstone.model.Notification;
-import com.csit228.capstone.model.Role;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
-import com.csit228.capstone.utils.AppSession;
-import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
-import com.csit228.capstone.utils.TicketDeadlineComparator;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-public class DashboardEditorController {
+public class DashboardEditorController extends StaffDashboardController {
 
     @FXML private Label reviewQueueCountLabel;
-    @FXML private Label profileInitialsLabel;
-    @FXML private Label profileNameLabel;
-    @FXML private Label profileRoleLabel;
-    @FXML private TextField searchField;
     @FXML private Label awaitingReviewLabel;
     @FXML private Label inProgressLabel;
     @FXML private Label approvedTodayLabel;
     @FXML private Label sentBackLabel;
-    @FXML private Button createTicketButton;
-    @FXML private VBox reviewQueueBox;
     @FXML private Label reviewApprovalPercentLabel;
     @FXML private Label approvedStatLabel;
     @FXML private Label sentBackStatLabel;
     @FXML private Label editedStatLabel;
     @FXML private Label totalReviewsStatLabel;
+    @FXML private VBox reviewQueueBox;
     @FXML private VBox recentActivityBox;
     @FXML private Button allFilterButton;
     @FXML private Button openFilterButton;
     @FXML private Button inProgressFilterButton;
     @FXML private Button completedFilterButton;
     @FXML private Button resolvedFilterButton;
-    @FXML private Button buttonLogout;
-    @FXML private ComboBox<String> deadlineSortComboBox;
-
-    private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
-    private final DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
-    private final UserDAO userDAO = UserDAO.getUserDAO();
-
-    private List<TicketView> tickets = new ArrayList<>();
-    private List<Department> departments = new ArrayList<>();
 
     private ReviewQueueFilter currentFilter = ReviewQueueFilter.ALL;
 
+    private enum ReviewQueueFilter { ALL, OPEN, IN_PROGRESS, TO_BE_REVIEWED, RESOLVED }
 
-    private enum ReviewQueueFilter {
-        ALL,
-        OPEN,
-        IN_PROGRESS,
-        TO_BE_REVIEWED,
-        RESOLVED
+    @Override
+    protected String getDefaultRoleName() {
+        return "EDITOR";
     }
 
+    @Override
+    protected void refreshDashboard() {
+        ticketDAO.getTicketViews();
+        tickets = new ArrayList<>(ticketDAO.getViews());
 
+        updateSummaryCardsAndReviewStats();
+        loadReviewQueue();
+        loadRecentActivity(recentActivityBox);
+    }
+
+    @Override
+    protected void onSearchChanged() {
+        loadReviewQueue();
+    }
+
+    @Override
+    protected void onDeadlineSortSelected() {
+        loadReviewQueue();
+    }
 
     @FXML
     public void initialize() {
@@ -92,82 +75,15 @@ public class DashboardEditorController {
         refreshDashboard();
     }
 
-    private void setupProfile() {
-        User user = AppSession.currentUser;
-
-        if (user == null) {
-            profileInitialsLabel.setText("NA");
-            profileNameLabel.setText("Editor User");
-            profileRoleLabel.setText("EDITOR");
-            return;
-        }
-
-        profileInitialsLabel.setText(Formatter.getInitials(user));
-        profileNameLabel.setText(user.getFullName());
-        profileRoleLabel.setText(user.getRole() != null ? user.getRole().toString() : "EDITOR");
-    }
-
-    private void setupSearch() {
-        if (searchField == null) {
-            return;
-        }
-
-        searchField.setPromptText("Search tickets...");
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> loadReviewQueue());
-    }
-
     private void setupFilterButtons() {
         setActiveFilterButton(allFilterButton);
     }
 
-    private void setupDeadlineSortComboBox() {
-        if (deadlineSortComboBox == null) {
-            return;
-        }
-
-        deadlineSortComboBox.getItems().setAll("Nearest Deadline", "Farthest Deadline");
-        deadlineSortComboBox.setValue("Nearest Deadline");
-    }
-
-    @FXML
-    public void onDeadlineSortChanged() {
-        loadReviewQueue();
-    }
-
-    @FXML
-    public void showAllTickets() {
-        currentFilter = ReviewQueueFilter.ALL;
-        setActiveFilterButton(allFilterButton);
-        loadReviewQueue();
-    }
-
-    @FXML
-    public void showOpenTickets() {
-        currentFilter = ReviewQueueFilter.OPEN;
-        setActiveFilterButton(openFilterButton);
-        loadReviewQueue();
-    }
-
-    @FXML
-    public void showInProgressTickets() {
-        currentFilter = ReviewQueueFilter.IN_PROGRESS;
-        setActiveFilterButton(inProgressFilterButton);
-        loadReviewQueue();
-    }
-
-    @FXML
-    public void showCompletedTickets() {
-        currentFilter = ReviewQueueFilter.TO_BE_REVIEWED;
-        setActiveFilterButton(completedFilterButton);
-        loadReviewQueue();
-    }
-
-    @FXML
-    public void showResolvedTickets() {
-        currentFilter = ReviewQueueFilter.RESOLVED;
-        setActiveFilterButton(resolvedFilterButton);
-        loadReviewQueue();
-    }
+    @FXML public void showAllTickets()        { currentFilter = ReviewQueueFilter.ALL;           setActiveFilterButton(allFilterButton);        loadReviewQueue(); }
+    @FXML public void showOpenTickets()       { currentFilter = ReviewQueueFilter.OPEN;          setActiveFilterButton(openFilterButton);       loadReviewQueue(); }
+    @FXML public void showInProgressTickets() { currentFilter = ReviewQueueFilter.IN_PROGRESS;   setActiveFilterButton(inProgressFilterButton); loadReviewQueue(); }
+    @FXML public void showCompletedTickets()  { currentFilter = ReviewQueueFilter.TO_BE_REVIEWED; setActiveFilterButton(completedFilterButton);  loadReviewQueue(); }
+    @FXML public void showResolvedTickets()   { currentFilter = ReviewQueueFilter.RESOLVED;       setActiveFilterButton(resolvedFilterButton);   loadReviewQueue(); }
 
     private void setActiveFilterButton(Button activeButton) {
         setInactiveFilterStyle(allFilterButton);
@@ -188,10 +104,7 @@ public class DashboardEditorController {
     }
 
     private void setInactiveFilterStyle(Button button) {
-        if (button == null) {
-            return;
-        }
-
+        if (button == null) return;
         button.setStyle(
                 "-fx-background-color: white;" +
                         "-fx-border-color: #dfe7f5;" +
@@ -203,42 +116,13 @@ public class DashboardEditorController {
         );
     }
 
-    private void loadDepartments() {
-        departments = new ArrayList<>(departmentDAO.getDepartments());
-    }
-
-    private void refreshDashboard() {
-        ticketDAO.getTicketViews();
-        tickets = new ArrayList<>(ticketDAO.getViews());
-
-        updateSummaryCardsAndReviewStats();
-        loadReviewQueue();
-        loadRecentActivity();
-    }
-
     private void updateSummaryCardsAndReviewStats() {
-        int inProgress = 0;
-        int toBeReviewed = 0;
-        int resolved = 0;
-        int sentBack = 0;
-        int edited = 0;
-        int totalReviews = 0;
+        int inProgress = 0, toBeReviewed = 0, resolved = 0, sentBack = 0, edited = 0, totalReviews = 0;
 
         for (TicketView ticket : tickets) {
-            if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) {
-                inProgress++;
-                edited++;
-            }
-
-            if (isStatus(ticket, TicketStatus.COMPLETED.name())) {
-                toBeReviewed++;
-                totalReviews++;
-            }
-
-            if (isStatus(ticket, TicketStatus.RESOLVED.name())) {
-                resolved++;
-                totalReviews++;
-            }
+            if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) { inProgress++; edited++; }
+            if (isStatus(ticket, TicketStatus.COMPLETED.name()))   { toBeReviewed++; totalReviews++; }
+            if (isStatus(ticket, TicketStatus.RESOLVED.name()))    { resolved++; totalReviews++; }
         }
 
         awaitingReviewLabel.setText(String.valueOf(toBeReviewed));
@@ -253,7 +137,6 @@ public class DashboardEditorController {
 
         double approvalRate = totalReviews <= 0 ? 0 : (double) resolved / totalReviews;
         reviewApprovalPercentLabel.setText(Formatter.formatPercent(approvalRate));
-
         reviewQueueCountLabel.setText(String.valueOf(getFilteredTicketCount()));
     }
 
@@ -263,17 +146,9 @@ public class DashboardEditorController {
         String keyword = searchField != null ? searchField.getText() : "";
 
         for (TicketView ticket : getSortedTicketsByDeadline()) {
-            if (isVolunteerTicket(ticket) && isUnassigned(ticket)) {
-                continue;
-            }
-
-            if (!matchesCurrentFilter(ticket)) {
-                continue;
-            }
-
-            if (!matchesTicketSearch(ticket, keyword)) {
-                continue;
-            }
+            if (isVolunteerTicket(ticket) && isUnassigned(ticket)) continue;
+            if (!matchesCurrentFilter(ticket)) continue;
+            if (!matchesTicketSearch(ticket, keyword)) continue;
 
             List<User> assignableUsers = getAssignableMembersForTicket(ticket);
             ListRowItem row = ListRowItem.forEditorReview(ticket, assignableUsers);
@@ -289,23 +164,7 @@ public class DashboardEditorController {
                     showInfo("This ticket is already resolved and closed.");
                     return;
                 }
-
-                User selectedUser = row.getSelectedAssignedUser();
-
-                if (selectedUser == null) {
-                    showInfo("Please select a member first.");
-                    return;
-                }
-
-                boolean assigned = ticketDAO.assignTicket(selectedUser.getUserId(), ticket.getId());
-                boolean updated = ticketDAO.updateStatus(ticket.getId(), TicketStatus.IN_PROGRESS);
-
-                if (assigned && updated) {
-                    showInfo("Ticket assigned to " + selectedUser.getFullName() + ".");
-                    refreshDashboard();
-                } else {
-                    showError("Unable to assign ticket.");
-                }
+                assignTicketToUser(ticket, row.getSelectedAssignedUser());
             });
 
             if (!isStatus(ticket, TicketStatus.COMPLETED.name())) {
@@ -316,48 +175,39 @@ public class DashboardEditorController {
 
             row.setAction(event -> updateTicketStatus(ticket, TicketStatus.RESOLVED, "Ticket marked as resolved."));
             row.setThirdAction(event -> updateTicketStatus(ticket, TicketStatus.IN_PROGRESS, "Ticket returned to in progress."));
-
             reviewQueueBox.getChildren().add(row);
         }
 
         reviewQueueCountLabel.setText(String.valueOf(reviewQueueBox.getChildren().size()));
     }
 
-    private List<TicketView> getSortedTicketsByDeadline() {
-        List<TicketView> sortedTickets = new ArrayList<>(tickets);
+    private boolean matchesCurrentFilter(TicketView ticket) {
+        if (ticket == null) return false;
 
-        TicketDeadlineComparator.SortMode sortMode =
-                TicketDeadlineComparator.getSortModeFromText(
-                        deadlineSortComboBox != null ? deadlineSortComboBox.getValue() : null
-                );
+        switch (currentFilter) {
+            case ALL:            return true;
+            case OPEN:           return isUnassigned(ticket);
+            case IN_PROGRESS:    return isStatus(ticket, TicketStatus.IN_PROGRESS.name());
+            case TO_BE_REVIEWED: return isStatus(ticket, TicketStatus.COMPLETED.name());
+            case RESOLVED:       return isStatus(ticket, TicketStatus.RESOLVED.name());
+            default:             return true;
+        }
+    }
 
-        sortedTickets.sort(new TicketDeadlineComparator(sortMode));
-
-        return sortedTickets;
+    private int getFilteredTicketCount() {
+        int count = 0;
+        for (TicketView ticket : tickets) { if (matchesCurrentFilter(ticket)) count++; }
+        return count;
     }
 
     private void hideReviewActionButtons(ListRowItem row) {
-        if (row == null) {
-            return;
-        }
-
-        if (row.getActionButton() != null) {
-            row.getActionButton().setDisable(true);
-            row.getActionButton().setVisible(false);
-            row.getActionButton().setManaged(false);
-        }
-
-        if (row.getThirdActionButton() != null) {
-            row.getThirdActionButton().setDisable(true);
-            row.getThirdActionButton().setVisible(false);
-            row.getThirdActionButton().setManaged(false);
-        }
+        if (row == null) return;
+        setButtonHidden(row.getActionButton());
+        setButtonHidden(row.getThirdActionButton());
     }
 
     private void lockResolvedTicketRow(ListRowItem row) {
-        if (row == null) {
-            return;
-        }
+        if (row == null) return;
 
         if (row.getAssignComboBox() != null) {
             row.getAssignComboBox().setDisable(true);
@@ -369,179 +219,26 @@ public class DashboardEditorController {
             row.getSecondaryActionButton().setText("Closed");
         }
 
-        if (row.getActionButton() != null) {
-            row.getActionButton().setDisable(true);
-            row.getActionButton().setVisible(false);
-            row.getActionButton().setManaged(false);
-        }
-
-        if (row.getThirdActionButton() != null) {
-            row.getThirdActionButton().setDisable(true);
-            row.getThirdActionButton().setVisible(false);
-            row.getThirdActionButton().setManaged(false);
-        }
+        setButtonHidden(row.getActionButton());
+        setButtonHidden(row.getThirdActionButton());
     }
 
-    private boolean matchesCurrentFilter(TicketView ticket) {
-        if (ticket == null) {
-            return false;
-        }
-
-        switch (currentFilter) {
-            case ALL:
-                return true;
-            case OPEN:
-                return isUnassigned(ticket);
-            case IN_PROGRESS:
-                return isStatus(ticket, TicketStatus.IN_PROGRESS.name());
-            case TO_BE_REVIEWED:
-                return isStatus(ticket, TicketStatus.COMPLETED.name());
-            case RESOLVED:
-                return isStatus(ticket, TicketStatus.RESOLVED.name());
-            default:
-                return true;
-        }
-    }
-
-    private int getFilteredTicketCount() {
-        int count = 0;
-
-        for (TicketView ticket : tickets) {
-            if (matchesCurrentFilter(ticket)) {
-                count++;
-            }
-        }
-
-        return count;
-    }
-
-    private void updateTicketStatus(TicketView ticket, TicketStatus status, String successMessage) {
-        if (ticket == null) {
-            showError("No ticket selected.");
-            return;
-        }
-
-        boolean updated = ticketDAO.updateStatus(ticket.getId(), status);
-
-        if (updated) {
-            showInfo(successMessage);
-            refreshDashboard();
-        } else {
-            showError("Unable to update ticket status.");
-        }
-    }
-
-    private void loadRecentActivity() {
-        recentActivityBox.getChildren().clear();
-
-        int count = 0;
-
-        for (TicketView ticket : tickets) {
-            Notification notification = new Notification(
-                    ticket.getId(),
-                    buildActivityMessage(ticket),
-                    Formatter.trimOrNA(ticket.getStatus()),
-                    false,
-                    LocalDateTime.now(),
-                    getCurrentUserId()
-            );
-
-            recentActivityBox.getChildren().add(ListRowItem.forActivity(notification));
-            count++;
-
-            if (count >= 8) {
-                break;
-            }
-        }
-    }
-
-    private List<User> getAssignableMembersForTicket(TicketView ticket) {
-        List<User> result = new ArrayList<>();
-        int departmentId = getDepartmentIdByName(ticket.getDepartmentName());
-
-        if (departmentId > 0) {
-            for (User user : userDAO.getUserByDepartment(departmentId)) {
-                if (user != null && user.hasRole(Role.MEMBER)) {
-                    result.add(user);
-                }
-            }
-        }
-
-        if (result.isEmpty()) {
-            result.addAll(getAllMembers());
-        }
-
-        return result;
-    }
-
-    private List<User> getAllMembers() {
-        Map<Integer, User> uniqueUsers = new LinkedHashMap<>();
-
-        for (Department department : departments) {
-            for (User user : userDAO.getUserByDepartment(department.getId())) {
-                if (user != null && user.hasRole(Role.MEMBER)) {
-                    uniqueUsers.put(user.getUserId(), user);
-                }
-            }
-        }
-
-        return new ArrayList<>(uniqueUsers.values());
-    }
-
-    private int getDepartmentIdByName(String departmentName) {
-        if (departmentName == null) {
-            return -1;
-        }
-
-        for (Department department : departments) {
-            if (department.getName().equalsIgnoreCase(departmentName.trim())) {
-                return department.getId();
-            }
-        }
-
-        return -1;
-    }
-
-    private boolean isVolunteerTicket(TicketView ticket) {
-        if (ticket == null) {
-            return false;
-        }
-
-        String departmentName = ticket.getDepartmentName();
-
-        return departmentName == null
-                || departmentName.trim().isEmpty()
-                || departmentName.equalsIgnoreCase("N/A")
-                || departmentName.equalsIgnoreCase("Volunteer");
-    }
-
-    private boolean isUnassigned(TicketView ticket) {
-        return ticket.getAssignedToName() == null || ticket.getAssignedToName().trim().isEmpty();
+    private void setButtonHidden(Button button) {
+        if (button == null) return;
+        button.setDisable(true);
+        button.setVisible(false);
+        button.setManaged(false);
     }
 
     @FXML
     public void handleCreateTicket() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/CreateTicketModalEditorView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/csit228/capstone/view/CreateTicketModalEditorView.fxml"));
             Parent root = loader.load();
             CreateTicketModalEditorController controller = loader.getController();
 
-            Window ownerWindow = getOwnerWindow();
-            Stage modalStage = new Stage();
-            modalStage.setTitle("Create New Ticket");
-
-            if (ownerWindow != null) {
-                modalStage.initOwner(ownerWindow);
-                modalStage.initModality(Modality.WINDOW_MODAL);
-            } else {
-                modalStage.initModality(Modality.APPLICATION_MODAL);
-            }
-
-            modalStage.setScene(new Scene(root));
-            modalStage.setResizable(false);
-            modalStage.sizeToScene();
-            modalStage.setOnShown(event -> modalStage.centerOnScreen());
-            modalStage.showAndWait();
+            openModal(root, "Create New Ticket");
 
             if (controller != null && controller.isSubmitted()) {
                 refreshDashboard();
@@ -549,77 +246,5 @@ public class DashboardEditorController {
         } catch (IOException e) {
             showError("Unable to open Create Ticket modal.");
         }
-    }
-
-    @FXML
-    public void onClickedLogout() throws IOException {
-        AppSession.clearSession();
-        Controls.switchScreen("LoginView.fxml");
-    }
-
-    private Window getOwnerWindow() {
-        return createTicketButton != null && createTicketButton.getScene() != null
-                ? createTicketButton.getScene().getWindow()
-                : null;
-    }
-
-    private boolean isStatus(TicketView ticket, String status) {
-        return ticket.getStatus() != null && ticket.getStatus().equalsIgnoreCase(status);
-    }
-
-    private boolean matchesTicketSearch(TicketView ticket, String keyword) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return true;
-        }
-
-        String search = keyword.trim().toLowerCase();
-
-        return Formatter.trimOrNA(ticket.getTitle()).toLowerCase().contains(search)
-                || Formatter.trimOrNA(ticket.getDescription()).toLowerCase().contains(search)
-                || Formatter.trimOrNA(ticket.getDepartmentName()).toLowerCase().contains(search)
-                || Formatter.trimOrNA(ticket.getPriority()).toLowerCase().contains(search)
-                || Formatter.trimOrNA(ticket.getStatus()).toLowerCase().contains(search)
-                || Formatter.trimOrNA(ticket.getCreatedBy()).toLowerCase().contains(search)
-                || Formatter.trimOrNA(ticket.getAssignedToName()).toLowerCase().contains(search);
-    }
-
-    private String buildActivityMessage(TicketView ticket) {
-        if (isUnassigned(ticket)) {
-            return "\"" + ticket.getTitle() + "\" is waiting for assignment";
-        }
-
-        if (isStatus(ticket, TicketStatus.COMPLETED.name())) {
-            return "\"" + ticket.getTitle() + "\" is waiting for review";
-        }
-
-        if (isStatus(ticket, TicketStatus.RESOLVED.name())) {
-            return "\"" + ticket.getTitle() + "\" has been resolved";
-        }
-
-        if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) {
-            return "\"" + ticket.getTitle() + "\" is still in progress";
-        }
-
-        return "\"" + ticket.getTitle() + "\" has status " + Formatter.trimOrNA(ticket.getStatus());
-    }
-
-    private int getCurrentUserId() {
-        return AppSession.currentUser != null ? AppSession.currentUser.getUserId() : 0;
-    }
-
-    private void showInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("TIX.org");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("TIX.org");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }
