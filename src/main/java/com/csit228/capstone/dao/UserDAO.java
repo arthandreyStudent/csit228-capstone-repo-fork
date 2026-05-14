@@ -7,6 +7,7 @@ import com.csit228.capstone.model.Role;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.model.UserFactory;
 import com.csit228.capstone.utils.Hash;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -14,14 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 public class UserDAO {
-
+  
   private static List<User> users;
   private static List<String> types;
   private static Map<Integer, List<User>> usersByDepartment;
   private static boolean usersLoaded;
   private static boolean typesLoaded;
   private static UserDAO userDAO;
-
+  
   private UserDAO() {
     users = new ArrayList<>();
     types = new ArrayList<>();
@@ -29,17 +30,17 @@ public class UserDAO {
     usersLoaded = false;
     typesLoaded = false;
   }
-
+  
   public static UserDAO getUserDAO() {
     if (userDAO == null) {
       userDAO = new UserDAO();
     }
     return userDAO;
   }
-
+  
   public Role getType(int id) {
     ensureTypesLoaded();
-
+    
     for (String s : types) {
       String[] res = s.split(" ");
       if (Integer.parseInt(res[0]) == id) {
@@ -48,10 +49,10 @@ public class UserDAO {
     }
     return null;
   }
-
+  
   public int getTypeRev(Role r) {
     ensureTypesLoaded();
-
+    
     for (String s : types) {
       String[] res = s.split(" ");
       if (Role.valueOf(res[1].toUpperCase()) == r) {
@@ -60,16 +61,14 @@ public class UserDAO {
     }
     return -1;
   }
-
+  
   public void createUser(User u) throws UsernameAlreadyTakenException {
     ensureTypesLoaded();
-
+    
     String sql =
       "INSERT INTO user(firstname,lastname,username,password_hash,user_type,department_id) VALUES (?,?,?,?,?,?);";
-    try (
-      Connection connection = DBConnector.getConnection();
-      PreparedStatement preparedStatement = connection.prepareStatement(sql)
-    ) {
+    try (Connection connection = DBConnector.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
       preparedStatement.setString(1, u.getFirstName());
       preparedStatement.setString(2, u.getLastName());
       preparedStatement.setString(3, u.getUsername());
@@ -87,34 +86,29 @@ public class UserDAO {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-
+    
     if (usersLoaded) {
       fetchUsers();
     }
   }
-
+  
   public static void fetchTypes() {
-    try (
-      Connection connection = DBConnector.getConnection();
-      Statement statement = connection.createStatement()
-    ) {
-      ResultSet rs = statement.executeQuery(
-        "SELECT * FROM type  ORDER BY id ASC"
-      );
+    try (Connection connection = DBConnector.getConnection(); Statement statement = connection.createStatement()) {
+      ResultSet rs = statement.executeQuery("SELECT * FROM type  ORDER BY id ASC");
       while (rs.next()) {
         types.add(rs.getInt("id") + " " + rs.getString("role"));
       }
-
+      
       typesLoaded = true;
     } catch (SQLException e) {
       e.printStackTrace();
     }
   }
-
+  
   //int userId, String firstname, String lastname, String username, String passwordHash, Role
   public User getUser(int id) {
     ensureUsersLoaded();
-
+    
     for (User u : users) {
       if (u.getUserId() == id) {
         return u;
@@ -122,10 +116,10 @@ public class UserDAO {
     }
     return null;
   }
-
+  
   public User getUserById(int id) {
     ensureUsersLoaded();
-
+    
     for (User u : users) {
       if (u.getUserId() == id) {
         return u;
@@ -133,87 +127,72 @@ public class UserDAO {
     }
     return null;
   }
-
+  
   public List<User> getUserByDepartment(int id) {
     ensureUsersLoaded();
-
+    
     List<User> departmentUsers = usersByDepartment.get(id);
     if (departmentUsers == null) {
       return new ArrayList<>();
     }
-
+    
     return new ArrayList<>(departmentUsers);
   }
-
-  public User login(String username, String password)
-    throws InvalidCredentialsException {
+  
+  public User login(String username, String password) throws InvalidCredentialsException {
     ensureUsersLoaded();
-
+    
     String h = Hash.hashWithSHA256(password.trim());
     //        System.out.println(h);
     for (User u : users) {
       //            System.out.println(u.getPasswordHash());
-      if (
-        u.getUsername().trim().equals(username.trim()) &&
-        u.getPasswordHash().equals(h)
-      ) {
+      if (u.getUsername().trim().equals(username.trim()) && u.getPasswordHash().equals(h)) {
         //                System.out.println("ASDAS");
         return u;
       }
     }
     throw new InvalidCredentialsException();
   }
-
+  
   public void fetchUsers() {
-    try (
-      Connection connection = DBConnector.getConnection();
-      Statement statement = connection.createStatement()
-    ) {
+    try (Connection connection = DBConnector.getConnection(); Statement statement = connection.createStatement()) {
       ResultSet rs = statement.executeQuery("SELECT * FROM user");
       while (rs.next()) {
         Role role = getType(rs.getInt("user_type"));
-        User curr = UserFactory.createUser(
-          role,
-          rs.getInt("id"),
-          rs.getString("firstname"),
-          rs.getString("lastname"),
-          rs.getString("username"),
-          rs.getString("password_hash"),
-          rs.getInt("department_id")
-        );
+        User curr = UserFactory.createUser(role, rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"),
+                                           rs.getString("username"), rs.getString("password_hash"),
+                                           rs.getInt("department_id"));
         users.add(curr);
       }
-
+      
       rebuildDepartmentCache();
       usersLoaded = true;
     } catch (SQLException e) {
       e.printStackTrace();
     }
   }
-
+  
   public static void main(String[] args) {
     //todo
   }
-
+  
   private void ensureUsersLoaded() {
     if (!usersLoaded) {
       fetchUsers();
     }
   }
-
+  
   private void ensureTypesLoaded() {
     if (!typesLoaded) {
       fetchTypes();
     }
   }
-
+  
   private void rebuildDepartmentCache() {
     usersByDepartment.clear();
-
+    
     for (User user : users) {
-      usersByDepartment
-        .computeIfAbsent(user.getDepartment_id(), key -> new ArrayList<>())
-        .add(user);
+      usersByDepartment.computeIfAbsent(user.getDepartment_id(), key -> new ArrayList<>()).add(user);
     }
   }
 }

@@ -1,5 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.csit228</groupId>
   <artifactId>csit228-capstone</artifactId>
@@ -30,7 +34,8 @@
           <transformers>
             <transformer />
             <transformer>
-              <mainClass>com.csit228.capstone.application.MainApplication</mainClass>
+              <mainClass
+              >com.csit228.capstone.application.MainApplication</mainClass>
             </transformer>
           </transformers>
         </configuration>
@@ -43,7 +48,8 @@
           <execution>
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.csit228.capstone/com.csit228.capstone.application.MainApplication</mainClass>
+              <mainClass
+              >com.csit228.capstone/com.csit228.capstone.application.MainApplication</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>

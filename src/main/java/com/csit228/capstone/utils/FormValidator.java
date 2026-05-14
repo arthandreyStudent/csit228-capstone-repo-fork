@@ -26,8 +26,7 @@ public class FormValidator {
 
     for (Control field : fields) {
       boolean isFieldValid = true;
-
-      // 1. Check Text Inputs (TextField, TextArea, PasswordField)
+      
       if (field instanceof TextInputControl) {
         TextInputControl textInput = (TextInputControl) field;
         if (
@@ -36,7 +35,7 @@ public class FormValidator {
           isFieldValid = false;
         }
       }
-      // 2. Check Combo Bases (ComboBox, DatePicker, ColorPicker)
+
       else if (field instanceof ComboBoxBase) {
         ComboBoxBase<?> comboBoxBase = (ComboBoxBase<?>) field;
         if (comboBoxBase.getValue() == null) {
@@ -48,7 +47,7 @@ public class FormValidator {
           }
         }
       }
-      // 3. Check ChoiceBoxes
+
       else if (field instanceof ChoiceBox) {
         ChoiceBox<?> choiceBox = (ChoiceBox<?>) field;
         if (choiceBox.getValue() == null) {
@@ -60,8 +59,7 @@ public class FormValidator {
           }
         }
       }
-
-      // 4. Apply or remove styles
+      
       if (isFieldValid) {
         field.getStyleClass().remove(ERROR_STYLE_CLASS);
       } else {
@@ -69,8 +67,7 @@ public class FormValidator {
           field.getStyleClass().add(ERROR_STYLE_CLASS);
         }
         isAllValid = false;
-
-        // 5. Make it responsive! Add a listener to remove the red border automatically
+        
         attachResponsiveListener(field);
       }
     }
@@ -82,35 +79,30 @@ public class FormValidator {
    * Attaches a one-time listener to the field to remove the error class upon interaction.
    */
   private static void attachResponsiveListener(Control field) {
-    // Prevent adding multiple listeners to the same field if the user clicks "Submit" repeatedly
     if (Boolean.TRUE.equals(field.getProperties().get(LISTENER_ADDED_KEY))) {
       return;
     }
 
     if (field instanceof TextInputControl) {
-      // For TextFields and TextAreas: Listen for text changes
       ((TextInputControl) field).textProperty().addListener(
         (observable, oldValue, newValue) -> {
           field.getStyleClass().remove(ERROR_STYLE_CLASS);
         }
       );
     } else if (field instanceof ComboBoxBase) {
-      // For ComboBoxes and DatePickers: Listen for value changes
       ((ComboBoxBase<?>) field).valueProperty().addListener(
         (observable, oldValue, newValue) -> {
           field.getStyleClass().remove(ERROR_STYLE_CLASS);
         }
       );
     } else if (field instanceof ChoiceBox) {
-      // For ChoiceBoxes: Listen for value changes
       ((ChoiceBox<?>) field).valueProperty().addListener(
         (observable, oldValue, newValue) -> {
           field.getStyleClass().remove(ERROR_STYLE_CLASS);
         }
       );
     }
-
-    // Mark this field so we know it already has a listener attached
+    
     field.getProperties().put(LISTENER_ADDED_KEY, true);
   }
 

@@ -28,4 +28,8 @@ public class Hash {
   public static void main(String[] args) throws Exception {
     System.out.println(hashWithSHA256("jake"));
   }
+
+  public static String test(String message) {
+    return message + "Hi!";
+  }
 }
