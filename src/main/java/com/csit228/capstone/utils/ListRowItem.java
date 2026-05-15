@@ -544,58 +544,31 @@ public class ListRowItem extends VBox {
     }
 
     private static String getNotificationInitials(Notification notification) {
-<<<<<<< HEAD
-        if (notification == null) return "NA";
-        String type = notification.getType();
-        if (type != null && !type.trim().isEmpty()) {
-            String[] words = type.trim().replace("_", " ").split("\\s+");
-            if (words.length >= 2) return (words[0].charAt(0) + "" + words[1].charAt(0)).toUpperCase();
-            return type.trim().substring(0, Math.min(2, type.trim().length())).toUpperCase();
-        }
-=======
-        if (notification == null) {
-            return "NA";
-        }
-
->>>>>>> 6e7a872 (add notificationDAO)
-        int userId = notification.getUserId();
-        return userId > 0 ? "U" + userId : "NA";
+        if (notification == null || notification.getMessage() == null) return "NA";
+        String msg = notification.getMessage().toUpperCase();
+        if (msg.contains("RESOLVED"))    return "RS";
+        if (msg.contains("IN PROGRESS")) return "IP";
+        if (msg.contains("COMPLETED"))   return "CP";
+        if (msg.contains("WAITING"))     return "WT";
+        return "TK";
     }
 
     private static String getNotificationCircleColor(Notification notification) {
-<<<<<<< HEAD
-        if (notification == null || notification.getType() == null) return "#dceeff";
-        switch (notification.getType().toUpperCase()) {
-            case "APPROVED": case "RESOLVED": case "COMPLETED": case "SUCCESS": return "#d9ffed";
-            case "SENT_BACK": case "REVISION": case "WARNING": case "EDITED":   return "#ffedcc";
-            case "URGENT": case "ERROR": case "OVERDUE":                        return "#ffe0e5";
-            default:                                                             return "#dceeff";
-        }
+        if (notification == null || notification.getMessage() == null) return "#dceeff";
+        String msg = notification.getMessage().toUpperCase();
+        if (msg.contains("RESOLVED") || msg.contains("COMPLETED")) return "#d9ffed";
+        if (msg.contains("IN PROGRESS"))                           return "#ffedcc";
+        if (msg.contains("OVERDUE"))                               return "#ffe0e5";
+        return "#dceeff";
     }
 
     private static String getNotificationTextColor(Notification notification) {
-        if (notification == null || notification.getType() == null) return "#2f95ff";
-        switch (notification.getType().toUpperCase()) {
-            case "APPROVED": case "RESOLVED": case "COMPLETED": case "SUCCESS": return "#4bcc8a";
-            case "SENT_BACK": case "REVISION": case "WARNING": case "EDITED":   return "#ff9900";
-            case "URGENT": case "ERROR": case "OVERDUE":                        return "#f14d5a";
-            default:                                                             return "#2f95ff";
-        }
-=======
-        if (notification == null) {
-            return "#dceeff";
-        }
-
-        return notification.isRead() ? "#eef2fb" : "#dceeff";
-    }
-
-    private static String getNotificationTextColor(Notification notification) {
-        if (notification == null) {
-            return "#2f95ff";
-        }
-
-        return notification.isRead() ? "#9faad2" : "#2f95ff";
->>>>>>> 6e7a872 (add notificationDAO)
+        if (notification == null || notification.getMessage() == null) return "#2f95ff";
+        String msg = notification.getMessage().toUpperCase();
+        if (msg.contains("RESOLVED") || msg.contains("COMPLETED")) return "#4bcc8a";
+        if (msg.contains("IN PROGRESS"))                           return "#ff9900";
+        if (msg.contains("OVERDUE"))                               return "#f14d5a";
+        return "#2f95ff";
     }
 
     private static String getUserInitials(User user) {

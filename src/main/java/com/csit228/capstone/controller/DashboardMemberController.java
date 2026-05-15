@@ -132,7 +132,7 @@ public class DashboardMemberController extends BaseDashboardController {
             Notification notification = new Notification(
                     ticket.getId(),
                     "You have \"" + ticket.getTitle() + "\" with status " + safe(ticket.getStatus()),
-                    false,
+                    false,                  // isRead
                     LocalDateTime.now(),
                     getCurrentUserId()
             );
