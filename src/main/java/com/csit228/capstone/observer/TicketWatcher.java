@@ -77,19 +77,38 @@ public class TicketWatcher {
 
     /**
      * Turns the result set into a comparable string.
-     * Compares id + status + assignedTo + lastUpdated per ticket.
      * Any row change → different snapshot → triggers notify.
      */
     private String buildSnapshot(List<TicketView> tickets) {
         StringBuilder sb = new StringBuilder();
-        for (TicketView t : tickets) {
-            sb.append(t.getId())
-                    .append(t.getStatus())
-                    .append(t.getAssignedToName() != null ? t.getAssignedToName() : "unassigned")
-                    .append(t.getLastUpdated() != null ? t.getLastUpdated().toString() : "no-date")
-                    .append("|");
+
+        if (tickets == null) {
+            return "";
         }
+
+        for (TicketView t : tickets) {
+            if (t == null) {
+                sb.append("null-ticket\n");
+                continue;
+            }
+
+            appendSnapshotField(sb, t.getId());
+            appendSnapshotField(sb, t.getTitle());
+            appendSnapshotField(sb, t.getDescription());
+            appendSnapshotField(sb, t.getPriority());
+            appendSnapshotField(sb, t.getStatus());
+            appendSnapshotField(sb, t.getDepartmentName());
+            appendSnapshotField(sb, t.getCreatedBy());
+            appendSnapshotField(sb, t.getAssignedToName());
+            appendSnapshotField(sb, t.getDeadline());
+            sb.append("\n");
+        }
+
         return sb.toString();
+    }
+
+    private void appendSnapshotField(StringBuilder sb, Object value) {
+        sb.append(value != null ? value : "null").append("|");
     }
 
     private void notifyObservers(List<TicketView> tickets) {
