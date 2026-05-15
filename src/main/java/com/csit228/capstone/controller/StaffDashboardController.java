@@ -21,9 +21,7 @@ import javafx.stage.Window;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class StaffDashboardController extends BaseDashboardController {
 
@@ -54,17 +52,15 @@ public abstract class StaffDashboardController extends BaseDashboardController {
     }
 
     protected List<User> getAllMembers() {
-        Map<Integer, User> uniqueUsers = new LinkedHashMap<>();
-
+        List<User> members = new ArrayList<>();
         for (Department department : departments) {
             for (User user : userDAO.getUserByDepartment(department.getId())) {
                 if (user != null && user.hasRole(Role.MEMBER)) {
-                    uniqueUsers.put(user.getUserId(), user);
+                    members.add(user);
                 }
             }
         }
-
-        return new ArrayList<>(uniqueUsers.values());
+        return members;
     }
 
     protected int getDepartmentIdByName(String departmentName) {
