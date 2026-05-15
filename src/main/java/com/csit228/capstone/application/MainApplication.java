@@ -10,7 +10,7 @@ import java.io.IOException;
 
 // CHANGES MADE: MainApplication is now the real launcher for the application, and AppSession is just a utility class for managing the session and providing helper methods. This allows us to initialize fonts and load the session before showing any UI, which is necessary for the initial screen to be correct.
 
-public class MainApplication extends Application {
+public class  MainApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {

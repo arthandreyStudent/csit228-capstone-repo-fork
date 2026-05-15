@@ -544,6 +544,7 @@ public class ListRowItem extends VBox {
     }
 
     private static String getNotificationInitials(Notification notification) {
+<<<<<<< HEAD
         if (notification == null) return "NA";
         String type = notification.getType();
         if (type != null && !type.trim().isEmpty()) {
@@ -551,11 +552,18 @@ public class ListRowItem extends VBox {
             if (words.length >= 2) return (words[0].charAt(0) + "" + words[1].charAt(0)).toUpperCase();
             return type.trim().substring(0, Math.min(2, type.trim().length())).toUpperCase();
         }
+=======
+        if (notification == null) {
+            return "NA";
+        }
+
+>>>>>>> 6e7a872 (add notificationDAO)
         int userId = notification.getUserId();
         return userId > 0 ? "U" + userId : "NA";
     }
 
     private static String getNotificationCircleColor(Notification notification) {
+<<<<<<< HEAD
         if (notification == null || notification.getType() == null) return "#dceeff";
         switch (notification.getType().toUpperCase()) {
             case "APPROVED": case "RESOLVED": case "COMPLETED": case "SUCCESS": return "#d9ffed";
@@ -573,6 +581,21 @@ public class ListRowItem extends VBox {
             case "URGENT": case "ERROR": case "OVERDUE":                        return "#f14d5a";
             default:                                                             return "#2f95ff";
         }
+=======
+        if (notification == null) {
+            return "#dceeff";
+        }
+
+        return notification.isRead() ? "#eef2fb" : "#dceeff";
+    }
+
+    private static String getNotificationTextColor(Notification notification) {
+        if (notification == null) {
+            return "#2f95ff";
+        }
+
+        return notification.isRead() ? "#9faad2" : "#2f95ff";
+>>>>>>> 6e7a872 (add notificationDAO)
     }
 
     private static String getUserInitials(User user) {
