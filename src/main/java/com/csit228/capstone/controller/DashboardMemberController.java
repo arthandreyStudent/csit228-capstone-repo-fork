@@ -34,6 +34,11 @@ public class DashboardMemberController extends BaseDashboardController {
         ticketDAO.getTicketViews();
         tickets = new ArrayList<>(ticketDAO.getViews());
 
+        renderDashboard();
+    }
+
+    @Override
+    protected void renderDashboard() {
         updateSummaryCards();
         loadAvailableTickets();
         loadVolunteerBoard();

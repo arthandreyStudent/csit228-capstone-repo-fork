@@ -37,12 +37,25 @@ public class TicketWatcher {
         return instance;
     }
 
-    public void addObserver(DashboardObserver o)    { if (!observers.contains(o)) observers.add(o); }
-    public void removeObserver(DashboardObserver o) { observers.remove(o); }
+    public void addObserver(DashboardObserver o) {
+        if (o != null && !observers.contains(o)) {
+            observers.add(o);
+        }
+    }
 
-    public void start(int intervalSeconds) {
+    public void removeObserver(DashboardObserver o) {
+        observers.remove(o);
+
+        if (observers.isEmpty()) {
+            stop();
+        }
+    }
+
+    public void  start(int intervalSeconds) {
         if (task != null && !task.isCancelled()) return;
-        task = executor.scheduleAtFixedRate(this::fetchAndCompare, 0, intervalSeconds, TimeUnit.SECONDS);
+
+        int safeInterval = Math.max(1, intervalSeconds);
+        task = executor.scheduleAtFixedRate(this::fetchAndCompare, safeInterval, safeInterval, TimeUnit.SECONDS);
     }
 
     public void stop() {
@@ -58,6 +71,11 @@ public class TicketWatcher {
 
     private void fetchAndCompare() {
         try {
+            if (observers.isEmpty()) {
+                stop();
+                return;
+            }
+
             TicketDAO dao = TicketDAO.getTicketDAO();
             dao.getTicketViews();
             List<TicketView> freshResults = new ArrayList<>(dao.getViews());

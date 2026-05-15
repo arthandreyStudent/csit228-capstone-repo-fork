@@ -51,6 +51,11 @@ public class DashboardExecutiveController extends StaffDashboardController {
         ticketDAO.getTicketViews();
         tickets = new ArrayList<>(ticketDAO.getViews());
 
+        renderDashboard();
+    }
+
+    @Override
+    protected void renderDashboard() {
         updateSummaryCardsAndResolutionRate();
         loadPendingAssignmentQueue();
         loadRecentActivity(recentActivityBox);

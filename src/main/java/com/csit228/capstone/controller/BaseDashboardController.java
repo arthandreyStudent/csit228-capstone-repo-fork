@@ -34,6 +34,7 @@ public abstract class BaseDashboardController implements DashboardObserver {
 
     protected abstract String getDefaultRoleName();
     protected abstract void refreshDashboard();
+    protected abstract void renderDashboard();
 
     protected void setupProfile() {
         User user = AppSession.currentUser;
@@ -52,8 +53,8 @@ public abstract class BaseDashboardController implements DashboardObserver {
 
     @Override
     public void onDataChanged(List<TicketView> updatedTickets) {
-        this.tickets = new ArrayList<>(updatedTickets);
-        refreshDashboard();
+        this.tickets = updatedTickets != null ? new ArrayList<>(updatedTickets) : new ArrayList<>();
+        renderDashboard();
     }
 
     protected void startWatching() {
