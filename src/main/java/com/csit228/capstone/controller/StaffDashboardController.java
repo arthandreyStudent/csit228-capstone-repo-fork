@@ -136,7 +136,6 @@ public abstract class StaffDashboardController extends BaseDashboardController {
             Notification notification = new Notification(
                     ticket.getId(),
                     buildActivityMessage(ticket),
-                    Formatter.trimOrNA(ticket.getStatus()),
                     false,
                     LocalDateTime.now(),
                     getCurrentUserId()

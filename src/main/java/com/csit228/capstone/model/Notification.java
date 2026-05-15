@@ -10,7 +10,7 @@ public class Notification implements Serializable {
 
     private int notificationId;
     private String message;
-    private String type;
+
     private boolean read;
     private LocalDateTime createdAt;
     private int userId;
@@ -20,11 +20,10 @@ public class Notification implements Serializable {
         this.read = false;
     }
 
-    public Notification(int notificationId, String message, String type,
+    public Notification(int notificationId, String message,
                         boolean read, LocalDateTime createdAt, int userId) {
         this.notificationId = notificationId;
         this.message = message;
-        this.type = type;
         this.read = read;
         this.createdAt = createdAt;
         this.userId = userId;
@@ -66,13 +65,6 @@ public class Notification implements Serializable {
         this.message = message;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public boolean isRead() {
         return read;
