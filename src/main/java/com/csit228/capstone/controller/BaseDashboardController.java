@@ -4,6 +4,8 @@ import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import com.csit228.capstone.observer.DashboardObserver;
+import com.csit228.capstone.observer.TicketWatcher;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Formatter;
@@ -19,7 +21,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseDashboardController {
+public abstract class BaseDashboardController implements DashboardObserver {
 
     @FXML protected Label profileInitialsLabel;
     @FXML protected Label profileNameLabel;
@@ -46,6 +48,21 @@ public abstract class BaseDashboardController {
         profileInitialsLabel.setText(Formatter.getInitials(user));
         profileNameLabel.setText(user.getFullName());
         profileRoleLabel.setText(user.getRole() != null ? user.getRole().toString() : getDefaultRoleName());
+    }
+
+    @Override
+    public void onDataChanged(List<TicketView> updatedTickets) {
+        this.tickets = new ArrayList<>(updatedTickets);
+        refreshDashboard();
+    }
+
+    protected void startWatching() {
+        TicketWatcher.getInstance().addObserver(this);
+        TicketWatcher.getInstance().start(2);
+    }
+
+    protected void stopWatching() {
+        TicketWatcher.getInstance().removeObserver(this);
     }
 
     protected void setupSearch() {
@@ -127,6 +144,7 @@ public abstract class BaseDashboardController {
 
     @FXML
     public void onClickedLogout() throws IOException {
+        stopWatching();
         AppSession.clearSession();
         Controls.switchScreen("LoginView.fxml");
     }
@@ -146,4 +164,6 @@ public abstract class BaseDashboardController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+
 }

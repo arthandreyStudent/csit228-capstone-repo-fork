@@ -1,5 +1,6 @@
 package com.csit228.capstone.application;
 
+import com.csit228.capstone.observer.TicketWatcher;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.FontInitializer;
@@ -21,6 +22,11 @@ public class MainApplication extends Application {
         AppSession.loadSession();   // Calls the load session method from the AppSession class that's now a utility class.
 
         Controls.switchScreen(AppSession.getInitialScreen());   // Switches to the initial screen based on whether the user is logged in or not, which is determined by the loadSession method that sets the currentUser variable in AppSession.
+    }
+
+    public void stop() throws Exception {
+        TicketWatcher.getInstance().shutdown();
+        super.stop();
     }
 
     public static void main(String[] args) {

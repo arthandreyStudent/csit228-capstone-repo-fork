@@ -77,6 +77,10 @@ public class TicketView {
         this.createdBy = createdBy;
     }
 
+    public String getLastUpdated(){
+        return lastUpdated.toString();
+    }
+
     public String getAssignedToName() {
         return assignedToName;
     }

@@ -58,6 +58,7 @@ public class DashboardMemberController extends BaseDashboardController {
         setupSearch();
         setupDeadlineSortComboBox();
         refreshDashboard();
+        startWatching();
     }
     private void updateSummaryCards() {
         int openTasks = 0;

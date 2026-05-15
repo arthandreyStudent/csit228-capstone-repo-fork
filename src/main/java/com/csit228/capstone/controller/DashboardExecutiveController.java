@@ -73,6 +73,7 @@ public class DashboardExecutiveController extends StaffDashboardController {
         setupDeadlineSortComboBox();
         loadDepartmentsAndTabs();
         refreshDashboard();
+        startWatching();
     }
 
     private void loadDepartmentsAndTabs() {
