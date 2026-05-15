@@ -3,6 +3,9 @@ package com.csit228.capstone.utils;
 import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,104 +24,99 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
 public class ListRowItem extends VBox {
+  
+  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, hh:mm a");
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, hh:mm a");
+  private static final double TABLE_ROW_WIDTH = 850.0;
 
-    private static final double TABLE_ROW_WIDTH = 850.0;
+  private static final double MEMBER_DETAILS_WIDTH = 300.0;
+  private static final double MEMBER_PRIORITY_WIDTH = 110.0;
+  private static final double MEMBER_DEADLINE_WIDTH = 170.0;
+  private static final double MEMBER_STATUS_WIDTH = 140.0;
+  private static final double MEMBER_ACTION_WIDTH = 110.0;
 
-    private static final double MEMBER_DETAILS_WIDTH  = 300.0;
-    private static final double MEMBER_PRIORITY_WIDTH = 110.0;
-    private static final double MEMBER_DEADLINE_WIDTH = 170.0;
-    private static final double MEMBER_STATUS_WIDTH   = 140.0;
-    private static final double MEMBER_ACTION_WIDTH   = 110.0;
+  private static final double EXEC_DETAILS_WIDTH = 230.0;
+  private static final double EXEC_DEPT_WIDTH = 122.0;
+  private static final double EXEC_PRIORITY_WIDTH = 90.0;
+  private static final double EXEC_DEADLINE_WIDTH = 130.0;
+  private static final double EXEC_ASSIGN_WIDTH = 160.0;
+  private static final double EXEC_ACTION_WIDTH = 65.0;
 
-    private static final double EXEC_DETAILS_WIDTH  = 230.0;
-    private static final double EXEC_DEPT_WIDTH     = 122.0;
-    private static final double EXEC_PRIORITY_WIDTH =  90.0;
-    private static final double EXEC_DEADLINE_WIDTH = 130.0;
-    private static final double EXEC_ASSIGN_WIDTH   = 160.0;
-    private static final double EXEC_ACTION_WIDTH   =  65.0;
+  private static final double EDITOR_DETAILS_WIDTH = 210.0;
+  private static final double EDITOR_ASSIGN_WIDTH = 160.0;
+  private static final double EDITOR_STATUS_WIDTH = 95.0;
+  private static final double EDITOR_PRIORITY_WIDTH = 85.0;
+  private static final double EDITOR_DEADLINE_WIDTH = 170.0;
+  private static final double EDITOR_ACTIONS_WIDTH = 110.0;
 
-    private static final double EDITOR_DETAILS_WIDTH  = 210.0;
-    private static final double EDITOR_ASSIGN_WIDTH   = 160.0;
-    private static final double EDITOR_STATUS_WIDTH   =  95.0;
-    private static final double EDITOR_PRIORITY_WIDTH =  85.0;
-    private static final double EDITOR_DEADLINE_WIDTH = 170.0;
-    private static final double EDITOR_ACTIONS_WIDTH  = 110.0;
+  private static final double SMALL_CARD_WIDTH = 299.0;
+  private static final double SMALL_CARD_TEXT_WIDTH = 244.0;
 
-    private static final double SMALL_CARD_WIDTH      = 299.0;
-    private static final double SMALL_CARD_TEXT_WIDTH = 244.0;
+  private Object sourceObject;
+  private Button actionButton;
+  private Button secondaryActionButton;
+  private Button thirdActionButton;
+  private ComboBox<User> assignComboBox;
 
-    private Object         sourceObject;
-    private Button         actionButton;
-    private Button         secondaryActionButton;
-    private Button         thirdActionButton;
-    private ComboBox<User> assignComboBox;
+  private ListRowItem() {
+    setFillWidth(true);
+    setStyle("-fx-background-color: transparent;");
+  }
+  
+  public static ListRowItem forMemberAvailableTicket(TicketView ticket) {
+    ListRowItem item = new ListRowItem();
+    item.sourceObject = ticket;
 
-    private ListRowItem() {
-        setFillWidth(true);
-        setStyle("-fx-background-color: transparent;");
-    }
+    HBox row = new HBox();
+    row.setPrefWidth(TABLE_ROW_WIDTH);
+    row.setMinWidth(TABLE_ROW_WIDTH);
+    row.setMaxWidth(TABLE_ROW_WIDTH);
+    row.setMinHeight(66);
+    row.setPrefHeight(66);
+    row.setAlignment(Pos.CENTER_LEFT);
+    row.setCursor(Cursor.HAND);
+    row.setStyle("-fx-background-color: white; -fx-border-color: #eef2fb; -fx-border-width: 1 0 0 0;");
 
+    String createdBy = ticket.getCreatedBy() != null ? ticket.getCreatedBy() : "Unknown";
+    String ticketNum = String.format("%03d", ticket.getId());
 
-    public static ListRowItem forMemberAvailableTicket(TicketView ticket) {
-        ListRowItem item = new ListRowItem();
-        item.sourceObject = ticket;
+    VBox detailsBox = makeTicketDetailsBox(ticket.getTitle(), "By " + createdBy + " • #TIX-" + ticketNum, MEMBER_DETAILS_WIDTH);
 
-        HBox row = new HBox();
-        row.setPrefWidth(TABLE_ROW_WIDTH);
-        row.setMinWidth(TABLE_ROW_WIDTH);
-        row.setMaxWidth(TABLE_ROW_WIDTH);
-        row.setMinHeight(66);
-        row.setPrefHeight(66);
-        row.setAlignment(Pos.CENTER_LEFT);
-        row.setCursor(Cursor.HAND);
-        row.setStyle("-fx-background-color: white; -fx-border-color: #eef2fb; -fx-border-width: 1 0 0 0;");
+    Label priorityBadge = makePriorityBadge(ticket.getPriority());
+    HBox priorityBox = makeFixedWidthBox(MEMBER_PRIORITY_WIDTH, priorityBadge);
 
-        String createdBy = ticket.getCreatedBy() != null ? ticket.getCreatedBy() : "Unknown";
-        String ticketNum = String.format("%03d", ticket.getId());
+    Label deadlineLabel = makeDeadlineLabel(ticket);
+    deadlineLabel.setPrefWidth(MEMBER_DEADLINE_WIDTH);
+    deadlineLabel.setMinWidth(MEMBER_DEADLINE_WIDTH);
+    deadlineLabel.setMaxWidth(MEMBER_DEADLINE_WIDTH);
 
-        VBox detailsBox = makeTicketDetailsBox(ticket.getTitle(), "By " + createdBy + " • #TIX-" + ticketNum, MEMBER_DETAILS_WIDTH);
+    Label statusBadge = makeStatusBadge(ticket.getStatus());
+    HBox statusBox = makeFixedWidthBox(MEMBER_STATUS_WIDTH, statusBadge);
 
-        Label priorityBadge = makePriorityBadge(ticket.getPriority());
-        HBox priorityBox = makeFixedWidthBox(MEMBER_PRIORITY_WIDTH, priorityBadge);
+    Button startButton = makeButton("Start", 82, "#2f95ff", "white");
+    item.actionButton = startButton;
+    HBox actionBox = makeFixedWidthBox(MEMBER_ACTION_WIDTH, startButton);
 
-        Label deadlineLabel = makeDeadlineLabel(ticket);
-        deadlineLabel.setPrefWidth(MEMBER_DEADLINE_WIDTH);
-        deadlineLabel.setMinWidth(MEMBER_DEADLINE_WIDTH);
-        deadlineLabel.setMaxWidth(MEMBER_DEADLINE_WIDTH);
+    row.getChildren().addAll(detailsBox, priorityBox, deadlineLabel, statusBox, actionBox);
 
-        Label statusBadge = makeStatusBadge(ticket.getStatus());
-        HBox statusBox = makeFixedWidthBox(MEMBER_STATUS_WIDTH, statusBadge);
+    String normalStyle = row.getStyle();
+    row.setOnMouseEntered(e -> row.setStyle(normalStyle.replace("-fx-background-color: white;", "-fx-background-color: #f8faff;")));
+    row.setOnMouseExited(e  -> row.setStyle(normalStyle));
 
-        Button startButton = makeButton("Start", 82, "#2f95ff", "white");
-        item.actionButton = startButton;
-        HBox actionBox = makeFixedWidthBox(MEMBER_ACTION_WIDTH, startButton);
-
-        row.getChildren().addAll(detailsBox, priorityBox, deadlineLabel, statusBox, actionBox);
-
-        String normalStyle = row.getStyle();
-        row.setOnMouseEntered(e -> row.setStyle(normalStyle.replace("-fx-background-color: white;", "-fx-background-color: #f8faff;")));
-        row.setOnMouseExited(e  -> row.setStyle(normalStyle));
-
-        item.getChildren().add(row);
-        return item;
-    }
+    item.getChildren().add(row);
+    return item;
+  }
 
 
-    public static ListRowItem forMemberVolunteerTicket(TicketView ticket) {
-        ListRowItem item = new ListRowItem();
-        item.sourceObject = ticket;
+  public static ListRowItem forMemberVolunteerTicket(TicketView ticket) {
+    ListRowItem item = new ListRowItem();
+    item.sourceObject = ticket;
 
-        String title       = ticket.getTitle()       != null ? ticket.getTitle()       : "Untitled Ticket";
-        String description = ticket.getDescription() != null ? ticket.getDescription() : "No ticket description available.";
+    String title       = ticket.getTitle()       != null ? ticket.getTitle()       : "Untitled Ticket";
+    String description = ticket.getDescription() != null ? ticket.getDescription() : "No ticket description available.";
 
-        Label priorityBadge = makePriorityBadge(ticket.getPriority());
+    Label priorityBadge = makePriorityBadge(ticket.getPriority());
 
         Label volunteerTag = new Label("Volunteer");
         volunteerTag.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 10px;");
@@ -617,9 +615,11 @@ public class ListRowItem extends VBox {
     public void setAction(EventHandler<ActionEvent> handler) {
         if (actionButton != null) actionButton.setOnAction(handler);
     }
-
-    public void setSecondaryAction(EventHandler<ActionEvent> handler) {
-        if (secondaryActionButton != null) secondaryActionButton.setOnAction(handler);
+    
+    public void setSecondaryAction(EventHandler<ActionEvent> eventHandler) {
+      if (secondaryActionButton != null) {
+        secondaryActionButton.setOnAction(eventHandler);
+      }
     }
 
     public void setThirdAction(EventHandler<ActionEvent> handler) {

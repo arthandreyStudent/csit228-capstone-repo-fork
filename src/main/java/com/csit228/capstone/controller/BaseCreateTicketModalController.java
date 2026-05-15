@@ -8,6 +8,10 @@ import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.FormValidator;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,161 +25,215 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
-
 public abstract class BaseCreateTicketModalController {
 
-    @FXML protected Button buttonClose;
-    @FXML protected Button buttonCancel;
-    @FXML protected Button buttonCreateTicket;
+  @FXML
+  protected Button buttonClose;
 
-    @FXML protected TextField textfieldTicketTitle;
-    @FXML protected TextArea textAreaTicketDesc;
-    @FXML protected ComboBox<TicketPriority> comboBoxPriority;
-    @FXML protected ComboBox<String> comboBoxHour;
-    @FXML protected ComboBox<String> comboBoxMinute;
-    @FXML protected ComboBox<String> comboBoxAmPm;
-    @FXML protected DatePicker datePickerDeadline;
+  @FXML
+  protected Button buttonCancel;
 
-    protected final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
-    protected final User currentUser = AppSession.currentUser;
+  @FXML
+  protected Button buttonCreateTicket;
 
-    protected boolean submitted = false;
+  @FXML
+  protected TextField textfieldTicketTitle;
 
-    protected Control[] extraFieldsToValidate() { return new Control[0]; }
+  @FXML
+  protected TextArea textAreaTicketDesc;
 
-    protected abstract Department resolveDepartment();
-    protected abstract Integer resolveDepartmentId(Department department);
+  @FXML
+  protected ComboBox<TicketPriority> comboBoxPriority;
 
-    protected void setupCommonFields() {
-        populatePriorityComboBox();
-        populateHourComboBox();
-        populateMinuteComboBox();
-        populateAmPmComboBox();
-        configurePriorityDisplay();
+  @FXML
+  protected ComboBox<String> comboBoxHour;
+
+  @FXML
+  protected ComboBox<String> comboBoxMinute;
+
+  @FXML
+  protected ComboBox<String> comboBoxAmPm;
+
+  @FXML
+  protected DatePicker datePickerDeadline;
+
+  protected final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
+  protected final User currentUser = AppSession.currentUser;
+
+  protected boolean submitted = false;
+
+  protected Control[] extraFieldsToValidate() {
+    return new Control[0];
+  }
+
+  protected abstract Department resolveDepartment();
+
+  protected abstract Integer resolveDepartmentId(Department department);
+
+  protected void setupCommonFields() {
+    populatePriorityComboBox();
+    populateHourComboBox();
+    populateMinuteComboBox();
+    populateAmPmComboBox();
+    configurePriorityDisplay();
+  }
+
+  @FXML
+  public void onClickedCreateTicket() {
+    Control[] baseFields = {
+      textfieldTicketTitle,
+      textAreaTicketDesc,
+      comboBoxPriority,
+      datePickerDeadline,
+      comboBoxHour,
+      comboBoxMinute,
+      comboBoxAmPm,
+    };
+    Control[] allFields = concat(baseFields, extraFieldsToValidate());
+
+    if (!FormValidator.validateRequired(allFields)) {
+      System.out.println("Please fill all required fields!");
+      return;
     }
 
-    @FXML
-    public void onClickedCreateTicket() {
-        Control[] baseFields = { textfieldTicketTitle, textAreaTicketDesc, comboBoxPriority,
-                datePickerDeadline, comboBoxHour, comboBoxMinute, comboBoxAmPm };
-        Control[] allFields = concat(baseFields, extraFieldsToValidate());
+    FormValidator.clearErrors(allFields);
 
-        if (!FormValidator.validateRequired(allFields)) {
-            System.out.println("Please fill all required fields!");
-            return;
-        }
+    String title = textfieldTicketTitle.getText();
+    String description = textAreaTicketDesc.getText();
+    Department department = resolveDepartment();
+    TicketPriority priority = comboBoxPriority.getValue();
+    LocalDateTime deadline = getDeadlineDateTime();
 
-        FormValidator.clearErrors(allFields);
+    if (
+      title.isBlank() ||
+      description.isBlank() ||
+      department == null ||
+      priority == null ||
+      deadline == null
+    ) return;
 
-        String title = textfieldTicketTitle.getText();
-        String description = textAreaTicketDesc.getText();
-        Department department = resolveDepartment();
-        TicketPriority priority = comboBoxPriority.getValue();
-        LocalDateTime deadline = getDeadlineDateTime();
+    LocalDateTime now = LocalDateTime.now();
+    ticketDAO.createTicket(
+      new Ticket(
+        0,
+        title,
+        description,
+        priority,
+        deadline,
+        TicketStatus.OPEN,
+        currentUser.getUserId(),
+        null,
+        now,
+        now,
+        resolveDepartmentId(department)
+      )
+    );
+    submitted = true;
 
-        if (title.isBlank() || description.isBlank() || department == null || priority == null || deadline == null) return;
+    System.out.println("Ticket successfully created!");
+    closeModal(buttonCreateTicket);
+  }
 
-        LocalDateTime now = LocalDateTime.now();
-        ticketDAO.createTicket(new Ticket(
-                0, title, description, priority, deadline,
-                TicketStatus.OPEN, currentUser.getUserId(),
-                null, now, now, resolveDepartmentId(department)
-        ));
-        submitted = true;
+  public boolean isSubmitted() {
+    return submitted;
+  }
 
-        System.out.println("Ticket successfully created!");
-        closeModal(buttonCreateTicket);
+  @FXML
+  public void onClickedButtonClose() {
+    closeModal(buttonClose);
+  }
+
+  @FXML
+  public void onClickedCancel() {
+    closeModal(buttonCancel);
+  }
+
+  protected void closeModal(Button sourceButton) {
+    if (
+      sourceButton != null &&
+      sourceButton.getScene() != null &&
+      sourceButton.getScene().getWindow() instanceof Stage stage
+    ) {
+      stage.close();
     }
+  }
 
-    public boolean isSubmitted() { return submitted; }
+  protected LocalDateTime getDeadlineDateTime() {
+    LocalDate date = datePickerDeadline.getValue();
+    String hourStr = comboBoxHour.getValue();
+    String minuteStr = comboBoxMinute.getValue();
+    String amPmStr = comboBoxAmPm.getValue();
 
-    @FXML public void onClickedButtonClose() { closeModal(buttonClose); }
-    @FXML public void onClickedCancel()      { closeModal(buttonCancel); }
+    if (
+      date == null || hourStr == null || minuteStr == null || amPmStr == null
+    ) return null;
 
-    protected void closeModal(Button sourceButton) {
-        if (sourceButton != null
-                && sourceButton.getScene() != null
-                && sourceButton.getScene().getWindow() instanceof Stage stage) {
-            stage.close();
-        }
-    }
+    int hour = Integer.parseInt(hourStr);
+    int minute = Integer.parseInt(minuteStr);
 
-    protected LocalDateTime getDeadlineDateTime() {
-        LocalDate date = datePickerDeadline.getValue();
-        String hourStr = comboBoxHour.getValue();
-        String minuteStr = comboBoxMinute.getValue();
-        String amPmStr = comboBoxAmPm.getValue();
+    if (amPmStr.equals("PM") && hour != 12) hour += 12;
+    else if (amPmStr.equals("AM") && hour == 12) hour = 0;
 
-        if (date == null || hourStr == null || minuteStr == null || amPmStr == null) return null;
+    return LocalDateTime.of(date, LocalTime.of(hour, minute));
+  }
 
-        int hour = Integer.parseInt(hourStr);
-        int minute = Integer.parseInt(minuteStr);
+  private void populatePriorityComboBox() {
+    comboBoxPriority.getItems().setAll(Arrays.asList(TicketPriority.values()));
+  }
 
-        if (amPmStr.equals("PM") && hour != 12)      hour += 12;
-        else if (amPmStr.equals("AM") && hour == 12) hour = 0;
+  private void populateHourComboBox() {
+    ObservableList<String> hours = FXCollections.observableArrayList();
+    for (int i = 1; i <= 12; i++) hours.add(String.format("%02d", i));
+    comboBoxHour.setItems(hours);
+  }
 
-        return LocalDateTime.of(date, LocalTime.of(hour, minute));
-    }
+  private void populateMinuteComboBox() {
+    ObservableList<String> minutes = FXCollections.observableArrayList();
+    for (int i = 0; i < 60; i++) minutes.add(String.format("%02d", i));
+    comboBoxMinute.setItems(minutes);
+  }
 
-    private void populatePriorityComboBox() {
-        comboBoxPriority.getItems().setAll(Arrays.asList(TicketPriority.values()));
-    }
+  private void populateAmPmComboBox() {
+    comboBoxAmPm.setItems(FXCollections.observableArrayList("AM", "PM"));
+  }
 
-    private void populateHourComboBox() {
-        ObservableList<String> hours = FXCollections.observableArrayList();
-        for (int i = 1; i <= 12; i++) hours.add(String.format("%02d", i));
-        comboBoxHour.setItems(hours);
-    }
+  private void configurePriorityDisplay() {
+    StringConverter<TicketPriority> converter = new StringConverter<>() {
+      @Override
+      public String toString(TicketPriority priority) {
+        if (priority == null) return "";
+        String name = priority.name().toLowerCase();
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+      }
 
-    private void populateMinuteComboBox() {
-        ObservableList<String> minutes = FXCollections.observableArrayList();
-        for (int i = 0; i < 60; i++) minutes.add(String.format("%02d", i));
-        comboBoxMinute.setItems(minutes);
-    }
+      @Override
+      public TicketPriority fromString(String string) {
+        if (string == null || string.isBlank()) return null;
+        return TicketPriority.valueOf(string.trim().toUpperCase());
+      }
+    };
 
-    private void populateAmPmComboBox() {
-        comboBoxAmPm.setItems(FXCollections.observableArrayList("AM", "PM"));
-    }
+    comboBoxPriority.setConverter(converter);
+    comboBoxPriority.setButtonCell(priorityCell(converter));
+    comboBoxPriority.setCellFactory(lv -> priorityCell(converter));
+  }
 
-    private void configurePriorityDisplay() {
-        StringConverter<TicketPriority> converter = new StringConverter<>() {
-            @Override
-            public String toString(TicketPriority priority) {
-                if (priority == null) return "";
-                String name = priority.name().toLowerCase();
-                return Character.toUpperCase(name.charAt(0)) + name.substring(1);
-            }
+  private ListCell<TicketPriority> priorityCell(
+    StringConverter<TicketPriority> converter
+  ) {
+    return new ListCell<>() {
+      @Override
+      protected void updateItem(TicketPriority item, boolean empty) {
+        super.updateItem(item, empty);
+        setText(empty || item == null ? null : converter.toString(item));
+      }
+    };
+  }
 
-            @Override
-            public TicketPriority fromString(String string) {
-                if (string == null || string.isBlank()) return null;
-                return TicketPriority.valueOf(string.trim().toUpperCase());
-            }
-        };
-
-        comboBoxPriority.setConverter(converter);
-        comboBoxPriority.setButtonCell(priorityCell(converter));
-        comboBoxPriority.setCellFactory(lv -> priorityCell(converter));
-    }
-
-    private ListCell<TicketPriority> priorityCell(StringConverter<TicketPriority> converter) {
-        return new ListCell<>() {
-            @Override
-            protected void updateItem(TicketPriority item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : converter.toString(item));
-            }
-        };
-    }
-
-    private Control[] concat(Control[] a, Control[] b) {
-        Control[] result = new Control[a.length + b.length];
-        System.arraycopy(a, 0, result, 0, a.length);
-        System.arraycopy(b, 0, result, a.length, b.length);
-        return result;
-    }
+  private Control[] concat(Control[] a, Control[] b) {
+    Control[] result = new Control[a.length + b.length];
+    System.arraycopy(a, 0, result, 0, a.length);
+    System.arraycopy(b, 0, result, a.length, b.length);
+    return result;
+  }
 }

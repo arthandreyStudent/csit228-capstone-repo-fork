@@ -1,40 +1,40 @@
 package com.csit228.capstone.model;
 
 import com.csit228.capstone.utils.Formatter;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Department {
-    private int id;
-    private String name;
-    private String description;
 
-    private List<Job> jobs = new ArrayList<>();
+  private int id;
+  private String name;
+  private String description;
 
-    public Department(int id, String name, String description) {
-        this.id = id;
-        this.name = Formatter.formatDepartmentName(name);
-        this.description = description;
-    }
+  private List<Job> jobs = new ArrayList<>();
 
-    public int getId() {
-        return id;
-    }
+  public Department(int id, String name, String description) {
+    this.id = id;
+    this.name = Formatter.formatDepartmentName(name);
+    this.description = description;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public List<Job> getJobs() {
-        return jobs;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public String toString(){
-        return name;
-    }
+  public List<Job> getJobs() {
+    return jobs;
+  }
+
+  public String toString() {
+    return name;
+  }
 }
