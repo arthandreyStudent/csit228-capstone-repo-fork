@@ -62,6 +62,20 @@
     -fx-icon-color: #68789a;
 }
 
+.icon-button-dark {
+    -fx-background-color: #4a78c9;
+    -fx-background-radius: 50;
+    -fx-cursor: hand;
+}
+
+.icon-button-dark:hover {
+    -fx-background-color: #5788e1;
+}
+
+.icon-button-dark .fontIcon-x-mark {
+    -fx-icon-color: #dffeff;
+}
+
 .combo-box  {
     -fx-background-color: #f3f3fb;
     -fx-background-radius: 15;
@@ -218,8 +232,89 @@
     -fx-effect: dropshadow(three-pass-box, rgb(237, 102, 102, 0.4), 5, 0, 0, 0);
 }
 
+/*TICKET VIEW MODAL SECTION*/
+.root {
+    -ticket-code-accent: #FFCC00;
+    -white: #FFFFFF;
+    -subheader-accent: #94A3B8;
+    -dodger-blue-bg-accent: #e6f2ff;
+    -dodger-blue-accent: #3699FF;
+    -emerald-green-bg-accent: #d1ffdb;
+    -emerald-green-accent: #50CD89;
+    -web-orange-bg-accent: #ffedc9;
+    -web-orange-accent: #F59E0B;
+    -carnation-red-bg-accent: #fddbdf;
+    -carnation-red-accent: #F64E60;
+    -pink-accent: #FECACA;
+    -blue-violet-bg-accent: #ecebf9;
+    -blue-violet-accent: #7F77DD;
+    -orange-warning-bg-accent: #FFF6F1;
+    -lightgray-bg-accent: #EFF4FB;
+    -athens-gray-accent: #E5E7EB;
+}
 
+.ticket-code {
+    -fx-font-size: 11px;
+    -fx-text-fill: -ticket-code-accent;
+    -fx-font-family: "Inter 18pt ExtraBold";
+}
 
+.ticket-title {
+    -fx-text-fill: -white;
+    -fx-font-family: "Inter 18pt ExtraBold";
+    -fx-font-size: 22px;
+}
+
+.badge-container {
+    -fx-background-color: -lightgray-bg-accent;
+}
+
+.subheader-label {
+    -fx-font-size: 11px;
+    -fx-font-family: "Inter 18pt ExtraBold";
+    -fx-text-fill: -subheader-accent;
+}
+
+.desc-text-label {
+    -fx-font-family: "Inter 18pt Regular";
+    -fx-font-size: 11px;
+}
+
+.subheader-blue-label {
+    -fx-font-family: "Inter 18pt ExtraBold";
+    -fx-text-fill: -dodger-blue-accent;
+    -fx-font-size: 11px;
+}
+
+.assigned-to-container {
+    -fx-background-color: -athens-gray-accent;
+}
+
+.separator .line {
+    -fx-border-color: -athens-gray-accent;
+    -fx-border-width: 0.5px;
+}
+
+.timeline-card {
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-border-color: -athens-gray-accent;
+}
+
+.bold-text {
+    -fx-font-family: "Inter 18pt ExtraBold";
+}
+
+.subtext-light {
+    -fx-font-family: "Inter 18pt Regular";
+    -fx-text-fill: #9fa4b1;
+    -fx-font-size: 11px;
+}
+
+.department-container {
+    -fx-background-color: -lightgray-bg-accent;
+    -fx-background-radius: 10px;
+}
 
 
 
