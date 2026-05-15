@@ -15,6 +15,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.Node;
+import javafx.scene.control.ButtonBase;
+import javafx.scene.control.ComboBoxBase;
+import javafx.scene.control.TextInputControl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -215,9 +219,15 @@ public class DashboardExecutiveController extends StaffDashboardController {
       
       List<User> assignableUsers = getAssignableMembersForTicket(ticket);
       ListRowItem row = ListRowItem.forExecutiveAssignment(ticket, assignableUsers);
-      
+
       row.setAction(event -> assignTicketToUser(ticket, row.getSelectedAssignedUser()));
-      
+      row.setRowClick(event -> {
+        if (isInteractiveTarget(event.getTarget())) {
+          return;
+        }
+        openTicketDetailModal(ticket);
+      });
+
       pendingAssignmentQueueBox.getChildren().add(row);
     }
   }
@@ -254,6 +264,37 @@ public class DashboardExecutiveController extends StaffDashboardController {
     }
   }
   
+  private void openTicketDetailModal(TicketView ticket) {
+    try {
+      FXMLLoader loader =
+        new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/MasterTicketDetailModalView.fxml"));
+      Parent root = loader.load();
+
+      MasterTicketDetailModalController controller = loader.getController();
+      controller.loadTicket(ticket);
+
+      openModal(root, "Ticket Details");
+    } catch (IOException e) {
+      showError("Unable to open Ticket Details modal.");
+    }
+  }
+
+  private boolean isInteractiveTarget(Object target) {
+    if (!(target instanceof Node)) {
+      return false;
+    }
+
+    Node node = (Node) target;
+    while (node != null) {
+      if (node instanceof ButtonBase || node instanceof ComboBoxBase || node instanceof TextInputControl) {
+        return true;
+      }
+      node = node.getParent();
+    }
+
+    return false;
+  }
+
   private double rate(int value, int total) {
     return total <= 0 ? 0 : (double) value / total;
   }
