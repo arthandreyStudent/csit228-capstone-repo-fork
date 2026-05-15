@@ -149,4 +149,12 @@ public class TicketView {
   public LocalDateTime getDeadline() {
     return deadline;
   }
+  
+  public LocalDateTime getLastUpdated() {
+    return lastUpdated;
+  }
+  
+  public LocalDateTime getDateCreated() {
+    return dateCreated;
+  }
 }
