@@ -1,5 +1,7 @@
 package com.csit228.capstone.model;
 
+import com.csit228.capstone.enums.Role;
+
 public class UserFactory {
 
   private UserFactory() {}

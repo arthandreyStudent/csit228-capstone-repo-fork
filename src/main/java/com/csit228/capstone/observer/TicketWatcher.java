@@ -1,4 +1,3 @@
-// com/csit228/capstone/observer/TicketWatcher.java
 package com.csit228.capstone.observer;
 
 import com.csit228.capstone.dao.TicketDAO;
@@ -27,7 +26,6 @@ public class TicketWatcher {
     private final List<DashboardObserver> observers = new CopyOnWriteArrayList<>();
     private ScheduledFuture<?> task;
 
-    // The previous result set we compare against
     private String lastSnapshot = "";
 
     private TicketWatcher() {}
@@ -93,10 +91,7 @@ public class TicketWatcher {
         }
     }
 
-    /**
-     * Turns the result set into a comparable string.
-     * Any row change → different snapshot → triggers notify.
-     */
+
     private String buildSnapshot(List<TicketView> tickets) {
         StringBuilder sb = new StringBuilder();
 

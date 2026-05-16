@@ -335,12 +335,4 @@ public class NotificationDAO {
         }
     }
 
-    public static void main(String[] args) {
-        NotificationDAO notificationDAO = getNotificationDAO();
-        List <Notification> jek = notificationDAO.getUnreadNotificationsByUserId(19)  ;
-        for(Notification n : jek){
-            System.out.println(n);
-        }
-
-    }
 }

@@ -7,20 +7,10 @@ import javafx.scene.control.TextInputControl;
 
 public class FormValidator {
 
-  // The name of the CSS class we will apply to invalid fields
   private static final String ERROR_STYLE_CLASS = "error-field";
-
-  // A key to track if we've already attached a listener to a field
   private static final String LISTENER_ADDED_KEY = "validation_listener_added";
 
-  /**
-   * Checks if all provided JavaFX Controls have values.
-   * Applies a red border to missing fields and removes it from filled ones.
-   * Also attaches responsive listeners to clear the error state as the user types.
-   *
-   * @param fields A comma-separated list (VarArgs) of JavaFX Controls
-   * @return true if ALL fields are filled, false if AT LEAST ONE is empty
-   */
+
   public static boolean validateRequired(Control... fields) {
     boolean isAllValid = true;
 

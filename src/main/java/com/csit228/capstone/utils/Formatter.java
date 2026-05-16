@@ -70,20 +70,4 @@ public class Formatter {
     return Math.round(rate * 100) + "%";
   }
 
-  /**
-   * Converts a JavaFX Color to hex string format (e.g., "#ff0000").
-   * @param color The JavaFX Color to convert
-   * @return Hex string representation (e.g., "#1f3e8f")
-   */
-  public static String colorToHex(Color color) {
-    if (color == null) {
-      return "#000000";
-    }
-    return String.format(
-      "#%02x%02x%02x",
-      (int) (color.getRed() * 255),
-      (int) (color.getGreen() * 255),
-      (int) (color.getBlue() * 255)
-    );
-  }
 }

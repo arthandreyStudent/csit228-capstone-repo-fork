@@ -27,88 +27,91 @@ public class DepartmentDAO {
 
   public Integer getDepartmentByName(String name) {
     ensureDepartmentsLoaded();
-
     for (Department d : departments) {
       if (d.getName().equalsIgnoreCase(name)) return d.getId();
-
     }
     return null;
   }
   
   public Department getDepartmentByID(int id) {
     ensureDepartmentsLoaded();
-    
     for (Department d : departments) {
       if (d.getId() == id)
         return d;
-    }
     return null;
-  }
-  
-  public static DepartmentDAO getDepartmentDAO() {
-    if (departmentDAO == null) {
-      departmentDAO = new DepartmentDAO();
-    }
-    return departmentDAO;
-  }
-  
-  public void addDepartment(Department department) {
-    try (Connection c = DBConnector.getConnection();
-         PreparedStatement ps = c.prepareStatement("INSERT INTO department (name, description) VALUES (?,?)")) {
-      ps.setString(1, department.getName());
-      ps.setString(2, department.getDescription());
-      
-      int row = ps.executeUpdate();
-      
-      if (row > 0) {
-        System.out.println("Added department: " + department.getName());
-      } else {
-        System.out.println("Unable to add " + department.getName());
-      }
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+   }
     
-    if (departmentsLoaded) {
-      fetchDepartments();
+    private DepartmentDAO() {
+        departments = new ArrayList<>();
+        departmentsLoaded = false;
     }
-  }
-  
-  public void fetchDepartments() {
-    departments.clear();
-    try (Connection c = DBConnector.getConnection(); Statement s = c.createStatement()) {
-      ResultSet resultSet = s.executeQuery("SELECT * from department");
-      
-      while (resultSet.next()) {
-        departments.add(
-          new Department(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("description")));
-        //                System.out.println("Added to List (departments): " + resultSet.getString("name"));
-      }
-      // ari siya ga populate sa jobs
-      for (Department d : departments) {
-        jobDAO.getJobByDepartment(d);
-      }
-      
-      departmentsLoaded = true;
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
+
+    public List<Department> getDepartments() {
+        ensureDepartmentsLoaded();
+        return departments;
     }
-  }
-  
-  private void ensureDepartmentsLoaded() {
-    if (!departmentsLoaded) {
-      fetchDepartments();
+
+    public Department getDepartmentByID(int id) {
+        ensureDepartmentsLoaded();
+
+        for (Department d : departments) {
+            if (d.getId() == id)
+                return d;
+        }
+        return null;
     }
-  }
-  
-  public static void main(String[] args) {
-    getDepartmentDAO();
-    
-    for (Department d : departments) {
-      System.out.println(d);
-      for (Job j : d.getJobs()) {
-        System.out.println("    Job: " + j.getName());
-      }
+
+    public static DepartmentDAO getDepartmentDAO() {
+        if (departmentDAO == null) {
+            departmentDAO = new DepartmentDAO();
+        }
+        return departmentDAO;
     }
-  }
+
+    public void addDepartment(Department department) {
+        try (Connection c = DBConnector.getConnection();
+             PreparedStatement ps = c.prepareStatement("INSERT INTO department (name, description) VALUES (?,?)")) {
+            ps.setString(1, department.getName());
+            ps.setString(2, department.getDescription());
+
+            int row = ps.executeUpdate();
+
+            if (row > 0) {
+                System.out.println("Added department: " + department.getName());
+            } else {
+                System.out.println("Unable to add " + department.getName());
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (departmentsLoaded) {
+            fetchDepartments();
+        }
+    }
+
+    public void fetchDepartments() {
+        departments.clear();
+        try (Connection c = DBConnector.getConnection(); Statement s = c.createStatement()) {
+            ResultSet resultSet = s.executeQuery("SELECT * from department");
+
+            while (resultSet.next()) {
+                departments.add(
+                        new Department(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("description")));
+            }
+            for (Department d : departments) {
+                jobDAO.getJobByDepartment(d);
+            }
+            departmentsLoaded = true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void ensureDepartmentsLoaded() {
+        if (!departmentsLoaded) {
+            fetchDepartments();
+        }
+    }
+
 }

@@ -3,7 +3,7 @@ package com.csit228.capstone.controller;
 import com.csit228.capstone.dao.NotificationDAO;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.model.Notification;
-import com.csit228.capstone.model.TicketStatus;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.observer.DashboardObserver;
@@ -15,6 +15,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Node;
+import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -34,6 +38,11 @@ public abstract class BaseDashboardController implements DashboardObserver {
   
   @FXML
   protected TextField searchField;
+
+  @FXML
+  protected AnchorPane mainContentPane;
+
+  private final List<Node> dashboardContentNodes = new ArrayList<>();
   
   @FXML
   protected ComboBox<String> deadlineSortComboBox;
@@ -143,6 +152,47 @@ public abstract class BaseDashboardController implements DashboardObserver {
   protected int getCurrentUserId() {
     return AppSession.currentUser != null ? AppSession.currentUser.getUserId() : 0;
   }
+
+  @FXML
+  public void onClickedProfile() {
+      try {
+          if (mainContentPane == null) {
+              showError("Main content area was not found.");
+              return;
+           }
+
+          if (dashboardContentNodes.isEmpty()) {
+              dashboardContentNodes.addAll(mainContentPane.getChildren());
+          }
+
+          FXMLLoader loader = new FXMLLoader(
+                  getClass().getResource("/com/csit228/capstone/view/ProfileView.fxml")
+          );
+
+          Parent profileView = loader.load();
+
+          ProfileViewController profileController = loader.getController();
+          profileController.setBackAction(this::showDashboardContent);
+
+          AnchorPane.setTopAnchor(profileView, 0.0);
+          AnchorPane.setRightAnchor(profileView, 0.0);
+          AnchorPane.setBottomAnchor(profileView, 0.0);
+          AnchorPane.setLeftAnchor(profileView, 0.0);
+
+          mainContentPane.getChildren().setAll(profileView);
+
+      } catch (IOException e) {
+          e.printStackTrace();
+          showError("Unable to open Profile.");
+      }
+  }
+
+    private void showDashboardContent() {
+        if (mainContentPane == null) {
+            return;
+        }
+        mainContentPane.getChildren().setAll(dashboardContentNodes);
+    }
 
   @FXML
   public void onClickedLogout() throws IOException {

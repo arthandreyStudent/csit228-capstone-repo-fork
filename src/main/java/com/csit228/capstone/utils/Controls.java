@@ -33,8 +33,7 @@ public class Controls {
       stage.show();
     }
     
-    // Center the window every time a screen is loaded.
-    
+
     Platform.runLater(() -> {
       stage.sizeToScene();
       stage.centerOnScreen();

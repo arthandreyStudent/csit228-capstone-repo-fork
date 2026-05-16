@@ -1,5 +1,7 @@
 package com.csit228.capstone.model;
 
+import com.csit228.capstone.enums.Role;
+
 public class Executive extends User {
 
   public Executive() {
@@ -25,20 +27,4 @@ public class Executive extends User {
     );
   }
 
-  public boolean createTicket(Ticket t) {
-    // TO DO: pass ticket to TicketDAO once TicketDAO is created
-    return t != null;
-  }
-
-  public void manageUsers() {
-    // TO DO: connect this to user management screen or UserDAO
-  }
-
-  public void viewAnalytics() {
-    // TO DO: connect this to dashboard analytics
-  }
-
-  public void sendNotification(Notification n) {
-    // TO DO: connect this to NotificationDAO once created
-  }
 }

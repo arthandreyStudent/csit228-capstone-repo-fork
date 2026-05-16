@@ -72,16 +72,8 @@ public class TicketView {
     return createdBy;
   }
 
-  public void setCreatedBy(String createdBy) {
-    this.createdBy = createdBy;
-  }
-
   public String getAssignedToName() {
       return assignedToName;
-  }
-
-  public void setAssignedToName(String assignedToName) {
-    this.assignedToName = assignedToName;
   }
 
   @Override
