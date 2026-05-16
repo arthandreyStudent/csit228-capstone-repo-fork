@@ -156,7 +156,8 @@ public class DashboardMemberController extends BaseDashboardController {
         "You have \"" + ticket.getTitle() + "\" with status " + safe(ticket.getStatus()),
         false,                  // isRead
         LocalDateTime.now(),
-        getCurrentUserId()
+        getCurrentUserId(), ticket.getTitle()
+              
       );
 
       activityBox.getChildren().add(ListRowItem.forActivity(notification));

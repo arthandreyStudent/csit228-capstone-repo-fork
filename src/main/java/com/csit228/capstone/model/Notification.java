@@ -13,6 +13,15 @@ public class Notification implements Serializable {
   private boolean read;
   private LocalDateTime createdAt;
   private int userId;
+  private String title;
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
   public Notification() {
     this.createdAt = LocalDateTime.now();
@@ -20,12 +29,13 @@ public class Notification implements Serializable {
   }
 
   public Notification(int notificationId, String message,
-                      boolean read, LocalDateTime createdAt, int userId) {
+                      boolean read, LocalDateTime createdAt, int userId, String title) {
     this.notificationId = notificationId;
     this.message = message;
     this.read = read;
     this.createdAt = createdAt;
     this.userId = userId;
+    this.title = title;
   }
 
   public void markAsRead() {

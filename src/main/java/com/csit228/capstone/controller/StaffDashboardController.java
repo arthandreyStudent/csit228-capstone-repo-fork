@@ -136,7 +136,8 @@ public abstract class StaffDashboardController extends BaseDashboardController {
         buildActivityMessage(ticket),
         false,                  // isRead
         LocalDateTime.now(),
-        getCurrentUserId()
+        getCurrentUserId(),
+              ticket.getTitle()
       );
 
       activityBox.getChildren().add(ListRowItem.forActivity(notification));

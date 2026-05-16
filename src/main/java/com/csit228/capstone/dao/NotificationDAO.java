@@ -2,6 +2,7 @@ package com.csit228.capstone.dao;
 
 import com.csit228.capstone.database.DBConnector;
 import com.csit228.capstone.model.Notification;
+import com.csit228.capstone.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,9 +43,10 @@ public class NotificationDAO {
                     message,
                     is_read,
                     created_at,
-                    user_id
+                    user_id,
+                    title
                 )
-                VALUES (?, ?, ?, ?);
+                VALUES (?, ?, ?, ?,?);
                 """;
 
         try (Connection connection = DBConnector.getConnection();
@@ -58,7 +60,7 @@ public class NotificationDAO {
             stmt.setBoolean(2, notification.isRead());
             stmt.setTimestamp(3, Timestamp.valueOf(createdAt));
             stmt.setInt(4, notification.getUserId());
-
+            stmt.setString(5, notification.getTitle());
             int rows = stmt.executeUpdate();
 
             if (rows > 0) {
@@ -80,16 +82,81 @@ public class NotificationDAO {
         return false;
     }
 
-    public boolean createNotification(int userId, String message) {
+    public boolean createNotification(int userId, String title, String message) {
         Notification notification = new Notification(
                 0,
                 message,
                 false,
                 LocalDateTime.now(),
-                userId
+                userId,
+                title
         );
-
         return createNotification(notification);
+    }
+
+    public int createNotifications(List<User> recipients, String title, String message) {
+        if (recipients == null || recipients.isEmpty()) {
+            return 0;
+        }
+
+        String sql = """
+                INSERT INTO notification (
+                    message,
+                    is_read,
+                    created_at,
+                    user_id,
+                    title
+                )
+                VALUES (?, ?, ?, ?, ?);
+                """;
+
+        int insertedCount = 0;
+
+        try (Connection connection = DBConnector.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            boolean originalAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+
+            try {
+                Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+
+                for (User recipient : recipients) {
+                    if (recipient == null) {
+                        continue;
+                    }
+
+                    stmt.setString(1, message);
+                    stmt.setBoolean(2, false);
+                    stmt.setTimestamp(3, createdAt);
+                    stmt.setInt(4, recipient.getUserId());
+                    stmt.setString(5, title);
+                    stmt.addBatch();
+                }
+
+                int[] results = stmt.executeBatch();
+
+                for (int result : results) {
+                    if (result > 0 || result == Statement.SUCCESS_NO_INFO) {
+                        insertedCount++;
+                    }
+                }
+
+                connection.commit();
+                notificationsDirty = true;
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(originalAutoCommit);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
+        return insertedCount;
     }
 
     public Notification getNotificationById(int id) {
@@ -229,7 +296,8 @@ public class NotificationDAO {
                     message,
                     is_read,
                     created_at,
-                    user_id
+                    user_id,
+                    title
                 FROM notification
                 ORDER BY created_at DESC;
                 """;
@@ -256,7 +324,8 @@ public class NotificationDAO {
                 rs.getString("message"),
                 rs.getBoolean("is_read"),
                 rs.getObject("created_at", LocalDateTime.class),
-                rs.getInt("user_id")
+                rs.getInt("user_id"),
+                rs.getString("title")
         );
     }
 
