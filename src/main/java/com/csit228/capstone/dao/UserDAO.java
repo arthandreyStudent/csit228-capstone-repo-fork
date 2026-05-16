@@ -4,6 +4,7 @@ import com.csit228.capstone.database.DBConnector;
 import com.csit228.capstone.exceptions.InvalidCredentialsException;
 import com.csit228.capstone.exceptions.UsernameAlreadyTakenException;
 import com.csit228.capstone.enums.Role;
+import com.csit228.capstone.model.Member;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.model.UserFactory;
 import com.csit228.capstone.utils.Hash;
@@ -123,6 +124,29 @@ public class UserDAO {
             }
         }
         return null;
+    }
+
+    public List<User> getMembers(){
+        ensureUsersLoaded();
+        List<User> members = new ArrayList<>();
+        for (User u : users) {
+            if (u instanceof Member) {
+                members.add(u);
+            }
+        }
+        return members;
+    }
+
+    public List<User> getMembersByDepartment(int id){
+        ensureUsersLoaded();
+        List<User> members = getMembers();
+        List<User> listMembers = new ArrayList<>();
+        for (User u : users) {
+            if (u instanceof Member) {
+                listMembers.add(u);
+            }
+        }
+        return listMembers;
     }
 
     public List<User> getUsersByDepartment(int id) {

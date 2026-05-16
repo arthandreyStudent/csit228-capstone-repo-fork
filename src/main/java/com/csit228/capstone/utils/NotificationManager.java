@@ -41,13 +41,13 @@ public class NotificationManager {
     public static void notifyCreation(Ticket ticket, String creatorName) {
         if (ticket == null) return;
 
-        boolean isVolunteer = ticket.getAssignedTo() == null;
+        boolean isVolunteer = ticket.getDepartmentId() == null;
 
         String title   = isVolunteer ? creatorName + " created a volunteer ticket" : creatorName + " created a new ticket";
         String message = isVolunteer ? creatorName + " created a volunteer ticket: \"" + ticket.getTitle() + "\""
                                      : creatorName + " created a ticket in your department: \"" + ticket.getTitle() + "\"";
 
-        List<User> recipients = isVolunteer ? userDAO.getUsers() : userDAO.getUsersByDepartment((departmentDAO.getDepartmentByID(ticket.getId())).getId());
+        List<User> recipients = isVolunteer ? userDAO.getUsers() : userDAO.getUsersByDepartment((departmentDAO.getDepartmentByID(ticket.getDepartmentId())).getId());
 
         if (!recipients.isEmpty()) {
             notificationDAO.createNotifications(recipients, title, message);
