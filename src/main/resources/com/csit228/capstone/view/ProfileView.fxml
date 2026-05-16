@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefHeight="758.0" prefWidth="1250.0" style="-fx-background-color: #eef2fb;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.ProfileViewController">
+
+    <children>
+
+        <VBox spacing="22.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+            <padding>
+                <Insets bottom="28.0" left="34.0" right="34.0" top="28.0" />
+            </padding>
+
+            <children>
+
+                <!-- Page Header -->
+                <HBox alignment="CENTER_LEFT" spacing="14.0">
+                    <children>
+                        <VBox spacing="6.0">
+                            <children>
+                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Pages / Profile" />
+
+                                <Label style="-fx-text-fill: #071d5f; -fx-font-size: 28px; -fx-font-weight: bold;" text="My Profile" />
+                            </children>
+                        </VBox>
+
+                        <Region HBox.hgrow="ALWAYS" />
+
+                        <Button fx:id="buttonBack"
+                                text="Back"
+                                onAction="#onClickedBack"
+                                prefHeight="38.0"
+                                prefWidth="100.0"
+                                style="-fx-background-color: #2f95ff; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;" />
+                    </children>
+                </HBox>
+
+                <!-- Profile Content -->
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
+
+                    <content>
+                        <VBox spacing="22.0">
+
+                            <children>
+
+                                <!-- Profile Summary Card -->
+                                <HBox alignment="CENTER_LEFT" spacing="24.0" style="-fx-background-color: white; -fx-background-radius: 18;">
+                                    <padding>
+                                        <Insets bottom="28.0" left="30.0" right="30.0" top="28.0" />
+                                    </padding>
+
+                                    <children>
+                                        <StackPane prefHeight="92.0" prefWidth="92.0">
+                                            <children>
+                                                <Circle fill="#e6f0ff" radius="46.0" />
+
+                                                <Label fx:id="labelInitials" style="-fx-text-fill: #071d5f; -fx-font-size: 26px; -fx-font-weight: bold;" text="NA" />
+                                            </children>
+                                        </StackPane>
+
+                                        <VBox alignment="CENTER_LEFT" spacing="8.0">
+                                            <children>
+                                                <Label fx:id="labelFullName" style="-fx-text-fill: #071d5f; -fx-font-size: 26px; -fx-font-weight: bold;" text="User Full Name" />
+
+                                                <Label fx:id="labelRoleBadge" style="-fx-background-color: #2f95ff; -fx-background-radius: 14; -fx-padding: 5 16 5 16; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;" text="ROLE" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+
+                                <!-- Two Card Layout -->
+                                <HBox spacing="22.0">
+
+                                    <children>
+
+                                        <!-- Basic Information Card -->
+                                        <VBox fx:id="basicInfoCard"
+                                              spacing="18.0"
+                                              prefWidth="585.0"
+                                              style="-fx-background-color: white; -fx-background-radius: 18;">
+                                            <padding>
+                                                <Insets bottom="28.0" left="28.0" right="28.0" top="26.0" />
+                                            </padding>
+
+                                            <children>
+                                                <Label style="-fx-text-fill: #071d5f; -fx-font-size: 20px; -fx-font-weight: bold;" text="Basic Information" />
+
+                                                <VBox spacing="16.0">
+                                                    <children>
+
+                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <Label prefWidth="150.0" style="-fx-text-fill: #9faad2; -fx-font-size: 13px; -fx-font-weight: bold;" text="First Name" />
+
+                                                                <Label fx:id="labelFirstName" style="-fx-text-fill: #071d5f; -fx-font-size: 14px;" text="First Name" />
+                                                            </children>
+                                                        </HBox>
+
+                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <Label prefWidth="150.0" style="-fx-text-fill: #9faad2; -fx-font-size: 13px; -fx-font-weight: bold;" text="Last Name" />
+
+                                                                <Label fx:id="labelLastName" style="-fx-text-fill: #071d5f; -fx-font-size: 14px;" text="Last Name" />
+                                                            </children>
+                                                        </HBox>
+
+                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <Label prefWidth="150.0" style="-fx-text-fill: #9faad2; -fx-font-size: 13px; -fx-font-weight: bold;" text="Username" />
+
+                                                                <Label fx:id="labelUsername" style="-fx-text-fill: #071d5f; -fx-font-size: 14px;" text="username" />
+                                                            </children>
+                                                        </HBox>
+
+                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <Label prefWidth="150.0" style="-fx-text-fill: #9faad2; -fx-font-size: 13px; -fx-font-weight: bold;" text="Account Role" />
+
+                                                                <Label fx:id="labelRole" style="-fx-text-fill: #071d5f; -fx-font-size: 14px; -fx-font-weight: bold;" text="MEMBER" />
+                                                            </children>
+                                                        </HBox>
+
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </VBox>
+
+                                        <!-- Organization Information Card -->
+                                        <VBox fx:id="organizationCard"
+                                              spacing="18.0"
+                                              prefWidth="585.0"
+                                              style="-fx-background-color: white; -fx-background-radius: 18;">
+                                            <padding>
+                                                <Insets bottom="28.0" left="28.0" right="28.0" top="26.0" />
+                                            </padding>
+
+                                            <children>
+                                                <Label style="-fx-text-fill: #071d5f; -fx-font-size: 20px; -fx-font-weight: bold;" text="Organization Information" />
+
+                                                <VBox spacing="16.0">
+                                                    <children>
+
+                                                        <HBox fx:id="departmentRow" alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <Label prefWidth="150.0" style="-fx-text-fill: #9faad2; -fx-font-size: 13px; -fx-font-weight: bold;" text="Department" />
+
+                                                                <Label fx:id="labelDepartment" style="-fx-text-fill: #071d5f; -fx-font-size: 14px;" text="Department Name" />
+                                                            </children>
+                                                        </HBox>
+
+                                                        <HBox fx:id="jobRow" alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <Label prefWidth="150.0" style="-fx-text-fill: #9faad2; -fx-font-size: 13px; -fx-font-weight: bold;" text="Job" />
+
+                                                                <Label fx:id="labelJob" style="-fx-text-fill: #071d5f; -fx-font-size: 14px;" text="Job Name" />
+                                                            </children>
+                                                        </HBox>
+
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </VBox>
+
+                                    </children>
+                                </HBox>
+
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+
+            </children>
+        </VBox>
+
+    </children>
+</AnchorPane>
