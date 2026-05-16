@@ -3,7 +3,7 @@ package com.csit228.capstone.controller;
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.model.Department;
-import com.csit228.capstone.model.Role;
+import com.csit228.capstone.enums.Role;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.Formatter;
@@ -19,22 +19,35 @@ import java.util.ResourceBundle;
 
 public class ProfileViewController implements Initializable {
 
-    @FXML private Label labelInitials;
-    @FXML private Label labelFullName;
-    @FXML private Label labelRoleBadge;
+    @FXML
+    private Label labelInitials;
+    @FXML
+    private Label labelFullName;
+    @FXML
+    private Label labelRoleBadge;
 
-    @FXML private Label labelFirstName;
-    @FXML private Label labelLastName;
-    @FXML private Label labelUsername;
-    @FXML private Label labelRole;
-    @FXML private VBox basicInfoCard;
-    @FXML private VBox organizationCard;
+    @FXML
+    private Label labelFirstName;
+    @FXML
+    private Label labelLastName;
+    @FXML
+    private Label labelUsername;
+    @FXML
+    private Label labelRole;
+    @FXML
+    private VBox basicInfoCard;
+    @FXML
+    private VBox organizationCard;
 
-    @FXML private HBox departmentRow;
-    @FXML private Label labelDepartment;
+    @FXML
+    private HBox departmentRow;
+    @FXML
+    private Label labelDepartment;
 
-    @FXML private HBox jobRow;
-    @FXML private Label labelJob;
+    @FXML
+    private HBox jobRow;
+    @FXML
+    private Label labelJob;
 
     private Runnable backAction;
 
@@ -144,7 +157,6 @@ public class ProfileViewController implements Initializable {
             row.setManaged(false);
         }
     }
-
 
 
     public void setBackAction(Runnable backAction) {

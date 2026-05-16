@@ -1,4 +1,7 @@
 package com.csit228.capstone.controller;
+import com.csit228.capstone.dao.DepartmentDAO;
+import com.csit228.capstone.model.Department;
+import com.csit228.capstone.model.Serializer;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ComboBoxBase;
@@ -81,7 +84,10 @@ public class DashboardEditorController extends StaffDashboardController {
   @Override
   protected void refreshDashboard() {
     ticketDAO.getTicketViews();
-    tickets = new ArrayList<>(ticketDAO.getViews());
+    DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
+    Department department = departmentDAO.getDepartmentByID(AppSession.currentUser.getDepartment_id());
+    System.out.println(department.getName());
+    tickets = new ArrayList<>(ticketDAO.getTicketByDepartment(department));
 
     renderDashboard();
   }
@@ -197,13 +203,14 @@ public class DashboardEditorController extends StaffDashboardController {
   private void openTicketDetailModal(TicketView ticket) {
     try {
       FXMLLoader loader =
-              new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/MasterTicketDetailModalView.fxml"));
+              new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/EditorViewTicket.fxml"));
       Parent root = loader.load();
 
-      MasterTicketDetailModalController controller = loader.getController();
+      TicketDetailModelController controller = loader.getController();
       controller.loadTicket(ticket);
 
       openModal(root, "Ticket Details");
+      refreshDashboard();
     } catch (IOException e) {
       showError("Unable to open Ticket Details modal.");
     }
@@ -231,7 +238,7 @@ public class DashboardEditorController extends StaffDashboardController {
     String keyword = searchField != null ? searchField.getText() : "";
     
     for (TicketView ticket : getSortedTicketsByDeadline()) {
-      if (isVolunteerTicket(ticket) && isUnassigned(ticket))
+      if (!isVisibleInReviewQueue(ticket))
         continue;
       if (!matchesCurrentFilter(ticket))
         continue;
@@ -275,7 +282,7 @@ public class DashboardEditorController extends StaffDashboardController {
       case ALL:
         return true;
       case OPEN:
-        return isUnassigned(ticket);
+        return isStatus(ticket, TicketStatus.OPEN.name());
       case IN_PROGRESS:
         return isStatus(ticket, TicketStatus.IN_PROGRESS.name());
       case TO_BE_REVIEWED:
@@ -289,11 +296,19 @@ public class DashboardEditorController extends StaffDashboardController {
   
   private int getFilteredTicketCount() {
     int count = 0;
+    String keyword = searchField != null ? searchField.getText() : "";
+
     for (TicketView ticket : tickets) {
-      if (matchesCurrentFilter(ticket))
+      if (isVisibleInReviewQueue(ticket) && matchesCurrentFilter(ticket) && matchesTicketSearch(ticket, keyword))
         count++;
     }
     return count;
+  }
+
+  private boolean isVisibleInReviewQueue(TicketView ticket) {
+    if (ticket == null)
+      return false;
+    return !(isVolunteerTicket(ticket) && isUnassigned(ticket));
   }
   
   private void hideReviewActionButtons(ListRowItem row) {

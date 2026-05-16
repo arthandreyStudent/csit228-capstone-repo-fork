@@ -33,11 +33,6 @@ public class Ticket implements Serializable {
     return departmentId;
   }
 
-  public void setDepartmentId(int departmentId) {
-    this.departmentId = departmentId;
-  }
-
-  private final List<Attachment> attachments = new ArrayList<>();
 
   public Ticket() {
     this.status = TicketStatus.OPEN;
@@ -96,46 +91,7 @@ public class Ticket implements Serializable {
     this.departmentId = departmentId;
   }
 
-  //    //public TicketMemento createMemento() {
-  //        return new TicketMemento(title, description, priority, deadline);
-  //    }
 
-  public void restore(TicketMemento m) {
-    if (m == null) {
-      return;
-    }
-
-    this.title = m.getTitle();
-    this.description = m.getDescription();
-
-    this.priority = m.getPriority();
-    this.deadline = m.getDeadline().atStartOfDay();
-    touch();
-  }
-
-  public void markInProgress() {
-    this.status = TicketStatus.IN_PROGRESS;
-    touch();
-  }
-
-  public void complete() {
-    this.status = TicketStatus.COMPLETED;
-    touch();
-  }
-
-  public void resolve() {
-    this.status = TicketStatus.RESOLVED;
-    touch();
-  }
-
-  public void addAttachment(Attachment a) {
-    if (a == null) {
-      return;
-    }
-
-    attachments.add(a);
-    touch();
-  }
 
   public int getCreatedBy() {
     return createdBy;
@@ -145,44 +101,18 @@ public class Ticket implements Serializable {
     return assignedTo;
   }
 
-  public boolean removeAttachment(Attachment a) {
-    if (a == null) {
-      return false;
-    }
 
-    boolean removed = attachments.remove(a);
 
-    if (removed) {
-      touch();
-    }
-
-    return removed;
-  }
-
-  public boolean isOverdue() {
-    return (
-      deadline != null &&
-      LocalDate.now().isAfter(ChronoLocalDate.from(deadline)) &&
-      status != TicketStatus.COMPLETED &&
-      status != TicketStatus.RESOLVED
-    );
-  }
 
   public void touch() {
     this.lastUpdated = LocalDate.now().atStartOfDay();
   }
 
-  public int getTicketId() {
-    return ticketId;
-  }
 
   public int getId() {
     return ticketId;
   }
 
-  public void setTicketId(int ticketId) {
-    this.ticketId = ticketId;
-  }
 
   public void setId(int ticketId) {
     this.ticketId = ticketId;
@@ -223,14 +153,6 @@ public class Ticket implements Serializable {
     return deadline;
   }
 
-  public LocalDateTime getDateCreated() {
-    return dateCreated;
-  }
-
-  public LocalDateTime getLastUpdated() {
-    return lastUpdated;
-  }
-
   public void setDeadline(LocalDate deadline) {
     this.deadline = deadline.atStartOfDay();
     touch();
@@ -249,19 +171,6 @@ public class Ticket implements Serializable {
     touch();
   }
 
-  public List<Attachment> getAttachments() {
-    return new ArrayList<>(attachments);
-  }
-
-  public void setAttachments(List<Attachment> attachments) {
-    this.attachments.clear();
-
-    if (attachments != null) {
-      this.attachments.addAll(attachments);
-    }
-
-    touch();
-  }
 
   @Override
   public String toString() {
@@ -290,10 +199,7 @@ public class Ticket implements Serializable {
       "\n, lastUpdated=" +
       formatDate(lastUpdated) +
       "\n, departmentId=" +
-      departmentId +
-      "\n, attachments=" +
-      attachments +
-      "\n}"
+      departmentId
     );
   }
 

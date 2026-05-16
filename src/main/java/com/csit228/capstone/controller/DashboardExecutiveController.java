@@ -271,7 +271,7 @@ public class DashboardExecutiveController extends StaffDashboardController {
         new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/MasterTicketDetailModalView.fxml"));
       Parent root = loader.load();
 
-      MasterTicketDetailModalController controller = loader.getController();
+      TicketDetailModelController controller = loader.getController();
       controller.loadTicket(ticket);
 
       openModal(root, "Ticket Details");

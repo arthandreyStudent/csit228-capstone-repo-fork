@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox prefWidth="600.0" style="-fx-background-color: white;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.MasterTicketDetailModalController">
+<VBox prefWidth="600.0" style="-fx-background-color: white;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
     <children>
         <HBox fx:id="ticketHeader" alignment="TOP_CENTER" style="-fx-background-color: #2851ad;">
             <padding>
