@@ -9,27 +9,35 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-// CHANGES MADE: MainApplication is now the real launcher for the application, and AppSession is just a utility class for managing the session and providing helper methods. This allows us to initialize fonts and load the session before showing any UI, which is necessary for the initial screen to be correct.
+// CHANGES MADE: MainApplication is now the real launcher for the application, and AppSession is
+// just a utility class for managing the session and providing helper methods. This allows us to
+// initialize fonts and load the session before showing any UI, which is necessary for the
+// initial screen to be correct.
 
-public class  MainApplication extends Application {
+public class MainApplication extends Application {
+  
+  @Override
+  public void start(Stage stage) throws IOException {
+    FontInitializer.initializeFonts(); // Initializes all required fonts for the app.
+    
+    // This method sets the primary stage that the Controls util will be referencing with the
+    // current stage provided by the JavaFX runtime.
+    Controls.setPrimaryStage(stage);
+    
+    AppSession.loadSession(); // Calls the load session method from the AppSession class that's
+    // now a utility class.
+    
+    // Switches to the initial screen based on whether the user is logged in or not, which is
+    // determined by the loadSession method that sets the currentUser variable in AppSession.
+    Controls.switchScreen(AppSession.getInitialScreen());
+  }
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        FontInitializer.initializeFonts();  // Initializes all required fonts for the app.
+  public void stop() throws Exception {
+    TicketWatcher.getInstance().shutdown();
+    super.stop();
+  }
 
-        Controls.setPrimaryStage(stage);    // This method sets the primary stage that the Controls util will be referencing with the current stage provided by the JavaFX runtime.
-
-        AppSession.loadSession();   // Calls the load session method from the AppSession class that's now a utility class.
-
-        Controls.switchScreen(AppSession.getInitialScreen());   // Switches to the initial screen based on whether the user is logged in or not, which is determined by the loadSession method that sets the currentUser variable in AppSession.
-    }
-
-    public void stop() throws Exception {
-        TicketWatcher.getInstance().shutdown();
-        super.stop();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
+  public static void main(String[] args) {
+    launch(args);
+  }
 }
