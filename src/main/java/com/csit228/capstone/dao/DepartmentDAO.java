@@ -36,30 +36,11 @@ public class DepartmentDAO {
   public Department getDepartmentByID(int id) {
     ensureDepartmentsLoaded();
     for (Department d : departments) {
-      if (d.getId() == id)
-        return d;
+        if (d.getId() == id)
+            return d;
+    }
     return null;
    }
-    
-    private DepartmentDAO() {
-        departments = new ArrayList<>();
-        departmentsLoaded = false;
-    }
-
-    public List<Department> getDepartments() {
-        ensureDepartmentsLoaded();
-        return departments;
-    }
-
-    public Department getDepartmentByID(int id) {
-        ensureDepartmentsLoaded();
-
-        for (Department d : departments) {
-            if (d.getId() == id)
-                return d;
-        }
-        return null;
-    }
 
     public static DepartmentDAO getDepartmentDAO() {
         if (departmentDAO == null) {
