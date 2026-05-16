@@ -96,10 +96,9 @@ public abstract class BaseCreateTicketModalController {
       return;
     
     LocalDateTime now = LocalDateTime.now();
-    Ticket ticket;
-    ticketDAO.createTicket(
-      ticket = new Ticket(0, title, description, priority, deadline, TicketStatus.OPEN, currentUser.getUserId(), null, now, now,
-                 resolveDepartmentId(department)));
+    Ticket ticket = new Ticket(0, title, description, priority, deadline, TicketStatus.OPEN, currentUser.getUserId(), null, now, now,
+            resolveDepartmentId(department));
+    ticketDAO.createTicket(ticket);
     submitted = true;
 
     System.out.println("Ticket successfully created!");
