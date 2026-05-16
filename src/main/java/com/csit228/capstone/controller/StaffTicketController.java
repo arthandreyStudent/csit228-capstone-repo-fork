@@ -5,23 +5,19 @@ import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.enums.Role;
 import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.*;
-import com.csit228.capstone.utils.Formatter;
-import com.csit228.capstone.utils.ListRowItem;
 import com.csit228.capstone.utils.NotificationManager;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class StaffDashboardController extends BaseDashboardController {
+public abstract class StaffTicketController extends BaseTicketController {
 
     @FXML
     protected Button createTicketButton;
@@ -39,7 +35,6 @@ public abstract class StaffDashboardController extends BaseDashboardController {
 
         if (departmentId > 0) {
             List<User> result = new ArrayList<>();
-            // Using the correct DAO method: getUsersByDepartment
             for (User user : userDAO.getUsersByDepartment(departmentId)) {
                 if (user != null && user.hasRole(Role.MEMBER)) {
                     result.add(user);

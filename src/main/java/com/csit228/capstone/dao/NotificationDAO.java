@@ -159,6 +159,33 @@ public class NotificationDAO {
         return insertedCount;
     }
 
+    public List<Notification> fetchUnreadNotificationsForUser(int userId) {
+        List<Notification> unreadList = new ArrayList<>();
+
+        String sql = """
+            SELECT id, message, is_read, created_at, user_id, title
+            FROM notification
+            WHERE user_id = ? AND is_read = false
+            ORDER BY created_at DESC;
+            """;
+
+        try (Connection connection = DBConnector.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    unreadList.add(mapNotification(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return unreadList;
+    }
+
     public Notification getNotificationById(int id) {
         ensureNotificationsLoaded();
 

@@ -6,7 +6,9 @@ import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
-import com.csit228.capstone.observer.DashboardObserver;
+import com.csit228.capstone.observer.NotificationObserver;
+import com.csit228.capstone.observer.NotificationWatcher;
+import com.csit228.capstone.observer.TicketObserver;
 import com.csit228.capstone.observer.TicketWatcher;
 import com.csit228.capstone.utils.*;
 import javafx.fxml.FXML;
@@ -26,7 +28,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseDashboardController implements DashboardObserver {
+public abstract class BaseTicketController implements TicketObserver, NotificationObserver {
 
   @FXML
   protected Label profileInitialsLabel;
@@ -54,7 +56,10 @@ public abstract class BaseDashboardController implements DashboardObserver {
   private boolean isProfileViewOpen = false;
   protected final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
   protected List<TicketView> tickets = new ArrayList<>();
+  protected List<Notification> notifications = new ArrayList<>();
   protected final NotificationDAO notificationDAO = NotificationDAO.getNotificationDAO();
+  @FXML
+  protected VBox activityBox;
 
   protected abstract String getDefaultRoleName();
   protected abstract void refreshDashboard();
@@ -76,19 +81,48 @@ public abstract class BaseDashboardController implements DashboardObserver {
   }
 
   @Override
-  public void onDataChanged(List<TicketView> updatedTickets) {
-    this.tickets = updatedTickets != null ? new ArrayList<>(updatedTickets) : new ArrayList<>();
-    renderDashboard();
+  public void onTicketChange(List<TicketView> updatedTickets) {
+      refreshDashboard();
   }
 
-  protected void startWatching() {
-    TicketWatcher.getInstance().addObserver(this);
-    TicketWatcher.getInstance().start(2);
-  }
 
-  protected void stopWatching() {
-    TicketWatcher.getInstance().removeObserver(this);
-  }
+    @Override
+    public void onNotificationsChanged(List<Notification> updatedNotifications) {
+        this.notifications = new ArrayList<>(updatedNotifications);
+        renderDashboard();
+    }
+
+    protected void refreshActivityBox() {
+        if (activityBox == null) return;
+        activityBox.getChildren().clear();
+        int count = 0;
+        for (Notification n : notifications) {
+            activityBox.getChildren().add(ListRowItem.forActivity(n));
+            if (++count >= 8) break;
+        }
+    }
+
+    @Override
+    public int getUserId() {
+        return getCurrentUserId();
+    }
+
+    protected void startWatching() {
+        TicketWatcher ticketWatcher = TicketWatcher.getInstance();
+        ticketWatcher.addObserver(this);
+        ticketWatcher.start(2);
+
+        NotificationWatcher notifWatcher = NotificationWatcher.getInstance();
+        int initialCount = notificationDAO.getNotificationsByUserId(getCurrentUserId()).size();
+        notifWatcher.setInitialCount(getCurrentUserId(), initialCount);
+        notifWatcher.addObserver(this);
+        notifWatcher.start(2);
+    }
+
+    protected void stopWatching() {
+        TicketWatcher.getInstance().removeObserver(this);
+        NotificationWatcher.getInstance().removeObserver(this);
+    }
 
   protected void setupSearch() {
     if (searchField == null) return;
@@ -244,16 +278,13 @@ public abstract class BaseDashboardController implements DashboardObserver {
     alert.showAndWait();
   }
 
-  protected void loadRecentActivity(VBox activityBox) {
-    activityBox.getChildren().clear();
+    protected void loadRecentActivity(VBox activityBox) {
+        this.activityBox = activityBox;
 
-    List<Notification> recentNotifications = notificationDAO.getNotificationsByUserId(getCurrentUserId());
+        if (this.notifications.isEmpty()) {
+            this.notifications = notificationDAO.getNotificationsByUserId(getCurrentUserId());
+        }
 
-    int count = 0;
-    for (Notification notification : recentNotifications) {
-      activityBox.getChildren().add(ListRowItem.forActivity(notification));
-      if (++count >= 8) break;
+        refreshActivityBox();
     }
-  }
-
 }
