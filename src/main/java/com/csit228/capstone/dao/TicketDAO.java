@@ -215,7 +215,7 @@ public class TicketDAO {
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-
+            long start = System.nanoTime();
             while (rs.next()) {
                 tickets.add(new TicketView(
                         rs.getInt("id"),
@@ -230,9 +230,12 @@ public class TicketDAO {
                         rs.getObject("date_created", LocalDateTime.class),
                         rs.getObject("deadline", LocalDateTime.class)
                 ));
-                System.out.println("added ticket" );
-            }
 
+            }
+            long end = System.nanoTime();
+            double elapsedMs = (end - start) / 1_000_000.0;
+
+            System.out.println("Loaded " + tickets.size() + " tickets"+ " in "+ elapsedMs+" ms");
             ticketsLoaded = true;
             ticketsDirty = false;
 
