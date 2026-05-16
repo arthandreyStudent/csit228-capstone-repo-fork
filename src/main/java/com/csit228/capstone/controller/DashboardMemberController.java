@@ -130,7 +130,7 @@ public class DashboardMemberController extends BaseDashboardController {
     int count = 0;
     
     for (TicketView ticket : getSortedTicketsByDeadline()) {
-      if (!isAvailableTicket(ticket) || ticket.isVolunteerTicket())
+      if (!isAvailableTicket(ticket) || !ticket.isVolunteerTicket())
         continue;
       if (!matchesTicketSearch(ticket, keyword))
         continue;

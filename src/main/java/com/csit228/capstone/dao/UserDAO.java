@@ -40,7 +40,6 @@ public class UserDAO {
 
     public Role getType(int id) {
         ensureTypesLoaded();
-
         for (String s : types) {
             String[] res = s.split(" ");
             if (Integer.parseInt(res[0]) == id) {
@@ -52,7 +51,6 @@ public class UserDAO {
 
     public int getTypeRev(Role r) {
         ensureTypesLoaded();
-
         for (String s : types) {
             String[] res = s.split(" ");
             if (Role.valueOf(res[1].toUpperCase()) == r) {
@@ -64,9 +62,7 @@ public class UserDAO {
 
     public void createUser(User u) throws UsernameAlreadyTakenException {
         ensureTypesLoaded();
-
-        String sql =
-                "INSERT INTO user(firstname,lastname,username,password_hash,user_type,department_id) VALUES (?,?,?,?,?,?);";
+        String sql = "INSERT INTO user(firstname,lastname,username,password_hash,user_type,department_id) VALUES (?,?,?,?,?,?);";
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, u.getFirstName());
@@ -93,12 +89,12 @@ public class UserDAO {
     }
 
     public static void fetchTypes() {
-        try (Connection connection = DBConnector.getConnection(); Statement statement = connection.createStatement()) {
-            ResultSet rs = statement.executeQuery("SELECT * FROM type  ORDER BY id ASC");
+        try (Connection connection = DBConnector.getConnection();
+             Statement statement = connection.createStatement()) {
+            ResultSet rs = statement.executeQuery("SELECT * FROM type ORDER BY id ASC");
             while (rs.next()) {
                 types.add(rs.getInt("id") + " " + rs.getString("role"));
             }
-
             typesLoaded = true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -107,7 +103,6 @@ public class UserDAO {
 
     public User getUser(int id) {
         ensureUsersLoaded();
-
         for (User u : users) {
             if (u.getUserId() == id) {
                 return u;
@@ -117,50 +112,34 @@ public class UserDAO {
     }
 
     public User getUserById(int id) {
-        ensureUsersLoaded();
+        return getUser(id);
+    }
 
+    public User getUserByName(String fullname) {
+        ensureUsersLoaded();
         for (User u : users) {
-            if (u.getUserId() == id) {
+            if (u.getFullName().equals(fullname)) {
                 return u;
             }
         }
         return null;
     }
-    return null;
-  }
 
-  public User getUserByName(String fullname) {
-    ensureUsersLoaded();
-
-    for (User u : users) {
-      if (u.getFullName().equals(fullname)) {
-        return u;
-      }
-    }
-    return null;
-  }
-  
-  public List<User> getUsersByDepartment(int id) {
-    ensureUsersLoaded();
-    
-    List<User> departmentUsers = usersByDepartment.get(id);
-    if (departmentUsers == null) {
-      return new ArrayList<>();
-
-    public List<User> getUserByDepartment(int id) {
+    public List<User> getUsersByDepartment(int id) {
         ensureUsersLoaded();
-
         List<User> departmentUsers = usersByDepartment.get(id);
         if (departmentUsers == null) {
             return new ArrayList<>();
         }
-
         return new ArrayList<>(departmentUsers);
+    }
+
+    public List<User> getUserByDepartment(int id) {
+        return getUsersByDepartment(id);
     }
 
     public User login(String username, String password) throws InvalidCredentialsException {
         ensureUsersLoaded();
-
         String h = Hash.hashWithSHA256(password.trim());
         for (User u : users) {
             if (u.getUsername().trim().equals(username.trim()) && u.getPasswordHash().equals(h)) {
@@ -171,7 +150,9 @@ public class UserDAO {
     }
 
     public void fetchUsers() {
-        try (Connection connection = DBConnector.getConnection(); Statement statement = connection.createStatement()) {
+        users.clear(); // Clear existing to prevent duplicates on refresh
+        try (Connection connection = DBConnector.getConnection();
+             Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT * FROM user");
             while (rs.next()) {
                 Role role = getType(rs.getInt("user_type"));
@@ -180,50 +161,31 @@ public class UserDAO {
                         rs.getInt("department_id"));
                 users.add(curr);
             }
-
             rebuildDepartmentCache();
             usersLoaded = true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-  }
 
-  public List<User> getUsers() {
-    if (users == null) fetchUsers();
-    return users;
-
-  }
-
-  private void ensureUsersLoaded() {
-    if (!usersLoaded) {
-      fetchUsers();
-
+    public List<User> getUsers() {
+        ensureUsersLoaded();
+        return users;
+    }
 
     public String getJobNameByUserId(int userId) {
-        String sql = """
-                SELECT j.name
-                FROM user_job uj
-                INNER JOIN job j ON uj.job_id = j.id
-                WHERE uj.user_id = ?
-                LIMIT 1
-                """;
-
+        String sql = "SELECT j.name FROM user_job uj INNER JOIN job j ON uj.job_id = j.id WHERE uj.user_id = ? LIMIT 1";
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
             preparedStatement.setInt(1, userId);
-
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getString("name");
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -241,7 +203,6 @@ public class UserDAO {
 
     private void rebuildDepartmentCache() {
         usersByDepartment.clear();
-
         for (User user : users) {
             usersByDepartment.computeIfAbsent(user.getDepartment_id(), key -> new ArrayList<>()).add(user);
         }
