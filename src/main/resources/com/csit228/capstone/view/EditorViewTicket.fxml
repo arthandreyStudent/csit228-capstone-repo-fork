@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -139,6 +140,7 @@
                                             <children>
                                                 <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="ASSIGNED TO" />
                                                 <Label fx:id="assignedToLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="Unassigned" wrapText="true" />
+                                                <ComboBox fx:id="assignedToComboBox" managed="false" maxWidth="1.7976931348623157E308" prefWidth="140.0" promptText="Assign to..." style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 11px;" visible="false" />
                                             </children>
                                         </VBox>
                                         <VBox prefWidth="165.0" spacing="6.0" style="-fx-background-color: #f7f9fd; -fx-background-radius: 8;">
@@ -174,8 +176,9 @@
                         <HBox alignment="CENTER_RIGHT" spacing="10.0">
                             <children>
                                 <Button onAction="#onClickedButtonClose" prefHeight="38.0" prefWidth="96.0" style="-fx-background-color: #eef2fb; -fx-background-radius: 8; -fx-text-fill: #607096; -fx-font-size: 12px; -fx-font-weight: bold;" text="Cancel" />
-                                <Button onAction="#onClickedReturnTicket" prefHeight="38.0" prefWidth="96.0" style="-fx-background-color: #fff1d8; -fx-background-radius: 8; -fx-text-fill: #d47a00; -fx-font-size: 12px; -fx-font-weight: bold;" text="Return" />
-                                <Button onAction="#onClickedResolveTicket" prefHeight="38.0" prefWidth="104.0" style="-fx-background-color: #4bcc8a; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;" text="Resolve" />
+                                <Button fx:id="saveAssignmentButton" managed="false" onAction="#onClickedSaveAssignment" prefHeight="38.0" prefWidth="96.0" style="-fx-background-color: #22C55E; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;" text="Save" visible="false" />
+                                <Button fx:id="returnTicketButton" managed="false" onAction="#onClickedReturnTicket" prefHeight="38.0" prefWidth="96.0" style="-fx-background-color: #fff1d8; -fx-background-radius: 8; -fx-text-fill: #d47a00; -fx-font-size: 12px; -fx-font-weight: bold;" text="Return" visible="false" />
+                                <Button fx:id="resolveTicketButton" managed="false" onAction="#onClickedResolveTicket" prefHeight="38.0" prefWidth="104.0" style="-fx-background-color: #4bcc8a; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;" text="Resolve" visible="false" />
                             </children>
                         </HBox>
                     </children>

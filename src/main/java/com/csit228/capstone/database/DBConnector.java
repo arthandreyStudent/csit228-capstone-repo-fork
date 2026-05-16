@@ -9,9 +9,9 @@ import java.sql.SQLException;
 
 public class DBConnector {
 
-    static String url;
-    static String user;
-    static String password;
+    private static String url;
+    private static String user;
+    private static String password;
     private static boolean envLoaded;
 
     public static Connection getConnection() {
@@ -19,8 +19,7 @@ public class DBConnector {
         try {
             return DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
-            System.out.println("SAD");
-            throw new RuntimeException(e);
+            throw new RuntimeException("Unable to connect to the database.", e);
         }
     }
 

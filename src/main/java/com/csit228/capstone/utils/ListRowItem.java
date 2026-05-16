@@ -28,6 +28,15 @@ public class ListRowItem extends VBox {
   
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, hh:mm a");
 
+  private static final String STATUS_OPEN = "#3B82F6";
+  private static final String STATUS_OPEN_BG = "#DBEAFE";
+  private static final String STATUS_IN_PROGRESS = "#F59E0B";
+  private static final String STATUS_IN_PROGRESS_BG = "#FEF3C7";
+  private static final String STATUS_COMPLETED = "#22C55E";
+  private static final String STATUS_COMPLETED_BG = "#DCFCE7";
+  private static final String STATUS_RESOLVED = "#8B5CF6";
+  private static final String STATUS_RESOLVED_BG = "#EDE9FE";
+
   private static final double TABLE_ROW_WIDTH = 850.0;
 
   private static final double MEMBER_DETAILS_WIDTH = 300.0;
@@ -426,13 +435,13 @@ public class ListRowItem extends VBox {
         String bgColor;
         String textColor;
         switch (text) {
-            case "IN PROGRESS": bgColor = "#ffedcc"; textColor = "#ff9900"; break;
+            case "IN PROGRESS": bgColor = STATUS_IN_PROGRESS_BG; textColor = STATUS_IN_PROGRESS; break;
             case "RESOLVED":
-            case "APPROVED":    bgColor = "#dcffef"; textColor = "#4bcc8a"; break;
+            case "APPROVED":    bgColor = STATUS_RESOLVED_BG; textColor = STATUS_RESOLVED; break;
             case "OVERDUE":
             case "SENT BACK":   bgColor = "#ffe0e5"; textColor = "#f14d5a"; break;
-            case "COMPLETED":   bgColor = "#dceeff"; textColor = "#00a2ff"; break;
-            default:            bgColor = "#dceeff"; textColor = "#2f95ff"; break;
+            case "COMPLETED":   bgColor = STATUS_COMPLETED_BG; textColor = STATUS_COMPLETED; break;
+            default:            bgColor = STATUS_OPEN_BG; textColor = STATUS_OPEN; break;
         }
 
         return makeBadge(text, bgColor, textColor);
@@ -541,21 +550,23 @@ public class ListRowItem extends VBox {
     }
 
     private static String getNotificationCircleColor(Notification notification) {
-        if (notification == null || notification.getMessage() == null) return "#dceeff";
+        if (notification == null || notification.getMessage() == null) return STATUS_OPEN_BG;
         String msg = notification.getMessage().toUpperCase();
-        if (msg.contains("RESOLVED") || msg.contains("COMPLETED")) return "#d9ffed";
-        if (msg.contains("IN PROGRESS"))                           return "#ffedcc";
+        if (msg.contains("RESOLVED"))                              return STATUS_RESOLVED_BG;
+        if (msg.contains("COMPLETED"))                             return STATUS_COMPLETED_BG;
+        if (msg.contains("IN PROGRESS"))                           return STATUS_IN_PROGRESS_BG;
         if (msg.contains("OVERDUE"))                               return "#ffe0e5";
-        return "#dceeff";
+        return STATUS_OPEN_BG;
     }
 
     private static String getNotificationTextColor(Notification notification) {
-        if (notification == null || notification.getMessage() == null) return "#2f95ff";
+        if (notification == null || notification.getMessage() == null) return STATUS_OPEN;
         String msg = notification.getMessage().toUpperCase();
-        if (msg.contains("RESOLVED") || msg.contains("COMPLETED")) return "#4bcc8a";
-        if (msg.contains("IN PROGRESS"))                           return "#ff9900";
+        if (msg.contains("RESOLVED"))                              return STATUS_RESOLVED;
+        if (msg.contains("COMPLETED"))                             return STATUS_COMPLETED;
+        if (msg.contains("IN PROGRESS"))                           return STATUS_IN_PROGRESS;
         if (msg.contains("OVERDUE"))                               return "#f14d5a";
-        return "#2f95ff";
+        return STATUS_OPEN;
     }
 
     private static String getUserInitials(User user) {

@@ -28,6 +28,11 @@ import java.util.List;
 import java.util.Set;
 
 public class DashboardEditorController extends StaffDashboardController {
+  private static final String STATUS_OPEN = "#3B82F6";
+  private static final String STATUS_IN_PROGRESS = "#F59E0B";
+  private static final String STATUS_COMPLETED = "#22C55E";
+  private static final String STATUS_RESOLVED = "#8B5CF6";
+  private static final String FILTER_ALL = "#1c2b63";
   
   @FXML
   private Label reviewQueueCountLabel;
@@ -86,7 +91,6 @@ public class DashboardEditorController extends StaffDashboardController {
     ticketDAO.getTicketViews();
     DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
     Department department = departmentDAO.getDepartmentByID(AppSession.currentUser.getDepartment_id());
-    System.out.println(department.getName());
     tickets = new ArrayList<>(ticketDAO.getTicketByDepartment(department));
 
     renderDashboard();
@@ -166,8 +170,24 @@ public class DashboardEditorController extends StaffDashboardController {
     setInactiveFilterStyle(resolvedFilterButton);
     
     if (activeButton != null) {
-      activeButton.setStyle("-fx-background-color: #ff9900;" + "-fx-background-radius: 18;" + "-fx-text-fill: white;" +
+      activeButton.setStyle("-fx-background-color: " + getActiveFilterColor() + ";" + "-fx-background-radius: 18;" + "-fx-text-fill: white;" +
                             "-fx-font-size: 11px;" + "-fx-font-weight: bold;");
+    }
+  }
+
+  private String getActiveFilterColor() {
+    switch (currentFilter) {
+      case OPEN:
+        return STATUS_OPEN;
+      case IN_PROGRESS:
+        return STATUS_IN_PROGRESS;
+      case TO_BE_REVIEWED:
+        return STATUS_COMPLETED;
+      case RESOLVED:
+        return STATUS_RESOLVED;
+      case ALL:
+      default:
+        return FILTER_ALL;
     }
   }
   
@@ -408,10 +428,6 @@ public class DashboardEditorController extends StaffDashboardController {
     showInfo("Announcement sent to " + sentCount + " user" + (sentCount == 1 ? "." : "s."));
   }
 
-  @FXML
-  public void createAnnounement() {
-    createAnnouncement();
-  }
 
   private List<User> getAnnouncementRecipients(User currentUser) {
     List<User> recipients = new ArrayList<>();

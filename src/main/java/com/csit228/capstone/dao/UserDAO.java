@@ -90,6 +90,12 @@ public class UserDAO {
     }
 
     public static void fetchTypes() {
+        if (types == null) {
+            types = new ArrayList<>();
+        } else {
+            types.clear();
+        }
+
         try (Connection connection = DBConnector.getConnection();
              Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT * FROM type ORDER BY id ASC");
@@ -139,11 +145,10 @@ public class UserDAO {
 
     public List<User> getMembersByDepartment(int id){
         ensureUsersLoaded();
-        List<User> members = getMembers();
         List<User> listMembers = new ArrayList<>();
-        for (User u : users) {
-            if (u instanceof Member) {
-                listMembers.add(u);
+        for (User user : getUsersByDepartment(id)) {
+            if (user instanceof Member) {
+                listMembers.add(user);
             }
         }
         return listMembers;
@@ -194,7 +199,7 @@ public class UserDAO {
 
     public List<User> getUsers() {
         ensureUsersLoaded();
-        return users;
+        return new ArrayList<>(users);
     }
 
     public String getJobNameByUserId(int userId) {

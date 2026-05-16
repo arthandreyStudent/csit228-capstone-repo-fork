@@ -49,10 +49,14 @@ public class TicketDAO {
     }
 
     public List<TicketView> getTicketByDepartment(Department department) {
+        if (department == null) {
+            return new ArrayList<>();
+        }
+
         List<TicketView> allTickets = getViews();
         List<TicketView> ticketViews = new ArrayList<>();
         for (TicketView ticketView : allTickets) {
-            if (ticketView.getDepartmentName().equalsIgnoreCase(department.getName())) {
+            if (ticketView.getDepartmentName() != null && ticketView.getDepartmentName().equalsIgnoreCase(department.getName())) {
                 ticketViews.add(ticketView);
             }
         }
@@ -229,7 +233,6 @@ public class TicketDAO {
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-            long start = System.nanoTime();
             while (rs.next()) {
                 freshTickets.add(new TicketView(
                         rs.getInt("id"),
@@ -246,11 +249,8 @@ public class TicketDAO {
                 ));
 
             }
-            long end = System.nanoTime();
-            double elapsedMs = (end - start) / 1_000_000.0;
 
             tickets = freshTickets;
-            System.out.println("Loaded " + freshTickets.size() + " tickets" + " in " + elapsedMs + " ms");
             ticketsLoaded = true;
             ticketsDirty = false;
 

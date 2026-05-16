@@ -15,10 +15,8 @@ import java.util.List;
 public class CommentDAO {
 
     private static CommentDAO commentDAO;
-    private static List<Comment> comments;
 
     private CommentDAO() {
-        comments = new ArrayList<Comment>();
     }
 
     public static CommentDAO getCommentDAO() {
@@ -34,17 +32,14 @@ public class CommentDAO {
                 WHERE id = ?;
                 """;
         try (Connection connection = DBConnector.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             int rows = stmt.executeUpdate();
-            if (rows > 0) {
-                return true;
-            }
+            return rows > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     public boolean createComment(int userId, int ticketId, String content) {
@@ -58,14 +53,11 @@ public class CommentDAO {
             stmt.setInt(2, ticketId);
             stmt.setString(3, content);
             int rows = stmt.executeUpdate();
-            if (rows > 0) {
-                return true;
-            }
+            return rows > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     public List<Comment> findByTicketId(int id) {
@@ -95,7 +87,7 @@ public class CommentDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
 }

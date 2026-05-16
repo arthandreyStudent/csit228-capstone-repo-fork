@@ -1,19 +1,26 @@
 package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.CommentDAO;
+import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
+import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.Comment;
 import com.csit228.capstone.model.TicketView;
+import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
+import com.csit228.capstone.utils.NotificationManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.TextArea;
+import javafx.scene.Node;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -22,6 +29,8 @@ import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class TicketDetailModelController {
@@ -75,10 +84,20 @@ public class TicketDetailModelController {
     @FXML
     public Label assignedToLabel;
     @FXML
+    public ComboBox<User> assignedToComboBox;
+    @FXML
+    public Button saveAssignmentButton;
+    @FXML
+    public Button returnTicketButton;
+    @FXML
+    public Button resolveTicketButton;
+    @FXML
     public TextArea reviewCommentArea;
 
     private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
     private final CommentDAO commentDAO = CommentDAO.getCommentDAO();
+    private final DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
+    private final UserDAO userDAO = UserDAO.getUserDAO();
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
     private TicketView currentTicket;
@@ -96,6 +115,10 @@ public class TicketDetailModelController {
         );
 
         ticketHeader.setBackground(new Background(new BackgroundFill(headerGradient, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        if (reviewCommentArea != null) {
+            reviewCommentArea.textProperty().addListener((observable, oldValue, newValue) -> updateSaveAssignmentButtonState());
+        }
     }
 
     public void loadTicket(TicketView ticket) {
@@ -108,6 +131,8 @@ public class TicketDetailModelController {
             setText(createdBy, safe(ticket.getCreatedBy(), "N/A"));
             setText(assignedToLabel, safe(ticket.getAssignedToName(), "Unassigned"));
             setText(departmentLabel, safe(ticket.getDepartmentName(), "N/A"));
+            configureAssignmentDropdown(ticket);
+            configureActionButtons(ticket);
             setDateTime(createdDateLabel, createdTimeLabel, ticket.getDateCreated());
             setDateTime(lastUpdatedDateLabel, lastUpdatedTimeLabel, ticket.getLastUpdated());
             setDateTime(deadlineDateLabel, deadlineTimeLabel, ticket.getDeadline());
@@ -116,6 +141,176 @@ public class TicketDetailModelController {
             handleChangesRequestedNotice(ticket);
             loadCommentHistory(ticket);
         }
+    }
+
+    private void configureAssignmentDropdown(TicketView ticket) {
+        if (assignedToComboBox == null) {
+            return;
+        }
+
+        assignedToComboBox.setOnAction(null);
+        assignedToComboBox.getItems().clear();
+        assignedToComboBox.setValue(null);
+        assignedToComboBox.setDisable(false);
+        assignedToComboBox.setButtonCell(userNameCell());
+        assignedToComboBox.setCellFactory(listView -> userNameCell());
+        if (saveAssignmentButton != null) {
+            saveAssignmentButton.setDisable(true);
+        }
+
+        boolean showDropdown = isOpenUnassigned(ticket);
+        setVisible(assignedToLabel, !showDropdown);
+        setVisible(assignedToComboBox, showDropdown);
+
+        if (!showDropdown) {
+            return;
+        }
+
+        List<User> departmentUsers = getDepartmentUsers(ticket);
+        assignedToComboBox.getItems().setAll(departmentUsers);
+
+        if (departmentUsers.isEmpty()) {
+            assignedToComboBox.setPromptText("No names found");
+            assignedToComboBox.setDisable(true);
+            return;
+        }
+
+        assignedToComboBox.setPromptText("Assign to...");
+        assignedToComboBox.setOnAction(event -> updateSaveAssignmentButtonState());
+    }
+
+    @FXML
+    public void onClickedSaveAssignment(ActionEvent event) {
+        if (isOpenUnassigned(currentTicket)) {
+            assignSelectedUser();
+            return;
+        }
+
+        if (isStatus(currentTicket, TicketStatus.IN_PROGRESS)) {
+            saveStandaloneComment();
+        }
+    }
+
+    private void updateSaveAssignmentButtonState() {
+        if (saveAssignmentButton == null || assignedToComboBox == null) {
+            return;
+        }
+
+        if (isOpenUnassigned(currentTicket)) {
+            saveAssignmentButton.setDisable(assignedToComboBox.getSelectionModel().getSelectedItem() == null);
+            return;
+        }
+
+        if (isStatus(currentTicket, TicketStatus.IN_PROGRESS)) {
+            saveAssignmentButton.setDisable(!hasReviewComment());
+            return;
+        }
+
+        saveAssignmentButton.setDisable(true);
+    }
+
+    private List<User> getDepartmentUsers(TicketView ticket) {
+        List<User> departmentUsers = new ArrayList<>();
+        if (ticket == null || ticket.isVolunteerTicket()) {
+            return departmentUsers;
+        }
+
+        Integer departmentId = departmentDAO.getDepartmentByName(ticket.getDepartmentName());
+        if (departmentId == null) {
+            return departmentUsers;
+        }
+
+        for (User user : userDAO.getUsersByDepartment(departmentId)) {
+            if (user != null) {
+                departmentUsers.add(user);
+            }
+        }
+        departmentUsers.sort(Comparator.comparing(User::getFullName, String.CASE_INSENSITIVE_ORDER));
+        return departmentUsers;
+    }
+
+    private ListCell<User> userNameCell() {
+        return new ListCell<User>() {
+            @Override
+            protected void updateItem(User user, boolean empty) {
+                super.updateItem(user, empty);
+                setText(empty || user == null ? null : user.getFullName());
+            }
+        };
+    }
+
+    private void assignSelectedUser() {
+        if (currentTicket == null || assignedToComboBox == null) {
+            return;
+        }
+
+        User selectedUser = assignedToComboBox.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            return;
+        }
+
+        boolean assigned = ticketDAO.assignTicket(selectedUser.getUserId(), currentTicket.getId());
+        boolean updated = ticketDAO.updateStatus(currentTicket.getId(), TicketStatus.IN_PROGRESS);
+
+        if (!assigned || !updated) {
+            showError("Unable to assign ticket.");
+            assignedToComboBox.getSelectionModel().clearSelection();
+            updateSaveAssignmentButtonState();
+            return;
+        }
+
+        saveReviewComment();
+        NotificationManager.notifyAssignee(selectedUser, currentTicket.getTitle(), getCurrentUserName());
+        currentTicket.setStatus(TicketStatus.IN_PROGRESS.name());
+        setText(assignedToLabel, selectedUser.getFullName());
+        setVisible(assignedToLabel, true);
+        setVisible(assignedToComboBox, false);
+        configureActionButtons(currentTicket);
+        populateBadges(currentTicket);
+    }
+
+    private void configureActionButtons(TicketView ticket) {
+        boolean showReviewActions = hasAssignee(ticket) && isStatus(ticket, TicketStatus.COMPLETED);
+        boolean showSaveAction = isOpenUnassigned(ticket) || isStatus(ticket, TicketStatus.IN_PROGRESS);
+
+        setVisible(saveAssignmentButton, showSaveAction);
+        if (saveAssignmentButton != null) {
+            saveAssignmentButton.setText(isStatus(ticket, TicketStatus.IN_PROGRESS) ? "Comment" : "Save");
+        }
+        updateSaveAssignmentButtonState();
+
+        setVisible(returnTicketButton, showReviewActions);
+        setVisible(resolveTicketButton, showReviewActions);
+    }
+
+    private void saveStandaloneComment() {
+        if (!hasReviewComment()) {
+            showError("Please enter a comment first.");
+            return;
+        }
+
+        saveReviewComment();
+        loadCommentHistory(currentTicket);
+        updateSaveAssignmentButtonState();
+    }
+
+    private boolean isOpenUnassigned(TicketView ticket) {
+        return ticket != null && isStatus(ticket, TicketStatus.OPEN) && !hasAssignee(ticket);
+    }
+
+    private boolean hasAssignee(TicketView ticket) {
+        return ticket != null && !isBlank(ticket.getAssignedToName());
+    }
+
+    private boolean isStatus(TicketView ticket, TicketStatus status) {
+        return ticket != null && ticket.getStatus() != null && ticket.getStatus().equalsIgnoreCase(status.name());
+    }
+
+    private String getCurrentUserName() {
+        if (AppSession.currentUser != null) {
+            return AppSession.currentUser.getFullName();
+        }
+        return safe(currentTicket != null ? currentTicket.getCreatedBy() : null, "TIX.org");
     }
 
     private void handleChangesRequestedNotice(TicketView ticket) {
@@ -343,6 +538,7 @@ public class TicketDetailModelController {
         }
 
         commentDAO.createComment(AppSession.currentUser.getUserId(), currentTicket.getId(), content.trim());
+        reviewCommentArea.clear();
     }
 
     @FXML
@@ -368,9 +564,24 @@ public class TicketDetailModelController {
         }
     }
 
+    private void setVisible(Node node, boolean visible) {
+        if (node != null) {
+            node.setManaged(visible);
+            node.setVisible(visible);
+        }
+    }
+
     private void setDateTime(Label dateLabel, Label timeLabel, java.time.LocalDateTime dateTime) {
         setText(dateLabel, dateTime != null ? dateTime.format(dateFormatter) : "N/A");
         setText(timeLabel, dateTime != null ? dateTime.format(timeFormatter) : "");
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    private boolean hasReviewComment() {
+        return reviewCommentArea != null && !isBlank(reviewCommentArea.getText());
     }
 
     private String safe(String value) {

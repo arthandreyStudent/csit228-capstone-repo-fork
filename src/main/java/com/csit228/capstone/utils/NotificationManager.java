@@ -2,14 +2,11 @@ package com.csit228.capstone.utils;
 
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.NotificationDAO;
-import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.model.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Centralizes all notification logic for ticket lifecycle events.
@@ -27,7 +24,6 @@ public class NotificationManager {
     private static final NotificationDAO notificationDAO = NotificationDAO.getNotificationDAO();
     private static final UserDAO         userDAO         = UserDAO.getUserDAO();
     private static final DepartmentDAO   departmentDAO   = DepartmentDAO.getDepartmentDAO();
-    private static final TicketDAO ticketDAO   = TicketDAO.getTicketDAO();
 
     public static void notifyAssignee(User assignedUser, String ticketTitle, String assignerName) {
         if (assignedUser == null) return;
@@ -47,11 +43,19 @@ public class NotificationManager {
         String message = isVolunteer ? creatorName + " created a volunteer ticket: \"" + ticket.getTitle() + "\""
                                      : creatorName + " created a ticket in your department: \"" + ticket.getTitle() + "\"";
 
-        List<User> recipients = isVolunteer ? userDAO.getUsers() : userDAO.getUsersByDepartment((departmentDAO.getDepartmentByID(ticket.getDepartmentId())).getId());
+        List<User> recipients = isVolunteer ? userDAO.getMembers() : getDepartmentMembers(ticket.getDepartmentId());
 
         if (!recipients.isEmpty()) {
             notificationDAO.createNotifications(recipients, title, message);
         }
+    }
+
+    private static List<User> getDepartmentMembers(Integer departmentId) {
+        if (departmentId == null || departmentDAO.getDepartmentByID(departmentId) == null) {
+            return new ArrayList<>();
+        }
+
+        return userDAO.getMembersByDepartment(departmentId);
     }
 
     public static void notifyCreator(TicketView ticket, String memberName) {

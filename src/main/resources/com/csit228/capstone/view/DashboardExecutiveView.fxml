@@ -163,10 +163,10 @@
                         <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
                             <children>
                                 <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Unassigned" />
-                                <Label fx:id="unassignedLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #2f95ff; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #e0efff; -fx-background-radius: 50;">
+                                <Label fx:id="unassignedLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #3B82F6; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #DBEAFE; -fx-background-radius: 50;">
                                     <children>
-                                        <Label style="-fx-text-fill: #2f95ff; -fx-font-size: 18px; -fx-font-weight: bold;" text="BOX" />
+                                        <Label style="-fx-text-fill: #3B82F6; -fx-font-size: 18px; -fx-font-weight: bold;" text="BOX" />
                                     </children>
                                 </StackPane>
                             </children>
@@ -175,10 +175,10 @@
                         <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
                             <children>
                                 <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="In Progress" />
-                                <Label fx:id="inProgressLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #ffedcc; -fx-background-radius: 50;">
+                                <Label fx:id="inProgressLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #F59E0B; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #FEF3C7; -fx-background-radius: 50;">
                                     <children>
-                                        <Label style="-fx-text-fill: #ff9900; -fx-font-size: 22px;" text="..." />
+                                        <Label style="-fx-text-fill: #F59E0B; -fx-font-size: 22px;" text="..." />
                                     </children>
                                 </StackPane>
                             </children>
@@ -187,10 +187,10 @@
                         <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
                             <children>
                                 <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Resolved (MTD)" />
-                                <Label fx:id="resolvedLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #4bcc8a; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #dcffef; -fx-background-radius: 50;">
+                                <Label fx:id="resolvedLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #8B5CF6; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #EDE9FE; -fx-background-radius: 50;">
                                     <children>
-                                        <Label style="-fx-text-fill: #4bcc8a; -fx-font-size: 28px; -fx-font-weight: bold;" text="✓" />
+                                        <Label style="-fx-text-fill: #8B5CF6; -fx-font-size: 28px; -fx-font-weight: bold;" text="✓" />
                                     </children>
                                 </StackPane>
                             </children>

@@ -2,7 +2,6 @@ package com.csit228.capstone.dao;
 
 import com.csit228.capstone.database.DBConnector;
 import com.csit228.capstone.model.Department;
-import com.csit228.capstone.model.Job;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -22,13 +21,17 @@ public class DepartmentDAO {
   
   public List<Department> getDepartments() {
     ensureDepartmentsLoaded();
-    return departments;
+    return new ArrayList<>(departments);
   }
 
   public Integer getDepartmentByName(String name) {
+    if (name == null || name.trim().isEmpty()) {
+      return null;
+    }
+
     ensureDepartmentsLoaded();
     for (Department d : departments) {
-      if (d.getName().equalsIgnoreCase(name)) return d.getId();
+      if (d.getName().equalsIgnoreCase(name.trim())) return d.getId();
     }
     return null;
   }
