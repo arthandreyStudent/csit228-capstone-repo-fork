@@ -1,20 +1,25 @@
 package com.csit228.capstone.controller;
 
+import com.csit228.capstone.dao.NotificationDAO;
+import com.csit228.capstone.model.Role;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
-import com.csit228.capstone.utils.Formatter;
+import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DashboardEditorController extends StaffDashboardController {
   
@@ -34,25 +39,7 @@ public class DashboardEditorController extends StaffDashboardController {
   private Label sentBackLabel;
   
   @FXML
-  private Label reviewApprovalPercentLabel;
-  
-  @FXML
-  private Label approvedStatLabel;
-  
-  @FXML
-  private Label sentBackStatLabel;
-  
-  @FXML
-  private Label editedStatLabel;
-  
-  @FXML
-  private Label totalReviewsStatLabel;
-  
-  @FXML
   private VBox reviewQueueBox;
-  
-  @FXML
-  private VBox recentActivityBox;
   
   @FXML
   private Button allFilterButton;
@@ -68,6 +55,14 @@ public class DashboardEditorController extends StaffDashboardController {
   
   @FXML
   private Button resolvedFilterButton;
+
+  @FXML
+  private TextField titleField;
+
+  @FXML
+  private TextField descriptionTextField;
+
+  private final NotificationDAO notificationDAO = NotificationDAO.getNotificationDAO();
   
   private ReviewQueueFilter currentFilter = ReviewQueueFilter.ALL;
   
@@ -92,7 +87,6 @@ public class DashboardEditorController extends StaffDashboardController {
   protected void renderDashboard() {
     updateSummaryCardsAndReviewStats();
     loadReviewQueue();
-    loadRecentActivity(recentActivityBox);
   }
   
   @Override
@@ -177,20 +171,17 @@ public class DashboardEditorController extends StaffDashboardController {
   }
   
   private void updateSummaryCardsAndReviewStats() {
-    int inProgress = 0, toBeReviewed = 0, resolved = 0, sentBack = 0, edited = 0, totalReviews = 0;
+    int inProgress = 0, toBeReviewed = 0, resolved = 0, sentBack = 0;
     
     for (TicketView ticket : tickets) {
       if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) {
         inProgress++;
-        edited++;
       }
       if (isStatus(ticket, TicketStatus.COMPLETED.name())) {
         toBeReviewed++;
-        totalReviews++;
       }
       if (isStatus(ticket, TicketStatus.RESOLVED.name())) {
         resolved++;
-        totalReviews++;
       }
     }
     
@@ -198,14 +189,6 @@ public class DashboardEditorController extends StaffDashboardController {
     inProgressLabel.setText(String.valueOf(inProgress));
     approvedTodayLabel.setText(String.valueOf(resolved));
     sentBackLabel.setText(String.valueOf(sentBack));
-    
-    approvedStatLabel.setText(String.valueOf(resolved));
-    sentBackStatLabel.setText(String.valueOf(sentBack));
-    editedStatLabel.setText(String.valueOf(edited));
-    totalReviewsStatLabel.setText(String.valueOf(totalReviews));
-    
-    double approvalRate = totalReviews <= 0 ? 0 : (double) resolved / totalReviews;
-    reviewApprovalPercentLabel.setText(Formatter.formatPercent(approvalRate));
     reviewQueueCountLabel.setText(String.valueOf(getFilteredTicketCount()));
   }
   
@@ -332,5 +315,75 @@ public class DashboardEditorController extends StaffDashboardController {
     } catch (IOException e) {
       showError("Unable to open Create Ticket modal.");
     }
+  }
+
+  @FXML
+  public void createAnnouncement() {
+    String title = titleField != null ? titleField.getText().trim() : "";
+    String description = descriptionTextField != null ? descriptionTextField.getText().trim() : "";
+
+    if (title.isEmpty()) {
+      showError("Please enter an announcement title.");
+      return;
+    }
+
+    if (description.isEmpty()) {
+      showError("Please enter an announcement description.");
+      return;
+    }
+
+    User currentUser = AppSession.currentUser;
+
+    if (currentUser == null) {
+      showError("No logged-in editor found.");
+      return;
+    }
+
+    if (currentUser.getDepartment_id() <= 0) {
+      showError("Your account is not assigned to a department.");
+      return;
+    }
+
+    List<User> recipients = getAnnouncementRecipients(currentUser);
+
+    if (recipients.isEmpty()) {
+      showError("No department members found to receive this announcement.");
+      return;
+    }
+
+    int sentCount = notificationDAO.createNotifications(recipients, title, description);
+
+    if (sentCount <= 0) {
+      showError("Unable to create announcement.");
+      return;
+    }
+
+    titleField.clear();
+    descriptionTextField.clear();
+    showInfo("Announcement sent to " + sentCount + " user" + (sentCount == 1 ? "." : "s."));
+  }
+
+  @FXML
+  public void createAnnounement() {
+    createAnnouncement();
+  }
+
+  private List<User> getAnnouncementRecipients(User currentUser) {
+    List<User> recipients = new ArrayList<>();
+    Set<Integer> seenUserIds = new HashSet<>();
+    int currentUserId = currentUser.getUserId();
+    int departmentId = currentUser.getDepartment_id();
+
+    for (User user : userDAO.getUserByDepartment(departmentId)) {
+      if (user == null || user.getUserId() == currentUserId || !user.hasRole(Role.MEMBER)) {
+        continue;
+      }
+
+      if (seenUserIds.add(user.getUserId())) {
+        recipients.add(user);
+      }
+    }
+
+    return recipients;
   }
 }
