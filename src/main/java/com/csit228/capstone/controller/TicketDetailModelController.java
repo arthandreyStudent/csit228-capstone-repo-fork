@@ -142,7 +142,7 @@ public class TicketDetailModelController {
             return;
         }
 
-        // Determine the user and time who rejected it. Since it's from the comments later, we'll placeholder it for now.
+
         String returnedByStr = "Editor/Executive";
         String returnedDate = "Recently";
 
@@ -150,7 +150,7 @@ public class TicketDetailModelController {
             returnedDate = ticket.getLastUpdated().format(DateTimeFormatter.ofPattern("MMM d, yyyy • hh:mm a"));
         }
 
-        // IF WE REACH HERE, WE MUST SHOW IT.
+
         changesRequestedNoticeContainer.setVisible(true);
         changesRequestedNoticeContainer.setManaged(true);
         if (changesRequestedNoticeContainer.getParent() instanceof HBox) {
@@ -216,7 +216,7 @@ public class TicketDetailModelController {
         priorityBadgeContainer.setStyle("-fx-background-color: transparent;");
         priorityBadgeContainer.setAlignment(Pos.CENTER_LEFT);
 
-        // Status Badge
+
         String status = ticket.getStatus() != null ? ticket.getStatus().toUpperCase() : "OPEN";
         String statusBg = "-dodger-blue-bg-accent";
         String statusText = "-dodger-blue-accent";

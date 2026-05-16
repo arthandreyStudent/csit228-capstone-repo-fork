@@ -11,17 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// INSERT INTO comment(ticket_id,user_id,content) VALUES(22,14,"this good");
-//CREATE TABLE comment(
-//        id INT AUTO_INCREMENT PRIMARY KEY,
-//        ticket_id INT,
-//        user_id INT,
-//        content VARCHAR(1000) NOT NULL,
-//date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
-//
-//FOREIGN KEY (ticket_id) REFERENCES ticket(id),
-//FOREIGN KEY (user_id)) REFERENCES user(id)
-//)
+
 public class CommentDAO {
 
     private static CommentDAO commentDAO;

@@ -105,7 +105,6 @@ public class UserDAO {
         }
     }
 
-    //int userId, String firstname, String lastname, String username, String passwordHash, Role
     public User getUser(int id) {
         ensureUsersLoaded();
 
@@ -143,11 +142,8 @@ public class UserDAO {
         ensureUsersLoaded();
 
         String h = Hash.hashWithSHA256(password.trim());
-        //        System.out.println(h);
         for (User u : users) {
-            //            System.out.println(u.getPasswordHash());
             if (u.getUsername().trim().equals(username.trim()) && u.getPasswordHash().equals(h)) {
-                //                System.out.println("ASDAS");
                 return u;
             }
         }
