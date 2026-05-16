@@ -127,8 +127,19 @@ public class UserDAO {
     }
     return null;
   }
+
+  public User getUserByName(String fullname) {
+    ensureUsersLoaded();
+
+    for (User u : users) {
+      if (u.getFullName().equals(fullname)) {
+        return u;
+      }
+    }
+    return null;
+  }
   
-  public List<User> getUserByDepartment(int id) {
+  public List<User> getUsersByDepartment(int id) {
     ensureUsersLoaded();
     
     List<User> departmentUsers = usersByDepartment.get(id);
@@ -170,6 +181,12 @@ public class UserDAO {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  public List<User> getUsers() {
+    if (users == null) fetchUsers();
+    return users;
+
   }
   
   public static void main(String[] args) {

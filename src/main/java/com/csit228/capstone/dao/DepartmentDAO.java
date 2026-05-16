@@ -24,6 +24,16 @@ public class DepartmentDAO {
     ensureDepartmentsLoaded();
     return departments;
   }
+
+  public Integer getDepartmentByName(String name) {
+    ensureDepartmentsLoaded();
+
+    for (Department d : departments) {
+      if (d.getName().equalsIgnoreCase(name)) return d.getId();
+
+    }
+    return null;
+  }
   
   public Department getDepartmentByID(int id) {
     ensureDepartmentsLoaded();

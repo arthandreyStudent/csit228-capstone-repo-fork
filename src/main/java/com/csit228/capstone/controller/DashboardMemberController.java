@@ -6,6 +6,7 @@ import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.ListRowItem;
+import com.csit228.capstone.utils.NotificationManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -54,7 +55,7 @@ public class DashboardMemberController extends BaseDashboardController {
     updateSummaryCards();
     loadAvailableTickets();
     loadVolunteerBoard();
-    loadMemberActivity();
+    loadRecentActivity(activityBox);
   }
   
   @Override
@@ -111,7 +112,7 @@ public class DashboardMemberController extends BaseDashboardController {
     String keyword = searchField != null ? searchField.getText() : "";
     
     for (TicketView ticket : getSortedTicketsByDeadline()) {
-      if (!isAvailableTicket(ticket) || isVolunteerTicket(ticket))
+      if (!isAvailableTicket(ticket) || ticket.isVolunteerTicket())
         continue;
       if (!matchesTicketSearch(ticket, keyword))
         continue;
@@ -129,7 +130,7 @@ public class DashboardMemberController extends BaseDashboardController {
     int count = 0;
     
     for (TicketView ticket : getSortedTicketsByDeadline()) {
-      if (!isAvailableTicket(ticket) || !isVolunteerTicket(ticket))
+      if (!isAvailableTicket(ticket) || ticket.isVolunteerTicket())
         continue;
       if (!matchesTicketSearch(ticket, keyword))
         continue;
@@ -143,29 +144,7 @@ public class DashboardMemberController extends BaseDashboardController {
     }
   }
   
-  private void loadMemberActivity() {
-    activityBox.getChildren().clear();
-    
-    int count = 0;
-    
-    for (TicketView ticket : tickets) {
-      if (!isAssignedToCurrentUser(ticket)) continue;
 
-      Notification notification = new Notification(
-        ticket.getId(),
-        "You have \"" + ticket.getTitle() + "\" with status " + safe(ticket.getStatus()),
-        false,                  // isRead
-        LocalDateTime.now(),
-        getCurrentUserId(), ticket.getTitle()
-              
-      );
-
-      activityBox.getChildren().add(ListRowItem.forActivity(notification));
-      
-      if (++count >= 8)
-        break;
-    }
-  }
   
   private void takeTicket(TicketView ticket) {
     User currentUser = AppSession.currentUser;
@@ -179,6 +158,7 @@ public class DashboardMemberController extends BaseDashboardController {
     boolean updated = ticketDAO.updateStatus(ticket.getId(), TicketStatus.IN_PROGRESS);
     
     if (assigned && updated) {
+      NotificationManager.notifyCreator(ticket, currentUser.getFullName());
       showInfo("Ticket added to your tasks.");
       refreshDashboard();
     } else {

@@ -269,4 +269,15 @@ public class TicketDAO {
     }
   }
 
+  public TicketView getTicketViewById(int id) {
+    ensureTicketViewsLoaded();
+
+    for (TicketView t : tickets) {
+      if (t.getId() == id) {
+        return t;
+      }
+    }
+    return null;
+  }
+
 }

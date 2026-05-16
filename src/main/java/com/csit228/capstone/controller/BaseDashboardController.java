@@ -1,20 +1,20 @@
 package com.csit228.capstone.controller;
 
+import com.csit228.capstone.dao.NotificationDAO;
 import com.csit228.capstone.dao.TicketDAO;
+import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.observer.DashboardObserver;
 import com.csit228.capstone.observer.TicketWatcher;
-import com.csit228.capstone.utils.AppSession;
-import com.csit228.capstone.utils.Controls;
-import com.csit228.capstone.utils.Formatter;
-import com.csit228.capstone.utils.TicketDeadlineComparator;
+import com.csit228.capstone.utils.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -40,6 +40,7 @@ public abstract class BaseDashboardController implements DashboardObserver {
   
   protected final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
   protected List<TicketView> tickets = new ArrayList<>();
+  protected final NotificationDAO notificationDAO = NotificationDAO.getNotificationDAO();
 
   protected abstract String getDefaultRoleName();
   protected abstract void refreshDashboard();
@@ -125,15 +126,7 @@ public abstract class BaseDashboardController implements DashboardObserver {
       return false;
     return LocalDate.now().isAfter(ticket.getDeadline().toLocalDate());
   }
-  
-  protected boolean isVolunteerTicket(TicketView ticket) {
-    if (ticket == null)
-      return false;
-    String dept = ticket.getDepartmentName();
-    return (dept == null || dept.trim().isEmpty() || dept.equalsIgnoreCase("N/A") ||
-            dept.equalsIgnoreCase("Volunteer"));
-  }
-  
+
   protected boolean matchesTicketSearch(TicketView ticket, String keyword) {
     if (keyword == null || keyword.trim().isEmpty())
       return true;
@@ -174,5 +167,16 @@ public abstract class BaseDashboardController implements DashboardObserver {
     alert.showAndWait();
   }
 
+  protected void loadRecentActivity(VBox activityBox) {
+    activityBox.getChildren().clear();
+
+    List<Notification> recentNotifications = notificationDAO.getNotificationsByUserId(getCurrentUserId());
+
+    int count = 0;
+    for (Notification notification : recentNotifications) {
+      activityBox.getChildren().add(ListRowItem.forActivity(notification));
+      if (++count >= 8) break;
+    }
+  }
 
 }

@@ -198,7 +198,7 @@ public class DashboardEditorController extends StaffDashboardController {
     String keyword = searchField != null ? searchField.getText() : "";
     
     for (TicketView ticket : getSortedTicketsByDeadline()) {
-      if (isVolunteerTicket(ticket) && isUnassigned(ticket))
+      if (ticket.isVolunteerTicket() && isUnassigned(ticket))
         continue;
       if (!matchesCurrentFilter(ticket))
         continue;
@@ -374,7 +374,7 @@ public class DashboardEditorController extends StaffDashboardController {
     int currentUserId = currentUser.getUserId();
     int departmentId = currentUser.getDepartment_id();
 
-    for (User user : userDAO.getUserByDepartment(departmentId)) {
+    for (User user : userDAO.getUsersByDepartment(departmentId)) {
       if (user == null || user.getUserId() == currentUserId || !user.hasRole(Role.MEMBER)) {
         continue;
       }
