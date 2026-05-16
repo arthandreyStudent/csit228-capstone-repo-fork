@@ -19,6 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Button;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -46,7 +47,11 @@ public abstract class BaseDashboardController implements DashboardObserver {
   
   @FXML
   protected ComboBox<String> deadlineSortComboBox;
-  
+
+  @FXML
+  protected Button profileButton;
+
+  private boolean isProfileViewOpen = false;
   protected final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
   protected List<TicketView> tickets = new ArrayList<>();
   protected final NotificationDAO notificationDAO = NotificationDAO.getNotificationDAO();
@@ -155,11 +160,22 @@ public abstract class BaseDashboardController implements DashboardObserver {
 
   @FXML
   public void onClickedProfile() {
+      if (isProfileViewOpen) {
+          return;
+      }
+
       try {
+          isProfileViewOpen = true;
+
+          if (profileButton != null) {
+              profileButton.setDisable(true);
+          }
+
           if (mainContentPane == null) {
               showError("Main content area was not found.");
+              resetProfileButton();
               return;
-           }
+          }
 
           if (dashboardContentNodes.isEmpty()) {
               dashboardContentNodes.addAll(mainContentPane.getChildren());
@@ -184,15 +200,26 @@ public abstract class BaseDashboardController implements DashboardObserver {
       } catch (IOException e) {
           e.printStackTrace();
           showError("Unable to open Profile.");
+          resetProfileButton();
       }
   }
 
-    private void showDashboardContent() {
-        if (mainContentPane == null) {
-            return;
-        }
-        mainContentPane.getChildren().setAll(dashboardContentNodes);
-    }
+  private void showDashboardContent() {
+      if (mainContentPane == null) {
+          return;
+      }
+
+      mainContentPane.getChildren().setAll(dashboardContentNodes);
+      resetProfileButton();
+  }
+
+  private void resetProfileButton() {
+      isProfileViewOpen = false;
+
+      if (profileButton != null) {
+          profileButton.setDisable(false);
+      }
+  }
 
   @FXML
   public void onClickedLogout() throws IOException {
