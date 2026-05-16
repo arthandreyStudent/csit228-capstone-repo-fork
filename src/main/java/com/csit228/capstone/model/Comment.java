@@ -48,9 +48,6 @@ public class Comment {
     );
   }
 
-  public Integer getTicketId() {
-    return ticketId;
-  }
 
   public String getContent() {
     return content;

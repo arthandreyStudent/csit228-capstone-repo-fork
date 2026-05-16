@@ -124,7 +124,7 @@ public class JobDAO {
 
             while (resultSet.next()) {
                 department.getJobs().add(new Job(resultSet.getInt("id"), resultSet.getString("name")));
-                //                System.out.println("Added " + resultSet.getString("name") + " to " + department.getName());
+
             }
         } catch (SQLException e) {
             System.out.println("Unable to fetch");

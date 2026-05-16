@@ -23,7 +23,6 @@ public final class AppSession {
     currentUser = (User) serializer.deserialize();
   }
   
-  // Added some more helper methods related to user session managements
   public static void saveSession(User user) {
     currentUser = user;
     serializer.setUser(user);
@@ -43,7 +42,6 @@ public final class AppSession {
         boolean deleted = sessionFile.delete();
         
         if (!deleted) {
-          // If delete fails, empty the file instead.
           new java.io.FileOutputStream(sessionFile, false).close();
         }
       }
@@ -52,9 +50,7 @@ public final class AppSession {
     }
   }
   
-  // This method is what determines which screen to show based on the current user's role. This returns the path of
-  // the JavaFX FXML file that should be loaded as the initial screen when the application starts. If there is no
-  // user logged in, it defaults to the login screen.
+
   public static String getInitialScreen() {
     if (currentUser == null || currentUser.getRole() == null) {
       return "LoginView.fxml";

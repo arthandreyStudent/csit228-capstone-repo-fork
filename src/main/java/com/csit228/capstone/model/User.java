@@ -28,10 +28,7 @@ public abstract class User implements Serializable {
     return department_id;
   }
   
-  public void setDepartment_id(int department_id) {
-    this.department_id = department_id;
-  }
-  
+
   public User(int userId, String firstName, String lastName, String username, String passwordHash, Role role,
               int department_id) {
     this.userId = userId;
