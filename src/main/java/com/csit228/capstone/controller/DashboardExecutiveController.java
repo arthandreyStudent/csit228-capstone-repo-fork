@@ -243,7 +243,7 @@ public class DashboardExecutiveController extends StaffDashboardController {
     if (selectedDepartmentName == null || selectedDepartmentName.trim().isEmpty())
       return true;
     if (VOLUNTEER_TAB_NAME.equalsIgnoreCase(selectedDepartmentName))
-      return isVolunteerTicket(ticket);
+      return ticket.isVolunteerTicket();
     return (ticket.getDepartmentName() != null && ticket.getDepartmentName().equalsIgnoreCase(selectedDepartmentName));
   }
   

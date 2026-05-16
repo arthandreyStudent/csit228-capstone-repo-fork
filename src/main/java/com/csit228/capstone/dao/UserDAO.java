@@ -126,6 +126,26 @@ public class UserDAO {
         }
         return null;
     }
+    return null;
+  }
+
+  public User getUserByName(String fullname) {
+    ensureUsersLoaded();
+
+    for (User u : users) {
+      if (u.getFullName().equals(fullname)) {
+        return u;
+      }
+    }
+    return null;
+  }
+  
+  public List<User> getUsersByDepartment(int id) {
+    ensureUsersLoaded();
+    
+    List<User> departmentUsers = usersByDepartment.get(id);
+    if (departmentUsers == null) {
+      return new ArrayList<>();
 
     public List<User> getUserByDepartment(int id) {
         ensureUsersLoaded();
@@ -167,6 +187,17 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
+  }
+
+  public List<User> getUsers() {
+    if (users == null) fetchUsers();
+    return users;
+
+  }
+
+  private void ensureUsersLoaded() {
+    if (!usersLoaded) {
+      fetchUsers();
 
 
     public String getJobNameByUserId(int userId) {

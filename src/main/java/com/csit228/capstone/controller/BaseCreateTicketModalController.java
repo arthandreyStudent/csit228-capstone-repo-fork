@@ -6,6 +6,7 @@ import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.*;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.FormValidator;
+import com.csit228.capstone.utils.NotificationManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -95,12 +96,14 @@ public abstract class BaseCreateTicketModalController {
       return;
     
     LocalDateTime now = LocalDateTime.now();
+    Ticket ticket;
     ticketDAO.createTicket(
-      new Ticket(0, title, description, priority, deadline, TicketStatus.OPEN, currentUser.getUserId(), null, now, now,
+      ticket = new Ticket(0, title, description, priority, deadline, TicketStatus.OPEN, currentUser.getUserId(), null, now, now,
                  resolveDepartmentId(department)));
     submitted = true;
-    
+
     System.out.println("Ticket successfully created!");
+    NotificationManager.notifyCreation(ticket, currentUser.getFullName());
     closeModal(buttonCreateTicket);
   }
   

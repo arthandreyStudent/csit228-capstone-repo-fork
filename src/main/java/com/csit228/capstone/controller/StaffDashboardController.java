@@ -1,12 +1,14 @@
 package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.DepartmentDAO;
+import com.csit228.capstone.dao.NotificationDAO;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.enums.Role;
 import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.*;
 import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
+import com.csit228.capstone.utils.NotificationManager;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,6 +23,82 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class StaffDashboardController extends BaseDashboardController {
+  
+  @FXML
+  protected Button createTicketButton;
+  
+  protected final DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
+  protected final UserDAO userDAO = UserDAO.getUserDAO();
+  protected List<Department> departments = new ArrayList<>();
+
+  
+  protected void loadDepartments() {
+    departments = new ArrayList<>(departmentDAO.getDepartments());
+  }
+  
+  protected List<User> getAssignableMembersForTicket(TicketView ticket) {
+    int departmentId = getDepartmentIdByName(ticket.getDepartmentName());
+    
+    if (departmentId > 0) {
+      List<User> result = new ArrayList<>();
+      for (User user : userDAO.getUsersByDepartment(departmentId)) {
+        if (user != null && user.hasRole(Role.MEMBER)) {
+          result.add(user);
+        }
+      }
+      return result;
+    }
+    
+    return getAllMembers();
+  }
+  
+  protected List<User> getAllMembers() {
+    List<User> members = new ArrayList<>();
+    for (Department department : departments) {
+      for (User user : userDAO.getUsersByDepartment(department.getId())) {
+        if (user != null && user.hasRole(Role.MEMBER)) {
+          members.add(user);
+        }
+      }
+    }
+    return members;
+  }
+  
+  protected int getDepartmentIdByName(String departmentName) {
+    if (departmentName == null)
+      return -1;
+    
+    for (Department department : departments) {
+      if (department.getName().equalsIgnoreCase(departmentName.trim())) {
+        return department.getId();
+      }
+    }
+    
+    return -1;
+  }
+  
+  protected void assignTicketToUser(TicketView ticket, User user) {
+    if (user == null) {
+      showInfo("Please select a member first.");
+      return;
+    }
+    
+    boolean assigned = ticketDAO.assignTicket(user.getUserId(), ticket.getId());
+    boolean updated = ticketDAO.updateStatus(ticket.getId(), TicketStatus.IN_PROGRESS);
+    
+    if (assigned && updated) {
+      NotificationManager.notifyAssignee(user, ticket.getTitle(), ticket.getCreatedBy());
+      showInfo("Ticket assigned to " + user.getFullName() + ".");
+      refreshDashboard();
+    } else {
+      showError("Unable to assign ticket.");
+    }
+  }
+  
+  protected void updateTicketStatus(TicketView ticket, TicketStatus status, String successMessage) {
+    if (ticket == null) {
+      showError("No ticket selected.");
+      return;
 
     @FXML
     protected Button createTicketButton;
@@ -73,6 +151,15 @@ public abstract class StaffDashboardController extends BaseDashboardController {
 
         return -1;
     }
+    
+    modalStage.setScene(new Scene(root));
+    modalStage.setResizable(false);
+    modalStage.sizeToScene();
+    modalStage.setOnShown(event -> modalStage.centerOnScreen());
+    modalStage.showAndWait();
+  }
+
+
 
     protected void assignTicketToUser(TicketView ticket, User user) {
         if (user == null) {

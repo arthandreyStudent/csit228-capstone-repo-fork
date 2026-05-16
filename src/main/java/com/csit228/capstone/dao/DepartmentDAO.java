@@ -9,12 +9,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentDAO {
+  
+  private static List<Department> departments;
+  private static boolean departmentsLoaded;
+  private static DepartmentDAO departmentDAO;
+  private final JobDAO jobDAO = JobDAO.getJobDAO();
+  
+  private DepartmentDAO() {
+    departments = new ArrayList<>();
+    departmentsLoaded = false;
+  }
+  
+  public List<Department> getDepartments() {
+    ensureDepartmentsLoaded();
+    return departments;
+  }
 
-    private static List<Department> departments;
-    private static boolean departmentsLoaded;
-    private static DepartmentDAO departmentDAO;
-    private final JobDAO jobDAO = JobDAO.getJobDAO();
-
+  public Integer getDepartmentByName(String name) {
+    ensureDepartmentsLoaded();
+    for (Department d : departments) {
+      if (d.getName().equalsIgnoreCase(name)) return d.getId();
+    }
+    return null;
+  }
+  
+  public Department getDepartmentByID(int id) {
+    ensureDepartmentsLoaded();
+    for (Department d : departments) {
+      if (d.getId() == id)
+        return d;
+    return null;
+   }
+    
     private DepartmentDAO() {
         departments = new ArrayList<>();
         departmentsLoaded = false;

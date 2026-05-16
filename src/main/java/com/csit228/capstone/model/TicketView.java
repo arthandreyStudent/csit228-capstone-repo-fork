@@ -149,4 +149,10 @@ public class TicketView {
   public LocalDateTime getDateCreated() {
     return dateCreated;
   }
+
+  public boolean isVolunteerTicket() {
+    return (departmentName == null || departmentName.trim().isEmpty()
+            || departmentName.equalsIgnoreCase("N/A")
+            || departmentName.equalsIgnoreCase("Volunteer"));
+  }
 }
