@@ -30,8 +30,8 @@ Tickets track tasks through the system via an explicitly defined state machine u
 ## 4. UI/Business Synchronization Assumptions
 - **"Start Work" Separation**: An `OPEN` ticket assigned to a member will appear in their "My Tasks" but remains `OPEN`. The ticket will transition to `IN_PROGRESS` only when the member explicitly initiates it through the UI, ensuring timeline metrics reflect actual active working time.
 - **Department Siloing**: Tickets attached to a specific `department_id` must only pull `User` entities working inside that department when generating dropdown lists for assignment. If a ticket has no department, it is accessible organization-wide.
+- **Changes Requested Notification**: When Editor rejects it and sets to `IN_PROGRESS` or `SENT_BACK`, a dynamic alert block appears exclusively for the ticket's `MEMBER` displaying rejection reasoning while staying hidden from `EXECUTIVE` and `EDITOR`.
 
 ## 5. Important Edge Cases & Hidden Rules
 - **Null Assignments**: In the database, an unassigned ticket is stored with `assigned_to = NULL` (instead of `-1`), maintaining foreign key integrity and representing the true state in SQL.
 - **Overdue Detection**: Handled dynamically during UI rendering (e.g., comparing `deadline` to `LocalDate.now()`). Overdue logic is skipped if the ticket is `RESOLVED` or `COMPLETED`. 
-

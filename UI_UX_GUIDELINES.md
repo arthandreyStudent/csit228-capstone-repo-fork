@@ -28,6 +28,8 @@ The JavaFX application targets an organizational productivity tool standard: cle
 - **Data View Pattern**: 
   - If a field is interactive, display traditional controls (`ComboBox`, `TextField`).
   - If a state blocks interaction (e.g., ticket is assigned), hide the dropdown and surface a read-only `Label`. (Do not fall back to disabled dropdowns unless specifically necessary, as it feels restrictive to users).
+- **Master Ticket Detail Pattern**: We utilize a singular `MasterTicketDetailModalView.fxml` combined with programmatic conditional rendering. Dynamic states (e.g., "Changes Requested" alert box) collapse their parent layouts gracefully (`setManaged(false)`) when not appropriate to the user's role to prevent layout gaps.
+- **Programmatic Badges**: Status and Priority badges are generated programmatically referencing CSS variables (e.g., `-dodger-blue-bg-accent`, `-web-orange-accent`) simulating a "Figma Component" approach.
 
 ### 3. Missing States & Interaction Safety
 - **Loading States**: Since JDBC connectivity is synchronous on the JavaFX thread, large database fetches inherently freeze the UI. 

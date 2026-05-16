@@ -41,4 +41,4 @@ The system is in active development (Capstone project). Core UI navigation and d
 ## Important Design Decisions
 - **Custom View Models (`TicketView`)**: Allows complex UI tables and lists to bypass N+1 queries by joining multiple tables directly in SQL (e.g. fetching author names instead of IDs).
 - **Role-based Dashboards**: Distinct FXML layouts and base controllers for different user capabilities rather than rendering conditional UI inside a single massive dashboard controller.
-
+- **Master FXML + Dynamic Injection**: The application uses a single `MasterTicketDetailModalView.fxml` for viewing ticket details across all roles and ticket statuses, dynamically injecting actions and UI elements via `MasterTicketDetailModalController` to strictly adhere to DRY principles.

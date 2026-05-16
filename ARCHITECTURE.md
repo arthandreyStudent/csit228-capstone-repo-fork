@@ -9,6 +9,7 @@ The project implements a **Model-View-Controller (MVC)** pattern combined with a
 - **Responsibility**: Define the UI structure, layouts, and data binding boundaries. Uses internal CSS (`app.css`) for styling.
 - **Location**: `src/main/resources/com/csit228/capstone/view/`
 - **Key Files**: `DashboardExecutiveView.fxml`, `DashboardMemberView.fxml`, `LoginView.fxml`, etc.
+- **Design Notes**: Employs a composite UI architecture. Rather than duplicating `.fxml` files per role/status state (e.g., 3 roles × 4 statuses = 12 views), a `MasterTicketDetailModalView.fxml` is dynamically reconfigured at runtime by its controller.
 
 ### 2. Controller Layer
 - **Responsibility**: Handle user events, validate form inputs, interact with DAOs, and coordinate navigation/modal presentation.
@@ -49,4 +50,3 @@ The project implements a **Model-View-Controller (MVC)** pattern combined with a
 - **Tight Coupling to UI Thread**: Database calls are often executed on the main JavaFX Application Thread, leading to potential freezing UI when under load or high latency.
 - **Static Session State**: Relying heavily on `AppSession.currentUser` and static caches in DAOs makes concurrent testing difficult, though acceptable in a single-instance desktop architecture.
 - **DAO Cache Invalidation**: The `ticketsDirty` flag approach can lead to race conditions or stale data if updates are missed or error states are poorly handled.
-
