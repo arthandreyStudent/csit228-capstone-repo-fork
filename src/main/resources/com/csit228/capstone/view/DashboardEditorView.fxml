@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.DashboardEditorController">
+<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.DashboardEditorController">
 
     <children>
         <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #121d49;">
@@ -129,16 +129,6 @@
                     </children>
                 </VBox>
 
-                <HBox alignment="CENTER_LEFT" layoutX="970.0" layoutY="28.0" prefHeight="36.0" prefWidth="280.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 24;">
-                    <padding>
-                        <Insets left="14.0" right="10.0" />
-                    </padding>
-                    <children>
-                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 16px;" text="⌕" />
-                        <TextField fx:id="searchField" prefWidth="220.0" promptText="Search tickets..." style="-fx-background-color: transparent; -fx-text-fill: #1c2b63; -fx-prompt-text-fill: #9faad2;" />
-                    </children>
-                </HBox>
-
                 <HBox layoutX="25.0" layoutY="90.0" spacing="15.0">
                     <children>
                         <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
@@ -199,7 +189,7 @@
 
                         <Button fx:id="createTicketButton" layoutX="720.0" layoutY="18.0" onAction="#handleCreateTicket" prefHeight="28.0" prefWidth="130.0" style="-fx-background-color: #4bcc8a; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;" text="+ Create Ticket" />
 
-                        <HBox layoutX="18.0" layoutY="56.0" spacing="8.0">
+                        <HBox layoutX="432.0" layoutY="56.0" spacing="8.0">
                             <children>
                                 <Button fx:id="allFilterButton" onAction="#showAllTickets" prefHeight="28.0" prefWidth="50.0" style="-fx-background-color: #ff9900; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;" text="All" />
                                 <Button fx:id="openFilterButton" onAction="#showOpenTickets" prefHeight="28.0" prefWidth="64.0" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="Open" />
@@ -211,8 +201,7 @@
 
                         <HBox alignment="CENTER_LEFT" layoutX="25.0" layoutY="102.0" prefHeight="30.0" prefWidth="830.0">
                             <children>
-                                <Label prefWidth="210.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="TICKET DETAILS" />
-                                <Label prefWidth="160.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="ASSIGN TO" />
+                                <Label prefWidth="370.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="TICKET DETAILS" />
                                 <Label prefWidth="95.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="STATUS" />
                                 <Label prefWidth="85.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="PRIORITY" />
                                 <Label prefWidth="170.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="DEADLINE" />
@@ -225,6 +214,16 @@
                                 <VBox fx:id="reviewQueueBox" prefWidth="830.0" spacing="0.0" style="-fx-background-color: transparent;" />
                             </content>
                         </ScrollPane>
+      
+                      <HBox alignment="CENTER_LEFT" layoutX="179.0" layoutY="14.0" prefHeight="36.0" prefWidth="280.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 24;">
+                          <padding>
+                              <Insets left="14.0" right="10.0" />
+                          </padding>
+                          <children>
+                              <Label style="-fx-text-fill: #9faad2; -fx-font-size: 16px;" text="⌕" />
+                          </children>
+                      </HBox>
+                        <TextField fx:id="searchField" layoutX="52.0" layoutY="57.0" prefWidth="220.0" promptText="Search tickets..." style="-fx-background-color: transparent; -fx-text-fill: #1c2b63; -fx-prompt-text-fill: #9faad2;" />
                     </children>
                 </AnchorPane>
 

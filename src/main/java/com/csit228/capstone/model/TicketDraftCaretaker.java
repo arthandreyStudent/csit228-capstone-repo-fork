@@ -6,11 +6,6 @@ public class TicketDraftCaretaker {
 
   public TicketDraftCaretaker() {}
 
-  //    public void saveDraft(Ticket t) {
-  //        if (t != null) {
-  //            this.draft = t.createMemento();
-  //        }
-  //    }
 
   public TicketMemento restoreDraft() {
     return draft;

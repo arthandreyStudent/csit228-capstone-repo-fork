@@ -2,6 +2,8 @@ package com.csit228.capstone.dao;
 
 import com.csit228.capstone.database.DBConnector;
 
+import com.csit228.capstone.enums.TicketPriority;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.*;
 
 import java.sql.*;

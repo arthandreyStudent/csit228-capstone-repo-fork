@@ -1,7 +1,7 @@
 package com.csit228.capstone.controller;
 
 import com.csit228.capstone.model.Department;
-import com.csit228.capstone.model.TicketStatus;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.Formatter;
@@ -147,6 +147,7 @@ public class DashboardExecutiveController extends StaffDashboardController {
         selectedDepartmentName = name;
         renderDepartmentTabs();
         loadPendingAssignmentQueue();
+
       });
       departmentTabsBox.getChildren().add(btn);
     }

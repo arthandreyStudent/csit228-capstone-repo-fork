@@ -6,7 +6,7 @@ import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.exceptions.UsernameAlreadyTakenException;
 import com.csit228.capstone.model.Department;
 import com.csit228.capstone.model.Job;
-import com.csit228.capstone.model.Role;
+import com.csit228.capstone.enums.Role;
 import com.csit228.capstone.model.UserFactory;
 import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Hash;

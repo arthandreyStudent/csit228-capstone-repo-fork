@@ -1,8 +1,11 @@
 package com.csit228.capstone.controller;
-
+import javafx.scene.Node;
+import javafx.scene.control.ButtonBase;
+import javafx.scene.control.ComboBoxBase;
+import javafx.scene.control.TextInputControl;
 import com.csit228.capstone.dao.NotificationDAO;
-import com.csit228.capstone.model.Role;
-import com.csit228.capstone.model.TicketStatus;
+import com.csit228.capstone.enums.Role;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
@@ -191,10 +194,40 @@ public class DashboardEditorController extends StaffDashboardController {
     sentBackLabel.setText(String.valueOf(sentBack));
     reviewQueueCountLabel.setText(String.valueOf(getFilteredTicketCount()));
   }
-  
+  private void openTicketDetailModal(TicketView ticket) {
+    try {
+      FXMLLoader loader =
+              new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/MasterTicketDetailModalView.fxml"));
+      Parent root = loader.load();
+
+      MasterTicketDetailModalController controller = loader.getController();
+      controller.loadTicket(ticket);
+
+      openModal(root, "Ticket Details");
+    } catch (IOException e) {
+      showError("Unable to open Ticket Details modal.");
+    }
+  }
+
+  private boolean isInteractiveTarget(Object target) {
+    if (!(target instanceof Node)) {
+      return false;
+    }
+
+    Node node = (Node) target;
+    while (node != null) {
+      if (node instanceof ButtonBase || node instanceof ComboBoxBase || node instanceof TextInputControl) {
+        return true;
+      }
+      node = node.getParent();
+    }
+
+    return false;
+  }
+
   private void loadReviewQueue() {
     reviewQueueBox.getChildren().clear();
-    
+
     String keyword = searchField != null ? searchField.getText() : "";
     
     for (TicketView ticket : getSortedTicketsByDeadline()) {
@@ -205,22 +238,19 @@ public class DashboardEditorController extends StaffDashboardController {
       if (!matchesTicketSearch(ticket, keyword))
         continue;
       
-      List<User> assignableUsers = getAssignableMembersForTicket(ticket);
-      ListRowItem row = ListRowItem.forEditorReview(ticket, assignableUsers);
-      
+      ListRowItem row = ListRowItem.forEditorReview(ticket);
+      row.setRowClick(event -> {
+        if (isInteractiveTarget(event.getTarget())) {
+          return;
+        }
+        openTicketDetailModal(ticket);
+      });
+
       if (isStatus(ticket, TicketStatus.RESOLVED.name())) {
         lockResolvedTicketRow(row);
         reviewQueueBox.getChildren().add(row);
         continue;
       }
-      
-      row.setSecondaryAction(event -> {
-        if (isStatus(ticket, TicketStatus.RESOLVED.name())) {
-          showInfo("This ticket is already resolved and closed.");
-          return;
-        }
-        assignTicketToUser(ticket, row.getSelectedAssignedUser());
-      });
       
       if (!isStatus(ticket, TicketStatus.COMPLETED.name())) {
         hideReviewActionButtons(row);

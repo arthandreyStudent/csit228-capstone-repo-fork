@@ -1,5 +1,7 @@
 package com.csit228.capstone.model;
 
+import com.csit228.capstone.enums.Role;
+
 import java.io.Serializable;
 import java.util.Objects;
 

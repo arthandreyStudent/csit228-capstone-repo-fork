@@ -1,5 +1,8 @@
 package com.csit228.capstone.model;
 
+import com.csit228.capstone.enums.TicketPriority;
+import com.csit228.capstone.enums.TicketStatus;
+
 import static com.csit228.capstone.utils.Formatter.formatDate;
 
 import java.io.Serializable;
