@@ -152,16 +152,62 @@ public class TicketDAO {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return null;
-  }
-  
-  public void getTicketViews() {
-    refreshTicketViews();
-  }
-  
-  private void ensureTicketViewsLoaded() {
-    if (!ticketsLoaded || ticketsDirty) {
-      refreshTicketViews();
+    private void refreshTicketViews() {
+        tickets.clear();
+
+        String sql = """
+            SELECT
+                t.id,
+                t.title,
+                t.description,
+                t.last_updated,
+                t.date_created,
+                t.deadline,
+                t.priority,
+                t.status,
+                CASE
+                    WHEN d.name IS NULL THEN 'volunteer'
+                    ELSE d.name
+                END AS department_name,
+                CONCAT(c.firstname, ' ', c.lastname) AS created_by,
+                CONCAT(u.firstname, ' ', u.lastname) AS assigned_to_name
+            FROM ticket t
+            LEFT JOIN department d ON t.department_id = d.id
+            LEFT JOIN user u ON t.assigned_to = u.id
+            LEFT JOIN user c ON t.created_by = c.id
+            ORDER BY t.date_created DESC
+            """;
+
+        try (Connection connection = DBConnector.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            long start = System.nanoTime();
+            while (rs.next()) {
+                tickets.add(new TicketView(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getString("priority"),
+                        rs.getString("status"),
+                        rs.getString("department_name"),
+                        rs.getString("created_by"),
+                        rs.getString("assigned_to_name"),
+                        rs.getObject("last_updated", LocalDateTime.class),
+                        rs.getObject("date_created", LocalDateTime.class),
+                        rs.getObject("deadline", LocalDateTime.class)
+                ));
+
+            }
+            long end = System.nanoTime();
+            double elapsedMs = (end - start) / 1_000_000.0;
+
+            System.out.println("Loaded " + tickets.size() + " tickets"+ " in "+ elapsedMs+" ms");
+            ticketsLoaded = true;
+            ticketsDirty = false;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
   }
   
