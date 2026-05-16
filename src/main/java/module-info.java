@@ -24,4 +24,6 @@ module com.csit228.capstone {
   opens com.csit228.capstone.controller to javafx.fxml;
   opens com.csit228.capstone.model to javafx.base, javafx.fxml;
   opens com.csit228.capstone.utils to javafx.fxml, javafx.graphics;
+    exports com.csit228.capstone.enums;
+    opens com.csit228.capstone.enums to javafx.base, javafx.fxml;
 }

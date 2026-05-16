@@ -1,6 +1,8 @@
 package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.TicketDAO;
+import com.csit228.capstone.enums.TicketPriority;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.*;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.FormValidator;
