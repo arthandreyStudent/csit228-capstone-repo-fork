@@ -308,7 +308,7 @@ public class DashboardEditorController extends StaffDashboardController {
   private boolean isVisibleInReviewQueue(TicketView ticket) {
     if (ticket == null)
       return false;
-    return !(isVolunteerTicket(ticket) && isUnassigned(ticket));
+    return !(ticket.isVolunteerTicket() && isUnassigned(ticket));
   }
   
   private void hideReviewActionButtons(ListRowItem row) {
