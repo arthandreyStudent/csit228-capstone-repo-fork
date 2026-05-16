@@ -175,6 +175,33 @@ public class UserDAO {
   public static void main(String[] args) {
     //todo
   }
+
+    public String getJobNameByUserId(int userId) {
+        String sql = """
+        SELECT j.name
+        FROM user_job uj
+        INNER JOIN job j ON uj.job_id = j.id
+        WHERE uj.user_id = ?
+        LIMIT 1
+        """;
+
+        try (Connection connection = DBConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, userId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("name");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
   
   private void ensureUsersLoaded() {
     if (!usersLoaded) {
