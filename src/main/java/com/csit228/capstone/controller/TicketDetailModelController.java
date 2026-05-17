@@ -9,6 +9,8 @@ import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.Comment;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import com.csit228.capstone.observer.CommentObserver;
+import com.csit228.capstone.observer.CommentWatcher;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.NotificationManager;
 import javafx.event.ActionEvent;
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class TicketDetailModelController {
+public class TicketDetailModelController implements CommentObserver {
 
     @FXML
     public Button buttonClose;
@@ -121,6 +123,26 @@ public class TicketDetailModelController {
         }
     }
 
+    @Override
+    public int getTicketId() {
+        return currentTicket != null ? currentTicket.getId() : -1;
+    }
+
+    @Override
+    public void onCommentsChanged(List<Comment> updatedComments) {
+        if (currentTicket != null) {
+            TicketView fresh = ticketDAO.getTicketViewById(currentTicket.getId());
+            if (fresh != null && !fresh.getStatus().equalsIgnoreCase(currentTicket.getStatus())) {
+                currentTicket = fresh;
+                configureActionButtons(currentTicket);
+                populateBadges(currentTicket);
+            }
+        }
+
+        loadCommentHistory(updatedComments);
+    }
+
+
     public void loadTicket(TicketView ticket) {
         this.currentTicket = ticket;
 
@@ -149,8 +171,28 @@ public class TicketDetailModelController {
         setDateTime(deadlineDateLabel, deadlineTimeLabel, ticket.getDeadline());
 
         populateBadges(ticket);
-        loadCommentHistory(ticket);
+        startWatchingComments(ticket);
     }
+
+    private void startWatchingComments(TicketView ticket) {
+        CommentWatcher watcher = CommentWatcher.getInstance();
+
+        List<Comment> initial = commentDAO.findByTicketId(ticket.getId());
+        watcher.setInitialCount(ticket.getId(), initial != null ? initial.size() : 0);
+
+        loadCommentHistory(initial != null ? initial : new ArrayList<>());
+
+        watcher.addObserver(this);
+        watcher.start(3);
+    }
+
+    private void stopWatchingComments() {
+        if (currentTicket == null) return;
+        CommentWatcher watcher = CommentWatcher.getInstance();
+        watcher.removeObserver(this);
+        watcher.clearTicket(currentTicket.getId());
+    }
+
 
     public void loadTicketForMember(TicketView ticket, Runnable refreshCallback) {
         this.memberMode = true;
@@ -361,7 +403,11 @@ public class TicketDetailModelController {
         }
 
         saveReviewComment();
-        loadCommentHistory(currentTicket);
+
+        List<Comment> updated = commentDAO.findByTicketId(currentTicket.getId());
+        CommentWatcher.getInstance().setInitialCount(currentTicket.getId(), updated.size());
+        loadCommentHistory(updated);
+
         updateSaveAssignmentButtonState();
     }
 
@@ -450,22 +496,18 @@ public class TicketDetailModelController {
         priorityBadgeContainer.getChildren().add(createBadge(priority, prioBg, prioText));
     }
 
-    private void loadCommentHistory(TicketView ticket) {
-        if (activityCommentContainer == null || ticket == null) {
-            return;
-        }
+    private void loadCommentHistory(List<Comment> comments) {
+        if (activityCommentContainer == null) return;
 
         activityCommentContainer.getChildren().clear();
-        List<Comment> comments = commentDAO.findByTicketId(ticket.getId());
-        int commentCount = comments != null ? comments.size() : 0;
+        int count = comments.size();
 
         if (commentsBadgeContainer != null) {
             commentsBadgeContainer.getChildren().clear();
-            Label badge = createBadge(commentCount + " notes", "#eef3ff", "#1c2b63");
-            commentsBadgeContainer.getChildren().add(badge);
+            commentsBadgeContainer.getChildren().add(createBadge(count + " notes", "#eef3ff", "#1c2b63"));
         }
 
-        if (commentCount == 0) {
+        if (count == 0) {
             Label emptyLabel = new Label("No comments yet.");
             emptyLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 12px;");
             activityCommentContainer.getChildren().add(emptyLabel);
@@ -476,6 +518,7 @@ public class TicketDetailModelController {
             activityCommentContainer.getChildren().add(createCommentCard(comment));
         }
     }
+
 
     private VBox createCommentCard(Comment comment) {
         Label authorLabel = new Label(safe(comment.getCreatedBy(), "Unknown"));
@@ -569,7 +612,7 @@ public class TicketDetailModelController {
 
         if (updated) {
             currentTicket.setStatus(TicketStatus.COMPLETED.name());
-
+            NotificationManager.notifySubmitted(currentTicket, getCurrentUserName());
             if (refreshCallback != null) {
                 refreshCallback.run();
             }
@@ -585,6 +628,7 @@ public class TicketDetailModelController {
     }
 
     private void closeModal(ActionEvent event) {
+        stopWatchingComments();
         Object source = event != null ? event.getSource() : null;
         if (source instanceof Button button && button.getScene() != null && button.getScene().getWindow() instanceof Stage stage) {
             stage.close();

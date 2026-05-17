@@ -8,17 +8,6 @@ import com.csit228.capstone.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Centralizes all notification logic for ticket lifecycle events.
- *
- * Behavior summary:
- *  1. Ticket created WITH assigned member   → notify assigned member only
- *  2. Ticket created WITHOUT assigned member → notify all members of the ticket's
- *     department; if no department (volunteer), notify all members everywhere
- *  3. Ticket/volunteer taken by a member    → notify the ticket creator only
- *  4. Ticket assigned by editor/executive   → notify the assigned member only
- *  5. Ticket returned by editor             → notify the assigned member only
- */
 public class NotificationManager {
 
     private static final NotificationDAO notificationDAO = NotificationDAO.getNotificationDAO();
@@ -94,7 +83,17 @@ public class NotificationManager {
         notificationDAO.createNotification(assignedMember.getUserId(), title, message);
     }
 
+    public static void notifySubmitted(TicketView ticket, String memberName) {
+        if (ticket == null || ticket.getCreatedBy() == null) return;
 
+        User creator = userDAO.getUserByName(ticket.getCreatedBy());
+        if (creator == null) return;
+
+        String title   = "A ticket is ready for review";
+        String message = memberName + " submitted \"" + ticket.getTitle() + "\" for review.";
+
+        notificationDAO.createNotification(creator.getUserId(), title, message);
+    }
 
 
 }
