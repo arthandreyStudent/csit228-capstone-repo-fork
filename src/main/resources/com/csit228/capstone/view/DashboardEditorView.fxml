@@ -8,7 +8,7 @@
 <HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketEditorController">
 
     <children>
-        <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #121d49;">
+        <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #7a1e1f;">
             <padding>
                 <Insets bottom="18.0" left="16.0" right="16.0" top="22.0" />
             </padding>
@@ -21,13 +21,13 @@
                     </children>
                 </HBox>
 
-                <Label style="-fx-text-fill: #6f7aa7; -fx-font-size: 11px; -fx-font-weight: bold;" text="MAIN">
+                <Label style="-fx-text-fill: FFFFFF; -fx-font-size: 11px; -fx-font-weight: bold;" text="EDITOR">
                     <VBox.margin>
                         <Insets left="20.0" top="30.0" />
                     </VBox.margin>
                 </Label>
 
-                <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #2b376b; -fx-background-radius: 10;">
+                <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #5b1617; -fx-background-radius: 10;">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
@@ -37,27 +37,9 @@
                     </children>
                 </HBox>
 
-                <Label style="-fx-text-fill: #6f7aa7; -fx-font-size: 11px; -fx-font-weight: bold;" text="EDITOR">
-                    <VBox.margin>
-                        <Insets left="20.0" top="14.0" />
-                    </VBox.margin>
-                </Label>
-
-                <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="12.0">
-                    <padding>
-                        <Insets left="18.0" />
-                    </padding>
-                    <children>
-                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="▧" />
-                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="Review Queue" />
-                        <Region HBox.hgrow="ALWAYS" />
-                        <Label fx:id="reviewQueueCountLabel" alignment="CENTER" prefHeight="18.0" prefWidth="24.0" style="-fx-background-color: #8b642b; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;" text="0" />
-                    </children>
-                </HBox>
-
                 <Region VBox.vgrow="ALWAYS" />
 
-                <VBox prefHeight="120.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #1d2a5a; -fx-background-radius: 12;">
+                <VBox prefHeight="120.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #5b1617; -fx-background-radius: 12;">
                     <padding>
                         <Insets bottom="14.0" left="14.0" right="14.0" top="16.0" />
                     </padding>
