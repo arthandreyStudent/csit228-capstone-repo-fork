@@ -213,7 +213,7 @@ public class TicketExecutiveController extends StaffTicketController {
     String keyword = searchField != null ? searchField.getText() : "";
     
     for (TicketView ticket : getSortedTicketsByDeadline()) {
-      if (!isAssignableTicket(ticket))
+      if (!ticket.isVolunteerTicket() && !isAssignableTicket(ticket))
         continue;
       if (!matchesSelectedDepartment(ticket))
         continue;
