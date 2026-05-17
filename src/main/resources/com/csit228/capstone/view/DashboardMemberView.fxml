@@ -161,26 +161,17 @@
                     <children>
                         <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;" HBox.hgrow="ALWAYS">
                             <children>
-                                <Label layoutX="16.0" layoutY="12.0" style="-fx-text-fill: #9faad2;" text="To Do">
+                                <Label layoutX="16.0" layoutY="12.0" style="-fx-text-fill: #9faad2;" text="Open">
                            <font>
                               <Font name="Inter 18pt SemiBold" size="12.0" />
                            </font></Label>
-                                <Label fx:id="toDoLabel" layoutX="16.0" layoutY="28.0" style="-fx-text-fill: #2f95ff;" text="0">
+                                <Label fx:id="openLabel" layoutX="16.0" layoutY="28.0" style="-fx-text-fill: #2f95ff;" text="0">
                            <font>
                               <Font name="Inter 18pt ExtraBold" size="28.0" />
                            </font></Label>
-                        <HBox fx:id="toDoOverdueContainer" alignment="CENTER_LEFT" layoutX="18.0" layoutY="67.0" prefWidth="150.0" spacing="8.0">
-                           <children>
-                              <Label textFill="#f55353">
-                                 <font>
-                                    <Font name="Inter 18pt ExtraBold" size="12.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </HBox>
                                 <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #e0efff; -fx-background-radius: 50;">
                            <children>
-                              <FontIcon iconColor="#2f95ff" iconLiteral="fas-clipboard-list" iconSize="25" />
+                              <FontIcon iconColor="#2f95ff" iconLiteral="fas-box-open" iconSize="25" />
                            </children>
                                 </StackPane>
                             </children>
@@ -271,27 +262,20 @@
 
                                                           <AnchorPane layoutX="25.0" layoutY="195.0" maxHeight="1.7976931348623157E308" prefHeight="535.0" prefWidth="860.0" style="-fx-background-color: white; -fx-background-radius: 16;">
                     <children>
-                        <Label layoutX="18.0" layoutY="18.0" style="-fx-text-fill: #1c2b63;" text="My Work">
+                        <Label layoutX="18.0" layoutY="18.0" style="-fx-text-fill: #1c2b63;" text="Available Tickets">
                      <font>
                         <Font name="Inter 18pt ExtraBold" size="18.0" />
                      </font>
                   </Label>
                   <FlowPane hgap="10.0" layoutX="18.0" layoutY="56.0" prefHeight="61.0" prefWidth="609.0" styleClass="sort-buttons-container" vgap="10.0">
                      <children>
-                                <Button fx:id="allButton" onAction="#onAllFilterClicked" prefHeight="28.0" prefWidth="44.0" styleClass="all-filter-style" text="All" />
-                        <Button fx:id="availableButton" onAction="#onAvailableFilterClicked" prefHeight="28.0" prefWidth="80.0" styleClass="available-filter-style" text="Available" />
-                                <Button fx:id="toDoButton" onAction="#onToDoFilterClicked" prefHeight="28.0" prefWidth="62.0" styleClass="todo-filter-style" text="To Do" />
-                                <Button fx:id="inProgressButton" onAction="#onInProgressFilterClicked" prefHeight="28.0" prefWidth="90.0" styleClass="inprogress-filter-style" text="In Progress" />
-                        <Button fx:id="overdueButton" onAction="#onOverdueFilterClicked" prefHeight="28.0" prefWidth="77.0" styleClass="overdue-filter-style" text="Overdue" />
-                        <Button fx:id="returnedButton" onAction="#onReturnedFilterClicked" prefHeight="28.0" prefWidth="77.0" styleClass="returned-filter-style" text="Returned" />
-                                <Button fx:id="completedButton" onAction="#onCompletedFilterClicked" prefHeight="28.0" prefWidth="88.0" styleClass="completed-filter-style" text="Completed" />
-                        <Button fx:id="resolvedButton" onAction="#onResolvedFilterClicked" prefHeight="28.0" prefWidth="76.0" text="Resolved" />
+                        <Button fx:id="openButton" onAction="#onOpenFilterClicked" prefHeight="28.0" prefWidth="80.0" styleClass="open-filter-style" text="Open" />
                      </children>
                   </FlowPane>
 
                                                                   <ComboBox fx:id="deadlineSortComboBox" layoutX="666.0" layoutY="56.0" onAction="#onDeadlineSortChanged" prefHeight="28.0" prefWidth="180.0" promptText="Sort Deadline" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-font-size: 11px;" />
 
-                                                                  <HBox alignment="CENTER_LEFT" layoutX="26.0" layoutY="132.0" prefHeight="30.0" prefWidth="830.0">
+                                                                  <HBox alignment="CENTER_LEFT" layoutX="26.0" layoutY="102.0" prefHeight="30.0" prefWidth="830.0">
                             <children>
                                 <Label prefWidth="230.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="TASK DETAILS" />
                                 <Label prefWidth="100.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="PRIORITY" />
@@ -301,9 +285,9 @@
                             </children>
                         </HBox>
 
-                                                                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="25.0" layoutY="168.0" prefHeight="365.0" prefWidth="832.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
+                                                                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="25.0" layoutY="137.0" prefHeight="396.0" prefWidth="832.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
                             <content>
-                                <VBox fx:id="myWorkTicketsBox" prefWidth="830.0" spacing="0.0" style="-fx-background-color: transparent;" />
+                                <VBox fx:id="availableTicketsBox" prefWidth="830.0" spacing="0.0" style="-fx-background-color: transparent;" />
                             </content>
                         </ScrollPane>
                     </children>

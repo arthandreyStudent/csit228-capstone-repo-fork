@@ -310,8 +310,6 @@
     -fx-background-radius: 10px;
 }
 
-
-
 /*MEMBER DASHBOARD SECTION*/
 .left-sidebar-subheader {
     -fx-text-fill: #5b678e;
@@ -360,52 +358,10 @@
     -fx-background-color: -athens-gray-accent;
 }
 
-.sort-buttons-container .button.all-filter-style {
-    -fx-border-width: 0;
-    -fx-text-fill: white;
-    -fx-background-color: #0c1c3b;
-}
-
-.sort-buttons-container .button.available-filter-style {
-    -fx-border-width: 0;
-    -fx-text-fill: white;
-    -fx-background-color: #48c7cb;
-}
-
-.sort-buttons-container .button.todo-filter-style {
+.sort-buttons-container .button.open-filter-style {
     -fx-border-width: 0;
     -fx-text-fill: white;
     -fx-background-color: #2f95ff;
-}
-
-.sort-buttons-container .button.inprogress-filter-style {
-    -fx-border-width: 0;
-    -fx-text-fill: white;
-    -fx-background-color: #ff9900;
-}
-
-.sort-buttons-container .button.overdue-filter-style {
-    -fx-border-width: 0;
-    -fx-text-fill: white;
-    -fx-background-color: -carnation-red-accent;
-}
-
-.sort-buttons-container .button.returned-filter-style {
-    -fx-border-width: 0;
-    -fx-text-fill: white;
-    -fx-background-color: #702d10;
-}
-
-.sort-buttons-container .button.completed-filter-style {
-    -fx-border-width: 0;
-    -fx-text-fill: white;
-    -fx-background-color: -emerald-green-accent;
-}
-
-.sort-buttons-container .button.resolved-filter-style {
-    -fx-border-width: 0;
-    -fx-text-fill: white;
-    -fx-background-color: -blue-violet-accent;
 }
 
 

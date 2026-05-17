@@ -1,13 +1,11 @@
 package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.DepartmentDAO;
-import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.ListRowItem;
 import com.csit228.capstone.utils.UIStyler;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -42,36 +40,12 @@ public class TicketMemberController extends StaffTicketController {
 
   @FXML
   public Label resolvedLabel;
-
-  @FXML
-  public Button allButton;
-
-  @FXML
-  public Button availableButton;
-
-  @FXML
-  public Button toDoButton;
-
-  @FXML
-  public Button inProgressButton;
-
-  @FXML
-  public Button overdueButton;
   
   @FXML
-  public Button returnedButton;
-
-  @FXML
-  public Button completedButton;
-
-  @FXML
-  public Button resolvedButton;
+  public Button openButton;
   
   @FXML
   public AnchorPane rightPane;
-  
-  @FXML
-  public HBox toDoOverdueContainer;
   
   @FXML
   public HBox inProgressOverdueContainer;
@@ -83,13 +57,16 @@ public class TicketMemberController extends StaffTicketController {
   public HBox resolvedOverdueContainer;
   
   @FXML
+  public Label openLabel;
+  
+  @FXML
   private Label inProgressLabel;
 
   @FXML
   private Label completedLabel;
 
   @FXML
-  private VBox myWorkTicketsBox;
+  private VBox availableTicketsBox;
 
   @FXML
   private VBox volunteerBoardBox;
@@ -112,25 +89,25 @@ public class TicketMemberController extends StaffTicketController {
     renderDashboard();
   }
 
-  private String currentFilter = "ALL";
+  private String currentFilter = "OPEN";
 
   @Override
   protected void renderDashboard() {
     updateSummaryCards();
-    renderMyWorkTickets(currentFilter);
+    renderTicketsTable(currentFilter);
     loadVolunteerBoard();
     loadRecentActivity(activityBox);
   }
 
   @Override
   protected void onSearchChanged() {
-    renderMyWorkTickets(currentFilter);
+    renderTicketsTable(currentFilter);
     loadVolunteerBoard();
   }
 
   @Override
   protected void onDeadlineSortSelected() {
-    renderMyWorkTickets(currentFilter);
+    renderTicketsTable(currentFilter);
     loadVolunteerBoard();
   }
 
@@ -141,7 +118,7 @@ public class TicketMemberController extends StaffTicketController {
     setupSideBar();
     setupDeadlineSortComboBox();
     refreshDashboard();
-    defaultToAllSelected();
+    defaultToOpenSelected();
     startWatching();
 
     UIStyler.applyLeftSideBarGradient(leftSideBarContainer);
@@ -175,83 +152,31 @@ public class TicketMemberController extends StaffTicketController {
     rightPane.setVisible(false);
   }
 
-  private void defaultToAllSelected() {
-    // default filter is ALL
-    currentFilter = "ALL";
+  private void defaultToOpenSelected() {
+    // default filter is OPEN
+    currentFilter = "OPEN";
     applyFilterButtonStyle(currentFilter);
-    renderMyWorkTickets(currentFilter);
-
-  }
-
-  @FXML
-  public void onAllFilterClicked(ActionEvent event) {
-    currentFilter = "ALL";
-    applyFilterButtonStyle(currentFilter);
-    renderMyWorkTickets(currentFilter);
-  }
-
-  @FXML
-  public void onAvailableFilterClicked(ActionEvent event) {
-    currentFilter = "AVAILABLE";
-    applyFilterButtonStyle(currentFilter);
-    renderMyWorkTickets(currentFilter);
-  }
-
-  @FXML
-  public void onToDoFilterClicked(ActionEvent event) {
-    currentFilter = "TODO";
-    applyFilterButtonStyle(currentFilter);
-    renderMyWorkTickets(currentFilter);
-  }
-
-  @FXML
-  public void onInProgressFilterClicked(ActionEvent event) {
-    currentFilter = "IN_PROGRESS";
-    applyFilterButtonStyle(currentFilter);
-    renderMyWorkTickets(currentFilter);
-  }
-
-  @FXML
-  public void onOverdueFilterClicked(ActionEvent event) {
-    currentFilter = "OVERDUE";
-    applyFilterButtonStyle(currentFilter);
-    renderMyWorkTickets(currentFilter);
+    renderTicketsTable(currentFilter);
   }
   
   @FXML
-  public void onReturnedFilterClicked(ActionEvent event) {
-    currentFilter = "RETURNED";
-    applyFilterButtonStyle(currentFilter);
-    renderMyWorkTickets(currentFilter);
-  }
-  
-  @FXML
-  public void onCompletedFilterClicked(ActionEvent event) {
-    currentFilter = "COMPLETED";
-    applyFilterButtonStyle(currentFilter);
-    renderMyWorkTickets(currentFilter);
-  }
-
-  @FXML
-  public void onResolvedFilterClicked(ActionEvent event) {
-    currentFilter = "RESOLVED";
-    applyFilterButtonStyle(currentFilter);
-    renderMyWorkTickets(currentFilter);
+  public void onOpenFilterClicked() {
+    defaultToOpenSelected();
   }
 
   private void updateSummaryCards() {
-    int todoTasks = 0;
+    int openTasks = 0;
     int inProgress = 0;
     int completed = 0;
     int resolved = 0;
 
     for (TicketView ticket : tickets) {
-      if (!isAssignedToCurrentUser(ticket)) {
+      if (isVolunteerTicket(ticket) || !isUnassigned(ticket) || !isAvailableUnderDept(ticket)) {
         continue;
       }
 
-      if (isToDoTicket(ticket))
-        todoTasks++;
+      if (isAvailableUnderDept(ticket))
+        openTasks++;
       if (isInProgress(ticket))
         inProgress++;
       if (isCompleted(ticket))
@@ -261,43 +186,31 @@ public class TicketMemberController extends StaffTicketController {
 
     }
 
-    toDoLabel.setText(String.valueOf(todoTasks));
+    openLabel.setText(String.valueOf(openTasks));
     inProgressLabel.setText(String.valueOf(inProgress));
     completedLabel.setText(String.valueOf(completed));
     resolvedLabel.setText(String.valueOf(resolved));
     
-    updateOverdues();
+    updateOverdue();
   }
   
-  private void updateOverdues() {
-    int overdueCountToDo = 0;
+  private void updateOverdue() {
     int overdueCountInProgress = 0;
     int overdueCountCompleted = 0;
     int overdueCountResolved = 0;
 
     for (TicketView ticket : tickets) {
-      if (!isAssignedToCurrentUser(ticket)) {
+      if (isVolunteerTicket(ticket) || !isUnassigned(ticket) || !isAvailableUnderDept(ticket)) {
         continue;
       }
 
-      if (isToDoTicket(ticket) && isOverdueInDeadline(ticket)) {
-        overdueCountToDo++;
-      } else if (isInProgress(ticket) && isOverdueInDeadline(ticket)) {
+      if (isInProgress(ticket) && isOverdueInDeadline(ticket)) {
         overdueCountInProgress++;
       } else if (isCompleted(ticket) && isOverdueInDeadline(ticket)) {
         overdueCountCompleted++;
       } else if (isResolved(ticket) && isOverdueInDeadline(ticket)) {
         overdueCountResolved++;
       }
-    }
-    
-    if (overdueCountToDo > 0) {
-      toDoOverdueContainer.getChildren().setAll(
-        makeOverdueCircle(),
-        makeOverdueLabel(overdueCountToDo)
-      );
-    } else {
-      toDoOverdueContainer.getChildren().clear();
     }
     
     if (overdueCountInProgress > 0) {
@@ -353,8 +266,8 @@ public class TicketMemberController extends StaffTicketController {
     return label;
   }
 
-  private void renderMyWorkTickets (String filter) {
-    myWorkTicketsBox.getChildren().clear();
+  private void renderTicketsTable(String filter) {
+    availableTicketsBox.getChildren().clear();
 
     String keyword = searchField != null ? searchField.getText() : "";
 
@@ -365,17 +278,7 @@ public class TicketMemberController extends StaffTicketController {
         continue;
 
       // filter by selected condition
-      boolean include = switch (filter) {
-        case "ALL" -> true;
-        case "AVAILABLE" -> isAvailableUnderDept(ticket);
-        case "TODO" -> isToDoTicket(ticket);
-        case "IN_PROGRESS" -> isInProgress(ticket);
-        case "OVERDUE" -> isOverdue(ticket);
-        case "RETURNED" -> isReturned(ticket);
-        case "COMPLETED" -> isStatus(ticket, TicketStatus.COMPLETED.name());
-        case "RESOLVED" -> isResolved(ticket);
-        default -> true;
-      };
+      boolean include = isAvailableUnderDept(ticket);
 
       if (!include)
         continue;
@@ -387,25 +290,23 @@ public class TicketMemberController extends StaffTicketController {
       // This avoids duplicating the status-detection logic here and in
       // ListRowItem.getDynamicActionButtonInfo.
       boolean availDept       = isAvailableUnderDept(ticket);
-      boolean assignedMe      = isAssignedToCurrentUser(ticket);
       boolean inProgress      = isInProgress(ticket);
       boolean completed       = isCompleted(ticket);
       boolean resolved        = isResolved(ticket);
       boolean overdue         = isOverdue(ticket);
-      boolean returned        = isReturned(ticket);
       boolean overdueInProg   = isOverdueInProgress(ticket);
       boolean volunteer       = isVolunteerTicket(ticket);
          // IN_PROGRESS && overdue
 
       ListRowItem row = ListRowItem.forMemberMyWorkTicket(
-          ticket, availDept, assignedMe, inProgress, completed, resolved, overdue, returned, overdueInProg, volunteer
+          ticket, availDept, inProgress, completed, resolved, overdue, overdueInProg, volunteer
       );
 
       // Derive the ButtonAction so the controller decides the semantics
       // (open modal vs state-transition) rather than hard-coding text strings.
       ListRowItem.ButtonAction action =
-          ListRowItem.getDynamicActionButtonInfo(ticket, availDept, assignedMe,
-              inProgress, completed, resolved, overdue, returned, overdueInProg, volunteer);
+          ListRowItem.getDynamicActionButtonInfo(ticket, availDept,
+              inProgress, completed, resolved, overdue, overdueInProg, volunteer);
 
       // Attach the correct handler according to the resolved action type.
       row.setAction(event -> handleMemberAction(ticket, action));
@@ -418,7 +319,7 @@ public class TicketMemberController extends StaffTicketController {
         openTicketDetailModal(ticket);
       });
 
-      myWorkTicketsBox.getChildren().add(row);
+      availableTicketsBox.getChildren().add(row);
     }
   }
 
@@ -441,18 +342,7 @@ public class TicketMemberController extends StaffTicketController {
         // Also update the TicketView's assignedToName.
         
         break;
-      case START_TASK:
-        // TODO: Update the status of the ticket from OPEN to IN_PROGRESS through the TicketDAO.
-        // Also update the TicketView's status
-        
-        break;
       case SUBMIT:
-        // TODO: Update the status of the ticket from IN_PROGRESS to COMPLETED through the TicketDAO.
-        // Update the ticket's last_updated to the datetime of when was the ticket submitted.
-        // Also update the TicketView's status
-        
-        break;
-      case RESUBMIT:
         // TODO: Update the status of the ticket from IN_PROGRESS to COMPLETED through the TicketDAO.
         // Update the ticket's last_updated to the datetime of when was the ticket submitted.
         // Also update the TicketView's status
@@ -475,40 +365,10 @@ public class TicketMemberController extends StaffTicketController {
 
   private void applyFilterButtonStyle(String filter) {
     // clear existing style classes related to filters
-    allButton.getStyleClass().removeIf(s -> s.equals("all-filter-style"));
-    availableButton.getStyleClass().removeIf(s -> s.equals("available-filter-style"));
-    toDoButton.getStyleClass().removeIf(s -> s.equals("todo-filter-style"));
-    inProgressButton.getStyleClass().removeIf(s -> s.equals("inprogress-filter-style"));
-    overdueButton.getStyleClass().removeIf(s -> s.equals("overdue-filter-style"));
-    returnedButton.getStyleClass().removeIf(s -> s.equals("returned-filter-style"));
-    completedButton.getStyleClass().removeIf(s -> s.equals("completed-filter-style"));
-    resolvedButton.getStyleClass().removeIf(s -> s.equals("resolved-filter-style"));
-
-    switch (filter) {
-      case "ALL":
-        allButton.getStyleClass().add("all-filter-style");
-        break;
-      case "AVAILABLE":
-        availableButton.getStyleClass().add("available-filter-style");
-        break;
-      case "TODO":
-        toDoButton.getStyleClass().add("todo-filter-style");
-        break;
-      case "IN_PROGRESS":
-        inProgressButton.getStyleClass().add("inprogress-filter-style");
-        break;
-      case "OVERDUE":
-        overdueButton.getStyleClass().add("overdue-filter-style");
-        break;
-      case "RETURNED":
-        returnedButton.getStyleClass().add("returned-filter-style");
-        break;
-      case "COMPLETED":
-        completedButton.getStyleClass().add("completed-filter-style");
-        break;
-      case "RESOLVED":
-        resolvedButton.getStyleClass().add("resolved-filter-style");
-        break;
+    openButton.getStyleClass().removeIf(s -> s.equals("open-filter-style"));
+    
+    if (filter.equals("OPEN")) {
+      openButton.getStyleClass().add("open-filter-style");
     }
   }
 
@@ -571,5 +431,6 @@ public class TicketMemberController extends StaffTicketController {
     return (value == null || value.trim().isEmpty()) ? "N/A" : value.trim();
   }
   
+ 
 }
 

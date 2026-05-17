@@ -192,20 +192,12 @@ public abstract class BaseTicketController implements TicketObserver, Notificati
            currentDeptName.trim().equalsIgnoreCase(ticketDeptName.trim());
   }
   
-  protected boolean isToDoTicket(TicketView ticket) {
-    return isAssignedToCurrentUser(ticket) && isStatus(ticket, TicketStatus.OPEN.name());
-  }
-  
   protected boolean isOverdue(TicketView ticket) {
     if (ticket == null || ticket.getDeadline() == null)
       return false;
     if (isResolved(ticket))
       return false;
     return LocalDate.now().isAfter(ticket.getDeadline().toLocalDate());
-  }
-  
-  protected boolean isReturned(TicketView ticket) {
-    return isAssignedToCurrentUser(ticket) && isStatus(ticket, TicketStatus.IN_PROGRESS.name()) && ticket.getReturnReason() != null && !ticket.getReturnReason().trim().isEmpty();
   }
 
   protected boolean isInProgress(TicketView ticket) {

@@ -39,22 +39,10 @@ public class ListRowItem extends VBox {
     TAKE("Take", "fas-hand-holding", "#48c7cb", "#e6f2ff"),
     
     /**
-     * Ticket is owned by current user, status OPEN — has not been started yet.
-     * Action: transition to IN_PROGRESS ("Start Task").
-     */
-    START_TASK("Start Task", "fas-play", "#2f95ff", "#e6f2ff"),
-    
-    /**
      * Ticket is owned by current user, status IN_PROGRESS (first cycle) — work is active.
      * Action: mark as COMPLETED ("Submit").
      */
     SUBMIT("Submit", "fas-check", "#4bcc8a", "#dcffef"),
-    
-    /**
-     * Ticket has a non-null return_reason and was returned by an editor for revisions.
-     * Action: re-submit as COMPLETED ("Resubmit").
-     */
-    RESUBMIT("Resubmit", "fas-reply-all", "#f14d5a", "#ffe0e5"),
     
     /**
      * Ticket deadline has passed and is overdue.
@@ -102,12 +90,10 @@ public class ListRowItem extends VBox {
   public static ButtonAction getDynamicActionButtonInfo(
       TicketView ticket,
       boolean isAvailableUnderDept,
-      boolean isAssignedToCurrentUser,
       boolean isInProgress,
       boolean isCompleted,
       boolean isResolved,
       boolean isOverdue,
-      boolean isReturned,
       boolean isOverdueInProgress,
       boolean isVolunteer) {
       
@@ -122,22 +108,17 @@ public class ListRowItem extends VBox {
     if (isInProgress) {
       // An editor-returned ticket carries a non-null return_reason; surface "Resubmit"
       // to distinguish it from a normal active work ticket.
-      if (isReturned)
-        return ButtonAction.RESUBMIT;
       return ButtonAction.SUBMIT;
     }
     
     if (isOverdue) return ButtonAction.SUBMIT_LATE;
-    
-    // Owned and still OPEN
-    if (isAssignedToCurrentUser) return ButtonAction.START_TASK;
     
     // Unassigned, OPEN, department-level availability
     if (isAvailableUnderDept) return ButtonAction.TAKE;
     
     if (isVolunteer) return ButtonAction.VOLUNTEER;
     
-    return ButtonAction.START_TASK; // sensible fallback
+    return ButtonAction.SUBMIT; // sensible fallback
   
   }
 
@@ -191,12 +172,10 @@ public class ListRowItem extends VBox {
   public static ListRowItem forMemberMyWorkTicket(TicketView ticket) {
     return forMemberMyWorkTicket(ticket,
         false,   // isAvailableUnderDept — default, overridden in controller
-        false,   // isAssignedToCurrentUser
         false,   // isInProgress
         false,   // isCompleted
         false,   // isResolved
         false,   // isOverdue
-        false,   // returned
         false,   // isOverdueInProgress
         false);  // isVolunteer
   }
@@ -210,12 +189,10 @@ public class ListRowItem extends VBox {
   public static ListRowItem forMemberMyWorkTicket(
       TicketView ticket,
       boolean isAvailableUnderDept,
-      boolean isAssignedToCurrentUser,
       boolean isInProgress,
       boolean isCompleted,
       boolean isResolved,
       boolean isOverdue,
-      boolean isReturned,
       boolean isOverdueInProgress,
       boolean isVolunteer) {
 
@@ -262,17 +239,14 @@ public class ListRowItem extends VBox {
     if (isOverdueInProgress) {
       Label overdueSubBadge = UIStyler.makeOverdueBadge();
       statusVBox.getChildren().add(overdueSubBadge);
-    } else if (isReturned) {
-      Label returnedSubBadge = UIStyler.makeReturnedBadge();
-      statusVBox.getChildren().add(returnedSubBadge);
     }
     
     HBox statusBox = makeFixedWidthBox(MEMBER_STATUS_WIDTH, statusVBox);
 
     // -- Dynamic action button --
     ButtonAction action = getDynamicActionButtonInfo(
-        ticket, isAvailableUnderDept, isAssignedToCurrentUser,
-        isInProgress, isCompleted, isResolved, isOverdue, isReturned, isOverdueInProgress, isVolunteer
+        ticket, isAvailableUnderDept,
+        isInProgress, isCompleted, isResolved, isOverdue, isOverdueInProgress, isVolunteer
     );
     item.actionButton = makeActionButton(action);
     HBox actionBox = makeFixedWidthBox(MEMBER_ACTION_WIDTH, item.actionButton);
