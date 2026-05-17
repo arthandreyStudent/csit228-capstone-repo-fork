@@ -27,6 +27,11 @@ public class JobDAO {
         return jobDAO;
     }
 
+    public List<Job> getAllJobs(){
+        ensureJobsLoaded();
+        return jobs;
+    }
+
     private void fetchJobs() {
         jobs.clear();
         try(Connection c = DBConnector.getConnection();
@@ -128,6 +133,26 @@ public class JobDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteJobFromDepartment(Department department, Job job){
+        try(Connection c = DBConnector.getConnection();
+            PreparedStatement ps = c.prepareStatement("DELETE FROM job_department WHERE job_id = ? AND department_id = ?")){
+
+            ps.setInt(1, job.getId());
+            ps.setInt(2, department.getId());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Deleted Job ID " + job.getId() + " from Department " + department.getName());
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Unable to delete");
+            throw new RuntimeException(e);
+        }
+        getJobByDepartment(department);
     }
 
     public void getJobByDepartment(Department department){

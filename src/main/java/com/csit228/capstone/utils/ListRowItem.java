@@ -1,5 +1,6 @@
 package com.csit228.capstone.utils;
 
+import com.csit228.capstone.model.Department;
 import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
@@ -196,6 +197,8 @@ public class ListRowItem extends VBox {
                         "-fx-text-fill: #1c2b63;"
         );
 
+
+        // CHANGE THIS TO EDITOR ASSIGNED TO THAT DEPARTMENT
         String assignedName = safeText(ticketView.getAssignedToName(), "");
         if (assignableUsers != null && !assignedName.isBlank()) {
             for (User user : assignableUsers) {
@@ -338,6 +341,51 @@ public class ListRowItem extends VBox {
         row.getChildren().addAll(avatar, textBox);
 
         item.addActivityHoverEffect(row);
+        item.getChildren().add(row);
+
+        return item;
+    }
+
+    public static ListRowItem forDepartment(Department department, int count) {
+        ListRowItem item = new ListRowItem();
+        item.sourceObject = department;
+
+        HBox row = new HBox();
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setPrefWidth(850);
+        row.setMinHeight(60);
+        row.setSpacing(10);
+        row.setPadding(new Insets(10, 15, 10, 15));
+        row.setCursor(Cursor.HAND);
+
+        row.setStyle(
+                "-fx-background-color: white;" +
+                        "-fx-border-color: transparent transparent #dfe7f5 transparent;" +
+                        "-fx-border-width: 0 0 1 0;"
+        );
+
+        Label nameLabel = new Label(safeText(department.getName(), "Unnamed Department"));
+        nameLabel.setPrefWidth(300);
+        nameLabel.setStyle("-fx-font-family: 'Georgia'; -fx-text-fill: #0f1012; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+        Label descLabel = new Label(safeText(department.getDescription(), "No description provided."));
+        descLabel.setPrefWidth(400);
+        descLabel.setWrapText(false);
+        descLabel.setStyle("-fx-text-fill: #888888; -fx-font-size: 13px;");
+
+        Label numOfJobs = new Label("" + department.getJobs().size());
+        numOfJobs.setPrefWidth(160);
+        numOfJobs.setStyle("-fx-font-family: 'Georgia'; -fx-alignment: 'center'; -fx-text-fill: #888888; -fx-font-size: 15px;");
+
+        Label numOfMembers = new Label("" + count);
+        numOfMembers.setPrefWidth(160);
+        numOfMembers.setStyle("-fx-font-family: 'Georgia'; -fx-alignment: 'center'; -fx-text-fill: #888888; -fx-font-size: 15px;");
+
+
+
+        row.getChildren().addAll(nameLabel, descLabel, numOfJobs, numOfMembers);
+
+        item.addCardHoverEffect(row);
         item.getChildren().add(row);
 
         return item;

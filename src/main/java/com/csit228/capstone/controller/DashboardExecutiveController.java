@@ -4,6 +4,7 @@ import com.csit228.capstone.model.Department;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXML;
@@ -192,6 +193,10 @@ public class DashboardExecutiveController extends StaffDashboardController {
         if (VOLUNTEER_TAB_NAME.equalsIgnoreCase(selectedDepartmentName)) return isVolunteerTicket(ticket);
         return ticket.getDepartmentName() != null
                 && ticket.getDepartmentName().equalsIgnoreCase(selectedDepartmentName);
+    }
+
+    public void goToDepartment() throws IOException {
+        Controls.switchScreen("DepartmentExecutiveView.fxml");
     }
 
     @FXML
