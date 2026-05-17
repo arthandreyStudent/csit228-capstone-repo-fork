@@ -1,5 +1,8 @@
 package com.csit228.capstone.utils;
 
+import com.csit228.capstone.model.Department;
+import com.csit228.capstone.controller.BaseTicketDetailModalController;
+import com.csit228.capstone.model.Department;
 import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
@@ -12,6 +15,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
@@ -24,6 +29,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class ListRowItem extends VBox {
@@ -166,8 +172,8 @@ public class ListRowItem extends VBox {
     setStyle("-fx-background-color: transparent;");
   }
   
-  public static ListRowItem forMemberMyWorkTicket(TicketView ticket) {
-    return forMemberMyWorkTicket(ticket,
+  public static ListRowItem forMemberAvailableTicket(TicketView ticket) {
+    return forMemberAvailableTicket(ticket,
         false,   // isAvailableUnderDept — default, overridden in controller
         false,   // isInProgress
         false,   // isCompleted
@@ -182,7 +188,7 @@ public class ListRowItem extends VBox {
    * {@code TicketMemberController}) drives the button state rather than this
    * utility class reaching into a session singleton.
    */
-  public static ListRowItem forMemberMyWorkTicket(
+  public static ListRowItem forMemberAvailableTicket(
       TicketView ticket,
       boolean isAvailableUnderDept,
       boolean isInProgress,
@@ -404,6 +410,17 @@ public class ListRowItem extends VBox {
         item.actionButton = saveButton;
         HBox actionBox = makeFixedWidthBox(EXEC_ACTION_WIDTH, saveButton);
 
+        // CHANGE THIS TO EDITOR ASSIGNED TO THAT DEPARTMENT
+        String assignedName = safeText(ticket.getAssignedToName(), "");
+        if (users != null && !assignedName.isBlank()) {
+            for (User user : users) {
+                if (user != null && user.getFullName().equalsIgnoreCase(assignedName)) {
+                    item.assignComboBox.setValue(user);
+                    break;
+                }
+            }
+        }
+
         row.getChildren().addAll(detailsBox, deptLabel, priorityBox, deadlineLabel, assignBox, actionBox);
 
         String normalStyle = row.getStyle();
@@ -515,6 +532,52 @@ public class ListRowItem extends VBox {
         row.setOnMouseExited(e  -> row.setStyle(normalStyle));
 
         item.getChildren().add(row);
+
+        return item;
+    }
+
+    public static ListRowItem forDepartment(Department department, int count) {
+        ListRowItem item = new ListRowItem();
+        item.sourceObject = department;
+
+        HBox row = new HBox();
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setPrefWidth(850);
+        row.setMinHeight(60);
+        row.setSpacing(10);
+        row.setPadding(new Insets(10, 15, 10, 15));
+        row.setCursor(Cursor.HAND);
+
+        row.setStyle(
+                "-fx-background-color: white;" +
+                        "-fx-border-color: transparent transparent #dfe7f5 transparent;" +
+                        "-fx-border-width: 0 0 1 0;"
+        );
+
+        Label nameLabel = new Label(safeText(department.getName(), "Unnamed Department"));
+        nameLabel.setPrefWidth(300);
+        nameLabel.setStyle("-fx-font-family: 'Georgia'; -fx-text-fill: #0f1012; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+        Label descLabel = new Label(safeText(department.getDescription(), "No description provided."));
+        descLabel.setPrefWidth(400);
+        descLabel.setWrapText(false);
+        descLabel.setStyle("-fx-text-fill: #888888; -fx-font-size: 13px;");
+
+        Label numOfJobs = new Label("" + department.getJobs().size());
+        numOfJobs.setPrefWidth(160);
+        numOfJobs.setStyle("-fx-font-family: 'Georgia'; -fx-alignment: 'center'; -fx-text-fill: #888888; -fx-font-size: 15px;");
+
+        Label numOfMembers = new Label("" + count);
+        numOfMembers.setPrefWidth(160);
+        numOfMembers.setStyle("-fx-font-family: 'Georgia'; -fx-alignment: 'center'; -fx-text-fill: #888888; -fx-font-size: 15px;");
+
+
+
+        row.getChildren().addAll(nameLabel, descLabel, numOfJobs, numOfMembers);
+
+        item.addCardHoverEffect(row);
+        item.getChildren().add(row);
+
         return item;
     }
 
@@ -691,6 +754,12 @@ public class ListRowItem extends VBox {
         return avatar;
     }
 
+    private void addCardHoverEffect(Node node) {
+        String normalStyle = node.getStyle();
+        node.setOnMouseEntered(event -> node.setStyle("-fx-background-color: #f8faff; -fx-border-color: #d7e4fb; -fx-border-radius: 12; -fx-background-radius: 12;"));
+        node.setOnMouseExited(event -> node.setStyle(normalStyle));
+    }
+
     private static boolean isOverdue(TicketView ticket) {
         if (ticket == null || ticket.getDeadline() == null) return false;
 
@@ -750,6 +819,13 @@ public class ListRowItem extends VBox {
         }
     }
 
+    private static String safeText(String value, String fallback) {
+        if (value == null || value.trim().isEmpty() || value.equalsIgnoreCase("N/A")) {
+            return fallback;
+        }
+        return value.trim();
+    }
+
     private static String getAvatarTextColor(String initials) {
         if (initials == null) return "#2f95ff";
         switch (initials.toUpperCase()) {
@@ -777,7 +853,7 @@ public class ListRowItem extends VBox {
     public void setAction(EventHandler<ActionEvent> handler) {
         if (actionButton != null) actionButton.setOnAction(handler);
     }
-    
+
     public void setSecondaryAction(EventHandler<ActionEvent> eventHandler) {
       if (secondaryActionButton != null) {
         secondaryActionButton.setOnAction(eventHandler);

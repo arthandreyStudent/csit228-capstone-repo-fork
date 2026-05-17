@@ -32,10 +32,8 @@ public class TicketEditorController extends StaffTicketController {
   private static final String STATUS_COMPLETED = "#22C55E";
   private static final String STATUS_RESOLVED = "#8B5CF6";
   private static final String FILTER_ALL = "#1c2b63";
-  
-  @FXML
-  private Label reviewQueueCountLabel;
 
+  
   @FXML
   private Label awaitingReviewLabel;
 
@@ -217,7 +215,38 @@ public class TicketEditorController extends StaffTicketController {
     inProgressLabel.setText(String.valueOf(inProgress));
     approvedTodayLabel.setText(String.valueOf(resolved));
     sentBackLabel.setText(String.valueOf(sentBack));
-    reviewQueueCountLabel.setText(String.valueOf(getFilteredTicketCount()));
+
+  }
+  protected void openTicketDetailModal(TicketView ticket) {
+    try {
+      FXMLLoader loader =
+              new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/StaffTicketView.fxml"));
+      Parent root = loader.load();
+
+      TicketDetailModelController controller = loader.getController();
+      controller.loadTicket(ticket);
+
+      openModal(root, "Ticket Details");
+      refreshDashboard();
+    } catch (IOException e) {
+      showError("Unable to open Ticket Details modal.");
+    }
+  }
+
+  protected boolean isInteractiveTarget(Object target) {
+    if (!(target instanceof Node)) {
+      return false;
+    }
+
+    Node node = (Node) target;
+    while (node != null) {
+      if (node instanceof ButtonBase || node instanceof ComboBoxBase || node instanceof TextInputControl) {
+        return true;
+      }
+      node = node.getParent();
+    }
+
+    return false;
   }
 
   private void loadReviewQueue() {
@@ -258,8 +287,8 @@ public class TicketEditorController extends StaffTicketController {
         event -> updateTicketStatus(ticket, TicketStatus.IN_PROGRESS, "Ticket returned to in progress."));
       reviewQueueBox.getChildren().add(row);
     }
+    
 
-    reviewQueueCountLabel.setText(String.valueOf(reviewQueueBox.getChildren().size()));
   }
 
   private boolean matchesCurrentFilter(TicketView ticket) {

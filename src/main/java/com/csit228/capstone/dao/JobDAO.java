@@ -4,6 +4,7 @@ import com.csit228.capstone.database.DBConnector;
 import com.csit228.capstone.model.Department;
 import com.csit228.capstone.model.Job;
 
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +27,15 @@ public class JobDAO {
     return jobDAO;
   }
 
-  private void fetchJobs() {
-    jobs.clear();
-    try (Connection c = DBConnector.getConnection(); Statement s = c.createStatement()) {
-      ResultSet resultSet = s.executeQuery("SELECT * FROM job");
+    public List<Job> getAllJobs(){
+        fetchJobs();
+        return jobs;
+    }
+
+    private void fetchJobs() {
+        jobs.clear();
+        try (Connection c = DBConnector.getConnection(); Statement s = c.createStatement()) {
+            ResultSet resultSet = s.executeQuery("SELECT * FROM job");
 
       while (resultSet.next()) {
         jobs.add(new Job(resultSet.getInt("id"), resultSet.getString("name")));
@@ -63,8 +69,8 @@ public class JobDAO {
     }
   }
 
-  private Job searchJob(Job job) {
-    ensureJobsLoaded();
+    private Job searchJob(Job job) {
+        fetchJobs();
 
     for (Job j : jobs) {
       if (j.getName().equalsIgnoreCase(job.getName())) {
@@ -113,12 +119,32 @@ public class JobDAO {
     }
   }
 
-  public void getJobByDepartment(Department department) {
-    department.getJobs().clear();
-    try (Connection c = DBConnector.getConnection(); PreparedStatement ps = c.prepareStatement(
-      "SELECT j.id, j.name FROM job j INNER JOIN " +
-      "job_department jd ON j.id = jd.job_id WHERE jd.department_id = ?")) {
-      ps.setInt(1, department.getId());
+    public void deleteJobFromDepartment(Department department, Job job){
+        try(Connection c = DBConnector.getConnection();
+            PreparedStatement ps = c.prepareStatement("DELETE FROM job_department WHERE job_id = ? AND department_id = ?")){
+
+            ps.setInt(1, job.getId());
+            ps.setInt(2, department.getId());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Deleted Job ID " + job.getId() + " from Department " + department.getName());
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Unable to delete");
+            throw new RuntimeException(e);
+        }
+        getJobByDepartment(department);
+    }
+
+    public void getJobByDepartment(Department department) {
+        department.getJobs().clear();
+        try (Connection c = DBConnector.getConnection(); PreparedStatement ps = c.prepareStatement(
+                "SELECT j.id, j.name FROM job j INNER JOIN " +
+                        "job_department jd ON j.id = jd.job_id WHERE jd.department_id = ?")) {
+            ps.setInt(1, department.getId());
 
       ResultSet resultSet = ps.executeQuery();
 
