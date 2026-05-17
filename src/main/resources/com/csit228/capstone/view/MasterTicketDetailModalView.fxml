@@ -11,7 +11,7 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <VBox prefWidth="600.0"
-      style="-fx-background-color: white;"
+      style="-fx-background-color: #f5f0e7;"
       stylesheets="@../styles/app.css"
       xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -77,11 +77,11 @@
                     hbarPolicy="NEVER"
                     prefHeight="620.0"
                     prefWidth="600.0"
-                    style="-fx-background-color: white;">
+                    style="-fx-background-color: #f5f0e7;">
             <content>
                 <VBox alignment="CENTER"
                       prefWidth="600.0"
-                      style="-fx-background-color: white;">
+                      style="-fx-background-color: #f5f0e7;">
                     <children>
 
                         <!-- Status and Priority -->

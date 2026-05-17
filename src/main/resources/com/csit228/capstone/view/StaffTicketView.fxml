@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefHeight="760.0" prefWidth="960.0" style="-fx-background-color: #f5f7fb;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
+<VBox prefHeight="760.0" prefWidth="960.0" style="-fx-background-color: #f5f0e7;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
     <children>
         <HBox fx:id="ticketHeader" alignment="CENTER_LEFT" prefHeight="76.0" spacing="16.0" style="-fx-background-color: #7a1e1f;">
             <padding>

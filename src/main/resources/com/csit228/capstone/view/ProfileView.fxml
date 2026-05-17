@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane prefHeight="758.0" prefWidth="1250.0" style="-fx-background-color: #eef2fb;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.ProfileViewController">
+<AnchorPane prefHeight="758.0" prefWidth="1250.0" style="-fx-background-color: #f5f0e7;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.ProfileViewController">
 
     <children>
 
