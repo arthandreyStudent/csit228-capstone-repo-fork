@@ -8,7 +8,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="527.0" prefWidth="415.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.CreateDepartmentModalController">
+<AnchorPane prefHeight="527.0" prefWidth="415.0" style="-fx-background-color: #f5f0e7;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.CreateDepartmentModalController">
    <children>
       <AnchorPane layoutY="-4.0" prefHeight="99.0" prefWidth="415.0" style="-fx-background-color: #7a1e1f;">
          <children>

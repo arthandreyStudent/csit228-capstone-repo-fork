@@ -30,7 +30,7 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 
-public class ManageUserExecutiveController {
+public class ManageUserExecutiveController extends BaseTicketController {
     @FXML protected ScrollPane scrollpaneDepartment;
     @FXML protected ScrollPane scrollpaneUsers;
     @FXML protected Button createUserAccount;
@@ -46,7 +46,7 @@ public class ManageUserExecutiveController {
 
     @FXML
     public void initialize(){
-
+        setupProfile();
         renderDepartment();
     }
 
@@ -98,8 +98,10 @@ public class ManageUserExecutiveController {
         Controls.switchScreen("DepartmentExecutiveView.fxml");
     }
 
-    public void onClickedLogout(){
-        System.out.println("logout");
+    @Override
+    @FXML
+    public void onClickedLogout() throws IOException {
+        super.onClickedLogout();
     }
 
     public void deadlineSortComboBox(){
@@ -252,6 +254,21 @@ public class ManageUserExecutiveController {
             System.out.println("Unable to open View Department modal.");
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected String getDefaultRoleName() {
+        return "EXECUTIVE";
+    }
+
+    @Override
+    protected void refreshDashboard() {
+        renderDepartment();
+    }
+
+    @Override
+    protected void renderDashboard() {
+        renderDepartment();
     }
 
 

@@ -502,6 +502,8 @@ public class TicketMemberController extends BaseTicketController {
 
     @FXML
     public void onClickedMyTasks() {
+        showDashboardContent();
+
         showingMyTasks = true;
 
         if (myTasksPage != null) {
@@ -518,6 +520,8 @@ public class TicketMemberController extends BaseTicketController {
 
     @FXML
     public void onClickedDashboard() {
+        showDashboardContent();
+
         showingMyTasks = false;
         hideMyTasksPage();
         setSidebarActive(true);

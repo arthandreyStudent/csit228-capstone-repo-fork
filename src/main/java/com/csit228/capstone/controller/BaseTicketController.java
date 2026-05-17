@@ -242,59 +242,59 @@ public abstract class BaseTicketController implements TicketObserver, Notificati
 
   @FXML
   public void onClickedProfile() {
-    if (isProfileViewOpen) {
-      return;
-    }
+        if (isProfileViewOpen) {
+            return;
+        }
 
-    try {
-      isProfileViewOpen = true;
+        if (mainContentPane == null) {
+            showError("Main content area was not found.");
+            return;
+        }
 
-      if (profileButton != null) {
-        profileButton.setDisable(true);
-      }
+        try {
+            isProfileViewOpen = true;
 
-      if (mainContentPane == null) {
-        showError("Main content area was not found.");
+            if (profileButton != null) {
+                profileButton.setDisable(true);
+            }
+
+            dashboardContentNodes.clear();
+            dashboardContentNodes.addAll(mainContentPane.getChildren());
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/csit228/capstone/view/ProfileView.fxml")
+            );
+
+            Parent profileView = loader.load();
+
+            ProfileViewController profileController = loader.getController();
+            profileController.setBackAction(this::showDashboardContent);
+
+            AnchorPane.setTopAnchor(profileView, 0.0);
+            AnchorPane.setRightAnchor(profileView, 0.0);
+            AnchorPane.setBottomAnchor(profileView, 0.0);
+            AnchorPane.setLeftAnchor(profileView, 0.0);
+
+            mainContentPane.getChildren().setAll(profileView);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Unable to open Profile.");
+            resetProfileButton();
+        }
+  }
+
+
+  protected void showDashboardContent() {
+        if (mainContentPane == null || !isProfileViewOpen) {
+            return;
+        }
+
+        mainContentPane.getChildren().setAll(dashboardContentNodes);
+        dashboardContentNodes.clear();
+
         resetProfileButton();
-        return;
-      }
-
-      if (dashboardContentNodes.isEmpty()) {
-        dashboardContentNodes.addAll(mainContentPane.getChildren());
-      }
-
-      FXMLLoader loader = new FXMLLoader(
-              getClass().getResource("/com/csit228/capstone/view/ProfileView.fxml")
-      );
-
-      Parent profileView = loader.load();
-
-      ProfileViewController profileController = loader.getController();
-      profileController.setBackAction(this::showDashboardContent);
-
-      AnchorPane.setTopAnchor(profileView, 0.0);
-      AnchorPane.setRightAnchor(profileView, 0.0);
-      AnchorPane.setBottomAnchor(profileView, 0.0);
-      AnchorPane.setLeftAnchor(profileView, 0.0);
-
-      mainContentPane.getChildren().setAll(profileView);
-
-    } catch (IOException e) {
-      e.printStackTrace();
-      showError("Unable to open Profile.");
-      resetProfileButton();
-    }
   }
-
-  private void showDashboardContent() {
-    if (mainContentPane == null) {
-      return;
-    }
-
-    mainContentPane.getChildren().setAll(dashboardContentNodes);
-    resetProfileButton();
-  }
-
   private void resetProfileButton() {
     isProfileViewOpen = false;
 

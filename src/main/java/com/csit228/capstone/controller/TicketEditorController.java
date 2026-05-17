@@ -132,6 +132,12 @@ public class TicketEditorController extends StaffTicketController {
   }
 
   @FXML
+  public void onClickedDashboard() {
+      showDashboardContent();
+      refreshDashboard();
+  }
+  
+  @FXML
   public void showOpenTickets() {
     currentFilter = ReviewQueueFilter.OPEN;
     setActiveFilterButton(openFilterButton);

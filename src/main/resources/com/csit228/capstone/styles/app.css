@@ -226,6 +226,7 @@
 
 /*TICKET VIEW MODAL SECTION*/
 .root {
+    -app-background-accent: #F5F0E7;
     -ticket-code-accent: #FFCC00;
     -white: #FFFFFF;
     -subheader-accent: #94A3B8;

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketEditorController">
+<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #f5f0e7;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketEditorController">
 
     <children>
         <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #7a1e1f;">
@@ -27,7 +27,7 @@
                     </VBox.margin>
                 </Label>
 
-                <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #5b1617; -fx-background-radius: 10;">
+                <HBox alignment="CENTER_LEFT" onMouseClicked="#onClickedDashboard" prefHeight="42.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #5b1617; -fx-background-radius: 10;">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
@@ -73,7 +73,7 @@
             </children>
         </VBox>
 
-        <AnchorPane fx:id="mainContentPane" prefHeight="758.0" prefWidth="1250.0" style="-fx-background-color: #eef2fb;">
+        <AnchorPane fx:id="mainContentPane" prefHeight="758.0" prefWidth="1250.0" style="-fx-background-color: #f5f0e7;">
 
             <children>
                 <VBox layoutX="20.0" layoutY="20.0" spacing="2.0">
