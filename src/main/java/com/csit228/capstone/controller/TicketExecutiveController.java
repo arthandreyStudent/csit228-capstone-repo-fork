@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardExecutiveController extends StaffDashboardController {
+public class TicketExecutiveController extends StaffTicketController {
   
   @FXML
   private Label unassignedLabel;
@@ -89,7 +89,7 @@ public class DashboardExecutiveController extends StaffDashboardController {
   protected void renderDashboard() {
     updateSummaryCardsAndResolutionRate();
     loadPendingAssignmentQueue();
-    loadRecentActivity(recentActivityBox);
+    refreshActivityBox();
   }
   
   @Override
@@ -108,6 +108,7 @@ public class DashboardExecutiveController extends StaffDashboardController {
     setupSearch();
     setupDeadlineSortComboBox();
     loadDepartmentsAndTabs();
+    loadRecentActivity(recentActivityBox);
     refreshDashboard();
     startWatching();
   }

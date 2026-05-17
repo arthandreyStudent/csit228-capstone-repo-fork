@@ -1,7 +1,6 @@
 package com.csit228.capstone.controller;
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.model.Department;
-import com.csit228.capstone.model.Serializer;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ComboBoxBase;
@@ -27,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DashboardEditorController extends StaffDashboardController {
+public class TicketEditorController extends StaffTicketController {
   private static final String STATUS_OPEN = "#3B82F6";
   private static final String STATUS_IN_PROGRESS = "#F59E0B";
   private static final String STATUS_COMPLETED = "#22C55E";

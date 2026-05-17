@@ -1,6 +1,6 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.model.Notification;
+import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
@@ -11,10 +11,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class DashboardMemberController extends BaseDashboardController {
+public class TicketMemberController extends BaseTicketController {
   
   @FXML
   private Label openTasksLabel;
@@ -36,6 +35,8 @@ public class DashboardMemberController extends BaseDashboardController {
   
   @FXML
   private VBox activityBox;
+
+  private final DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
   
   @Override
   protected String getDefaultRoleName() {
@@ -105,18 +106,21 @@ public class DashboardMemberController extends BaseDashboardController {
     completedLabel.setText(String.valueOf(completed));
     overdueLabel.setText(String.valueOf(overdue));
   }
-  
+
   private void loadAvailableTickets() {
     availableTicketsBox.getChildren().clear();
-    
+
     String keyword = searchField != null ? searchField.getText() : "";
-    
+    int userDeptId = AppSession.currentUser != null ? AppSession.currentUser.getDepartment_id() : -1;
+
     for (TicketView ticket : getSortedTicketsByDeadline()) {
       if (!isAvailableTicket(ticket) || ticket.isVolunteerTicket())
         continue;
+      if (!isFromUserDepartment(ticket, userDeptId))
+        continue;
       if (!matchesTicketSearch(ticket, keyword))
         continue;
-      
+
       ListRowItem row = ListRowItem.forMemberAvailableTicket(ticket);
       row.setAction(event -> takeTicket(ticket));
       availableTicketsBox.getChildren().add(row);
@@ -143,9 +147,7 @@ public class DashboardMemberController extends BaseDashboardController {
         break;
     }
   }
-  
 
-  
   private void takeTicket(TicketView ticket) {
     User currentUser = AppSession.currentUser;
     
@@ -177,6 +179,15 @@ public class DashboardMemberController extends BaseDashboardController {
     if (currentUser == null || ticket.getAssignedToName() == null)
       return false;
     return ticket.getAssignedToName().equalsIgnoreCase(currentUser.getFullName());
+  }
+
+  private boolean isFromUserDepartment(TicketView ticket, int userDeptId) {
+    if (userDeptId <= 0) return true;
+    String userDeptName = departmentDAO.getDepartmentByID(userDeptId) != null
+            ? departmentDAO.getDepartmentByID(userDeptId).getName()
+            : null;
+    if (userDeptName == null) return true;
+    return userDeptName.equalsIgnoreCase(ticket.getDepartmentName());
   }
   
   private String safe(String value) {

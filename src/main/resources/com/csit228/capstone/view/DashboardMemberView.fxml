@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.DashboardMemberController">
+<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketMemberController">
 
     <children>
         <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #121d49;">
