@@ -13,6 +13,7 @@ public abstract class User implements Serializable {
   private String username;
   private transient String passwordHash;
   private Role role;
+  private String departmentName;
   private int department_id;
   
   public User() {
@@ -20,6 +21,14 @@ public abstract class User implements Serializable {
   
   public void setUsername(String username) {
     this.username = username;
+  }
+  
+  public String getDepartmentName() {
+    return departmentName;
+  }
+  
+  public void setDepartmentName(String departmentName) {
+    this.departmentName = departmentName;
   }
   
   public int getDepartment_id() {
