@@ -463,7 +463,7 @@ public class TicketMemberController extends BaseTicketController {
         modalStage.showAndWait();
     }
 
-    private boolean isAvailableTicket(TicketView ticket) {
+    protected boolean isAvailableTicket(TicketView ticket) {
         if (ticket == null || !isUnassigned(ticket)) {
             return false;
         }
@@ -471,7 +471,7 @@ public class TicketMemberController extends BaseTicketController {
         return isStatus(ticket, TicketStatus.OPEN.name());
     }
 
-    private boolean isAssignedToCurrentUser(TicketView ticket) {
+    protected boolean isAssignedToCurrentUser(TicketView ticket) {
         User currentUser = AppSession.currentUser;
 
         if (currentUser == null || ticket == null) {
