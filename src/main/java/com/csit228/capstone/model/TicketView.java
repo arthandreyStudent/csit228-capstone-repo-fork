@@ -20,7 +20,6 @@ public class TicketView {
   private LocalDateTime lastUpdated;
   private LocalDateTime dateCreated;
   private LocalDateTime deadline;
-  private String returnReason;
 
   public int getId() {
     return id;
@@ -141,8 +140,7 @@ public class TicketView {
     String assignedToName,
     LocalDateTime lastUpdated,
     LocalDateTime dateCreated,
-    LocalDateTime deadline,
-    String returnReason
+    LocalDateTime deadline
   ) {
     this.id = id;
     this.title = title;
@@ -155,7 +153,6 @@ public class TicketView {
     this.lastUpdated = lastUpdated;
     this.dateCreated = dateCreated;
     this.deadline = deadline;
-    this.returnReason = returnReason;
   }
 
   public LocalDateTime getDeadline() {
@@ -168,14 +165,6 @@ public class TicketView {
 
   public LocalDateTime getDateCreated() {
     return dateCreated;
-  }
-
-  public String getReturnReason() {
-    return returnReason;
-  }
-
-  public void setReturnReason(String returnReason) {
-    this.returnReason = returnReason;
   }
 
   public boolean isVolunteerTicket() {
