@@ -29,12 +29,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class ManageUserExecutiveController extends BaseTicketController {
     @FXML protected ScrollPane scrollpaneDepartment;
     @FXML protected ScrollPane scrollpaneUsers;
     @FXML protected Button createUserAccount;
+
 
 
     @FXML protected HBox hboxDashboard;
@@ -63,10 +65,12 @@ public class ManageUserExecutiveController extends BaseTicketController {
     }
 
     public void renderDepartment(){
+        createUserRowView(departmentDAO.getDepartments().getFirst());
+
         scrollpaneDepartment.setContent(null);
         HBox container = new HBox();
         Button allUsers = new Button("All Users");
-        allUsers.setPrefHeight(25);
+        allUsers.setPrefHeight(30);
         HBox.setMargin(allUsers, new Insets(5));
         allUsers.setPadding(new Insets(10));
         allUsers.setStyle("-fx-background-color: #444444; -fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #FFFFFF; -fx-background-radius: 20;");
@@ -74,21 +78,31 @@ public class ManageUserExecutiveController extends BaseTicketController {
             System.out.println("All users is pressed");
         });
         for(Department d: departmentDAO.getDepartments()){
-            Button button = new Button(d.getName());
-            button.setPrefHeight(25);
+            Button button = new Button("    " + d.getName() + "    ");
+
             HBox.setMargin(button, new Insets(5));
-            button.setPadding(new Insets(10));
-            button.setStyle("-fx-background-color: #444444; -fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #FFFFFF; -fx-background-radius: 20;");
+            button.setPadding(new Insets(5, 10, 5, 10));
+            button.setStyle("-fx-background-color: #EEEEEE; -fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #222222; -fx-background-radius: 20;");
             button.setOnMousePressed(mouseEvent -> {
                 createUserRowView(d);
-                System.out.println(d.getName() + " is pressed");
+                for(Node b: container.getChildren()){
+                    b.setStyle("-fx-background-color: #EEEEEE; -fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #222222; -fx-background-radius: 20;");
+                }
+                button.setStyle("-fx-background-color: #444444; -fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #FFFFFF; -fx-background-radius: 20;");
+
             });
+
 
             container.getChildren().add(button);
             System.out.println("adding " + d.getName());
         }
+        container.getChildren().getFirst().setStyle("-fx-background-color: #444444; -fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #FFFFFF; -fx-background-radius: 20;");
+
         scrollpaneDepartment.setContent(container);
     }
+
+
+
 
 
     public void goToDashboard() throws IOException {
@@ -113,64 +127,11 @@ public class ManageUserExecutiveController extends BaseTicketController {
         System.out.println("deadline Sort");
     }
 
-    public void handleViewDepartment(Department department){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/csit228/capstone/view/ViewDepartment.fxml"));
-            Parent root = loader.load();
-
-            ViewDepartmentModalController controller = loader.getController();
-            controller.setDepartment(department);
-            System.out.println("Setting " + department.getName());
-
-            Stage modalStage = new Stage();
-            modalStage.setTitle(department.getName());
-            modalStage.setScene(new Scene(root));
-            modalStage.sizeToScene();
-            modalStage.centerOnScreen();
-            modalStage.initModality(Modality.APPLICATION_MODAL);
-            modalStage.showAndWait();
-
-
-            controller.getButtonSaveChanges().setOnAction(event -> {
-                renderDepartment();
-            });
-
-        } catch (IOException e) {
-            System.out.println("Unable to open View Department modal.");
-            e.printStackTrace();
-        }
-    }
-
-    public void handleCreateUserAccount(){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/csit228/capstone/view/CreateDepartmentModal.fxml"));
-            Parent root = loader.load();
-
-
-            CreateDepartmentModalController controller = loader.getController();
-
-            controller.getSubmitButton().setOnAction(event -> {
-                renderDepartment();
-            });
-
-            if (controller != null && controller.isSubmitted()) {
-                renderDepartment();
-            }
-
-        } catch (IOException e) {
-            System.out.println("Unable to open Create Department modal.");
-            e.printStackTrace();
-        }
-    }
-
-
 
     public void createUserRowView(Department department) {
         scrollpaneUsers.setContent(null);
 
-        VBox container = new VBox(10);
+        VBox container = new VBox();
         container.setPadding(new Insets(10));
         container.prefWidthProperty().bind(scrollpaneUsers.widthProperty().subtract(25));
 
@@ -186,26 +147,28 @@ public class ManageUserExecutiveController extends BaseTicketController {
 
 
             Label name = new Label(u.getFullName());
-            name.setStyle("-fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #666666;");
+            name.setStyle("-fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #222222; -fx-font-weight: bold;");
             name.setPadding(new Insets(5));
-            name.setPrefWidth(200);
+            name.setPrefWidth(250);
 
-            Label job = new Label(userJobDAO.getJobByUser(u.getUsername()));
-            job.setStyle("-fx-font-family: 'Georgia'; -fx-font-size: 10px; -fx-text-fill: #666666;");
-            job.setPadding(new Insets(5));
-            job.setPrefWidth(150);
+            Label position = new Label(userJobDAO.getJobByUser(u.getUsername()));
+            position.setStyle("-fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #666666;");
+            position.setPadding(new Insets(5));
+            position.setPrefWidth(250);
+
+            Label role = new Label(userDAO.getTypeRev(u.getRole()) == 3 ? "Member" : "Editor");
+            role.setStyle("-fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #666666;");
+            role.setPadding(new Insets(5));
+            role.setPrefWidth(250);
+
+            Label username = new Label(u.getUsername());
+            username.setStyle("-fx-font-family: 'Georgia'; -fx-font-size: 14px; -fx-text-fill: #666666;");
+            username.setPadding(new Insets(5));
+            username.setPrefWidth(250);
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            Button ViewMembers = new Button("Save");
-            ViewMembers.setStyle(
-                    "-fx-background-radius: 50; " +
-                            "-fx-background-color: #333333; " +
-                            "-fx-text-fill: white; " +
-                            "-fx-font-weight: bold; " +
-                            "-fx-cursor: hand;"
-            );
 
             row.setOnMouseClicked(mouseEvent -> {
                 System.out.println(u.getFirstName() + " is clicked");
@@ -213,7 +176,7 @@ public class ManageUserExecutiveController extends BaseTicketController {
             });
 
 
-            row.getChildren().addAll(name, job, spacer, ViewMembers);
+            row.getChildren().addAll(name, position, role, username);
             addCardHoverEffect(row);
             container.getChildren().add(row);
 
@@ -256,23 +219,7 @@ public class ManageUserExecutiveController extends BaseTicketController {
             e.printStackTrace();
         }
     }
-    private Button createTabButton(String text, boolean selected) {
-        Button button = new Button(text);
-        button.setPrefHeight(32.0);
-        button.setMinWidth(58.0);
-        button.setCursor(Cursor.HAND);
 
-        if (selected) {
-            button.setStyle("-fx-background-color: #2f95ff;" + "-fx-background-radius: 20;" + "-fx-text-fill: white;" +
-                    "-fx-font-size: 12px;" + "-fx-font-weight: bold;" + "-fx-padding: 0 18 0 18;");
-        } else {
-            button.setStyle("-fx-background-color: white;" + "-fx-border-color: #dfe7f5;" + "-fx-border-radius: 20;" +
-                    "-fx-background-radius: 20;" + "-fx-text-fill: #9faad2;" + "-fx-font-size: 12px;" +
-                    "-fx-font-weight: bold;" + "-fx-padding: 0 18 0 18;");
-        }
-
-        return button;
-    }
 
     @Override
     protected String getDefaultRoleName() {

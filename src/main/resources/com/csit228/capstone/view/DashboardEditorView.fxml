@@ -12,8 +12,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #f5f0e7;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketEditorController">
+<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #f5f0e7;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketEditorController">
 
     <children>
         <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #7a1e1f;">
@@ -81,7 +82,7 @@
             </children>
         </VBox>
 
-        <AnchorPane fx:id="mainContentPane" prefHeight="758.0" prefWidth="1250.0" style="-fx-background-color: #f5f0e7;">
+        <AnchorPane fx:id="mainContentPane" prefHeight="758.0" prefWidth="1263.0" style="-fx-background-color: #f5f0e7;">
 
             <children>
                 <VBox layoutX="20.0" layoutY="20.0" spacing="2.0">
@@ -93,51 +94,67 @@
 
                 <HBox layoutX="25.0" layoutY="90.0" spacing="15.0">
                     <children>
-                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: #444444; -fx-background-radius: 14;">
                             <children>
-                                <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Awaiting Review" />
-                                <Label fx:id="awaitingReviewLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #22C55E; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #DCFCE7; -fx-background-radius: 50;">
+                                <Label fx:id="awaitingReviewLabel" layoutX="20.0" layoutY="37.0" style="-fx-text-fill: white; -fx-font-size: 28;" text="0" />
+                                <StackPane layoutX="209.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #DCFCE7; -fx-background-radius: 50;">
                                     <children>
                                         <Label style="-fx-text-fill: #22C55E; -fx-font-size: 24px; -fx-font-weight: bold;" text="⌕" />
                                     </children>
                                 </StackPane>
+                        <Label layoutX="20.0" layoutY="18.0" text="TITLE::" textFill="WHITE">
+                           <font>
+                              <Font name="Georgia Bold" size="11.0" />
+                           </font>
+                        </Label>
                             </children>
                         </AnchorPane>
 
-                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: #444444; -fx-background-radius: 14;">
                             <children>
-                                <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="In Progress" />
-                                <Label fx:id="inProgressLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #F59E0B; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #FEF3C7; -fx-background-radius: 50;">
+                                <Label fx:id="inProgressLabel" layoutX="21.0" layoutY="35.0" style="-fx-text-fill: white; -fx-font-size: 28;" text="0" />
+                                <StackPane layoutX="209.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #FEF3C7; -fx-background-radius: 50;">
                                     <children>
                                         <Label style="-fx-text-fill: #F59E0B; -fx-font-size: 22px;" text="⠿" />
                                     </children>
                                 </StackPane>
+                        <Label layoutX="19.0" layoutY="17.0" text="IN PROGRESS::" textFill="WHITE">
+                           <font>
+                              <Font name="Georgia Bold" size="11.0" />
+                           </font>
+                        </Label>
                             </children>
                         </AnchorPane>
 
-                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: #444444; -fx-background-radius: 14;">
                             <children>
-                                <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Approved Today" />
-                                <Label fx:id="approvedTodayLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #8B5CF6; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #EDE9FE; -fx-background-radius: 50;">
+                                <Label fx:id="approvedTodayLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: white; -fx-font-size: 28;" text="0" />
+                                <StackPane layoutX="209.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #EDE9FE; -fx-background-radius: 50;">
                                     <children>
                                         <Label style="-fx-text-fill: #8B5CF6; -fx-font-size: 28px; -fx-font-weight: bold;" text="✓" />
                                     </children>
                                 </StackPane>
+                        <Label layoutX="18.0" layoutY="18.0" text="APPROVED TODAY::" textFill="WHITE">
+                           <font>
+                              <Font name="Georgia Bold" size="11.0" />
+                           </font>
+                        </Label>
                             </children>
                         </AnchorPane>
 
-                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                        <AnchorPane prefHeight="92.0" prefWidth="319.0" style="-fx-background-color: #444444; -fx-background-radius: 14;">
                             <children>
-                                <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Sent Back" />
-                                <Label fx:id="sentBackLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #f14d5a; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #ffedcc; -fx-background-radius: 50;">
+                                <Label fx:id="sentBackLabel" layoutX="20.0" layoutY="35.0" style="-fx-text-fill: white; -fx-font-size: 28;" text="0" />
+                                <StackPane layoutX="209.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #ffedcc; -fx-background-radius: 50;">
                                     <children>
                                         <Label style="-fx-text-fill: #f14d5a; -fx-font-size: 28px; -fx-font-weight: bold;" text="↶" />
                                     </children>
                                 </StackPane>
+                        <Label layoutX="21.0" layoutY="18.0" text="SENT BACK::" textFill="WHITE">
+                           <font>
+                              <Font name="Georgia Bold" size="11.0" />
+                           </font>
+                        </Label>
                             </children>
                         </AnchorPane>
                     </children>
@@ -191,17 +208,46 @@
 
                 <AnchorPane layoutX="960.0" layoutY="205.0" prefHeight="535.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 16;">
                     <children>
-                        <Label layoutX="18.0" layoutY="18.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Create Announcement" />
-                  <TextField fx:id="descriptionTextField" layoutX="24.0" layoutY="140.0" prefHeight="142.0" prefWidth="238.0" />
-                  <Button fx:id="submitForm" layoutX="208.0" layoutY="287.0" mnemonicParsing="false" onAction="#createAnnouncement" text="submit" />
-                  <TextField fx:id="titleField" layoutX="24.0" layoutY="76.0" />
-                  <Label layoutX="24.0" layoutY="50.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Title" />
-                  <Label layoutX="24.0" layoutY="112.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Description" />
+                  <TextField fx:id="descriptionTextField" alignment="TOP_LEFT" layoutX="24.0" layoutY="126.0" prefHeight="84.0" prefWidth="238.0" promptText="eg. The meeting will be...">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding></TextField>
+                  <Button fx:id="submitForm" layoutX="153.0" layoutY="221.0" mnemonicParsing="false" onAction="#createAnnouncement" prefHeight="34.0" prefWidth="109.0" style="-fx-background-radius: 20; -fx-background-color: #7a1e1f;" text="Publish" textFill="WHITE">
+                     <font>
+                        <Font name="Georgia Bold Italic" size="13.0" />
+                     </font></Button>
+                  <TextField fx:id="titleField" layoutX="24.0" layoutY="71.0" prefHeight="26.0" prefWidth="238.0" promptText="eg. Meeting Later at...">
+                     <font>
+                        <Font size="11.0" />
+                     </font></TextField>
                   <ScrollPane layoutX="24.0" layoutY="321.0" prefHeight="200.0" prefWidth="238.0">
                      <content>
-                        <VBox fx:id="notificationPane" prefHeight="198.0" prefWidth="236.0" />
+                        <VBox fx:id="notificationPane" prefHeight="185.0" prefWidth="236.0" />
                      </content>
                   </ScrollPane>
+                  <Label layoutX="24.0" layoutY="25.0" text="Create Announcement">
+                     <font>
+                        <Font name="Georgia Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="24.0" layoutY="53.0" text="TITLE::" textFill="#757575">
+                     <font>
+                        <Font name="Georgia Bold Italic" size="11.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="24.0" layoutY="109.0" text="DESCRIPTION::" textFill="#757575">
+                     <font>
+                        <Font name="Georgia Bold Italic" size="11.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="24.0" layoutY="291.0" text="Announcement::">
+                     <font>
+                        <Font name="Georgia Bold" size="16.0" />
+                     </font>
+                  </Label>
                     </children>
                 </AnchorPane>
             </children>

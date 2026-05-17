@@ -73,7 +73,7 @@
 
                 <Region VBox.vgrow="ALWAYS" />
 
-                <VBox prefHeight="120.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #c93133; -fx-background-radius: 12;">
+                <VBox prefHeight="120.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #222222; -fx-background-radius: 12;">
                     <padding>
                         <Insets bottom="14.0" left="14.0" right="14.0" top="16.0" />
                     </padding>
@@ -82,15 +82,15 @@
                             <children>
                                 <StackPane prefHeight="40.0" prefWidth="40.0">
                                     <children>
-                                        <Circle fill="#183f63" radius="20.0" />
-                                        <Label fx:id="profileInitialsLabel" style="-fx-text-fill: #2f95ff; -fx-font-size: 12px; -fx-font-weight: bold;" text="NA" />
+                                        <Circle fill="WHITE" radius="20.0" />
+                                        <Label fx:id="profileInitialsLabel" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="NA" textFill="#9a0f0f" />
                                     </children>
                                 </StackPane>
 
                                 <VBox alignment="CENTER_LEFT">
                                     <children>
                                         <Label fx:id="profileNameLabel" style="-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;" text="Executive User" />
-                                        <Label fx:id="profileRoleLabel" style="-fx-text-fill: #2f95ff; -fx-font-size: 10px; -fx-font-weight: bold;" text="EXECUTIVE" />
+                                        <Label fx:id="profileRoleLabel" style="-fx-font-size: 10px; -fx-font-weight: bold;" text="EXECUTIVE" textFill="WHITE" />
                                     </children>
                                 </VBox>
                             </children>
@@ -132,7 +132,7 @@
                         <Font name="Georgia Bold Italic" size="14.0" />
                      </font>
                   </Label>
-                  <Label layoutX="756.0" layoutY="31.0" style="-fx-text-fill: #999999;" text="NO. of POSITIONS::">
+                  <Label layoutX="686.0" layoutY="31.0" style="-fx-text-fill: #999999;" text="NO. of POSITIONS::">
                      <font>
                         <Font name="Georgia Bold Italic" size="14.0" />
                      </font>
