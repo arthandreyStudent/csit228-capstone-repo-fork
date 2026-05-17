@@ -130,6 +130,12 @@ public class TicketEditorController extends StaffTicketController {
     setActiveFilterButton(allFilterButton);
     loadReviewQueue();
   }
+
+  @FXML
+  public void onClickedDashboard() {
+      showDashboardContent();
+      refreshDashboard();
+  }
   
   @FXML
   public void showOpenTickets() {

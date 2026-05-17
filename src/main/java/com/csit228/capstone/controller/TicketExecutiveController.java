@@ -300,13 +300,13 @@ public class TicketExecutiveController extends StaffTicketController {
   }
 
   public void goToDepartment() throws IOException {
-    System.out.println("PRESSS");
-    Controls.switchScreen("DepartmentExecutiveView.fxml");
+      showDashboardContent();
+      Controls.switchScreen("DepartmentExecutiveView.fxml");
   }
 
   public void goToManageUser() throws IOException {
-    System.out.println("PRESSS");
-    Controls.switchScreen("ManageUserExecutive.fxml");
+      showDashboardContent();
+      Controls.switchScreen("ManageUserExecutive.fxml");
   }
 
   private double rate(int value, int total) {

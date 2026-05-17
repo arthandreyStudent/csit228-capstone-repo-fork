@@ -27,7 +27,7 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 
-public class DepartmentExecutiveController {
+public class DepartmentExecutiveController extends BaseTicketController {
     @FXML protected ScrollPane scrollpaneDepartment;
     @FXML protected Button createDepartmentButton;
     @FXML protected HBox hboxDepartment;
@@ -43,6 +43,7 @@ public class DepartmentExecutiveController {
 
     @FXML
     public void initialize(){
+        setupProfile();
         createDepartmentRowView();
         renderDepartment();
     }
@@ -84,8 +85,10 @@ public class DepartmentExecutiveController {
         Controls.switchScreen("DepartmentExecutiveView.fxml");
     }
 
-    public void onClickedLogout(){
-        System.out.println("logout");
+    @Override
+    @FXML
+    public void onClickedLogout() throws IOException {
+        super.onClickedLogout();
     }
 
     public void deadlineSortComboBox(){
@@ -226,5 +229,19 @@ public class DepartmentExecutiveController {
 
     public void goToManageUsers() throws IOException {
         Controls.switchScreen("ManageUserExecutive.fxml");
+    }
+    @Override
+    protected String getDefaultRoleName() {
+        return "EXECUTIVE";
+    }
+
+    @Override
+    protected void refreshDashboard() {
+        renderDepartment();
+    }
+
+    @Override
+    protected void renderDashboard() {
+        renderDepartment();
     }
 }
