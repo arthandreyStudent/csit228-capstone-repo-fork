@@ -267,7 +267,7 @@
                                  </VBox>
                                  <VBox alignment="CENTER" spacing="10.0">
                                     <children>
-                                       <Label style="-fx-background-color: DBECFF; -fx-background-radius: 50;" text="In Progress" textFill="#2563eb">
+                                       <Label style="-fx-background-color: #FEF3C7; -fx-background-radius: 50;" text="In Progress" textFill="#F59E0B">
                                           <font>
                                              <Font name="System Bold" size="13.0" />
                                           </font>

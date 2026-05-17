@@ -5,7 +5,7 @@ import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.dao.UserJobDAO;
 import com.csit228.capstone.model.Department;
 import com.csit228.capstone.model.Job;
-import com.csit228.capstone.model.Role;
+import com.csit228.capstone.enums.Role;
 import com.csit228.capstone.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

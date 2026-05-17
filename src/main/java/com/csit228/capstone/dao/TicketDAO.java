@@ -2,6 +2,8 @@ package com.csit228.capstone.dao;
 
 import com.csit228.capstone.database.DBConnector;
 
+import com.csit228.capstone.enums.TicketPriority;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.*;
 
 import java.sql.*;
@@ -11,9 +13,9 @@ import java.util.List;
 
 public class TicketDAO {
     private static TicketDAO ticketDAO;
-    private static List<TicketView> tickets;
-    private static boolean ticketsLoaded;
-    private static boolean ticketsDirty;
+    private static volatile List<TicketView> tickets;
+    private static volatile boolean ticketsLoaded;
+    private static volatile boolean ticketsDirty;
 
     private TicketDAO() {
         tickets = new ArrayList<>();
@@ -44,6 +46,21 @@ public class TicketDAO {
             return false;
         }
 
+    }
+
+    public List<TicketView> getTicketByDepartment(Department department) {
+        if (department == null) {
+            return new ArrayList<>();
+        }
+
+        List<TicketView> allTickets = getViews();
+        List<TicketView> ticketViews = new ArrayList<>();
+        for (TicketView ticketView : allTickets) {
+            if (ticketView.getDepartmentName() != null && ticketView.getDepartmentName().equalsIgnoreCase(department.getName())) {
+                ticketViews.add(ticketView);
+            }
+        }
+        return ticketViews;
     }
 
     public boolean updateStatus(int ticketId, TicketStatus ticketStatus) {
@@ -102,15 +119,15 @@ public class TicketDAO {
             stmt.setString(3, ticket.getPriority().toString());
             stmt.setString(4, ticket.getStatus().toString());
             stmt.setInt(6, ticket.getCreatedBy());
-            if(ticket.getDepartmentId()==null){
-                stmt.setNull(5,Types.INTEGER);
-            }else{
-                stmt.setInt(5,ticket.getDepartmentId());
+            if (ticket.getDepartmentId() == null) {
+                stmt.setNull(5, Types.INTEGER);
+            } else {
+                stmt.setInt(5, ticket.getDepartmentId());
             }
-            if(ticket.getAssignedTo()==null){
-                stmt.setNull(7,Types.INTEGER);
-            }else{
-                stmt.setInt(7,ticket.getAssignedTo());
+            if (ticket.getAssignedTo() == null) {
+                stmt.setNull(7, Types.INTEGER);
+            } else {
+                stmt.setInt(7, ticket.getAssignedTo());
             }
             stmt.setTimestamp(8, Timestamp.valueOf(ticket.getDeadline()));
             int rows = stmt.executeUpdate();
@@ -129,10 +146,10 @@ public class TicketDAO {
 
     public Ticket getTicketById(int ticketId) {
         String sql = """
-                    SELECT *
-                    FROM ticket t
-                    WHERE t.id = ?
-                    """;
+                SELECT *
+                FROM ticket t
+                WHERE t.id = ?
+                """;
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, ticketId);
@@ -177,47 +194,47 @@ public class TicketDAO {
         return null;
     }
 
-    public void getTicketViews() {
+    public synchronized void getTicketViews() {
         refreshTicketViews();
     }
 
-    private void ensureTicketViewsLoaded(){
-        if(!ticketsLoaded || ticketsDirty){
+    private synchronized void ensureTicketViewsLoaded() {
+        if (!ticketsLoaded || ticketsDirty) {
             refreshTicketViews();
         }
     }
-    private void refreshTicketViews() {
-        tickets.clear();
 
+    private synchronized void refreshTicketViews() {
         String sql = """
-            SELECT
-                t.id,
-                t.title,
-                t.description,
-                t.last_updated,
-                t.date_created,
-                t.deadline,
-                t.priority,
-                t.status,
-                CASE
-                    WHEN d.name IS NULL THEN 'volunteer'
-                    ELSE d.name
-                END AS department_name,
-                CONCAT(c.firstname, ' ', c.lastname) AS created_by,
-                CONCAT(u.firstname, ' ', u.lastname) AS assigned_to_name
-            FROM ticket t
-            LEFT JOIN department d ON t.department_id = d.id
-            LEFT JOIN user u ON t.assigned_to = u.id
-            LEFT JOIN user c ON t.created_by = c.id
-            ORDER BY t.date_created DESC
-            """;
+                SELECT
+                    t.id,
+                    t.title,
+                    t.description,
+                    t.last_updated,
+                    t.date_created,
+                    t.deadline,
+                    t.priority,
+                    t.status,
+                    CASE
+                        WHEN d.name IS NULL THEN 'volunteer'
+                        ELSE d.name
+                    END AS department_name,
+                    CONCAT(c.firstname, ' ', c.lastname) AS created_by,
+                    CONCAT(u.firstname, ' ', u.lastname) AS assigned_to_name
+                FROM ticket t
+                LEFT JOIN department d ON t.department_id = d.id
+                LEFT JOIN user u ON t.assigned_to = u.id
+                LEFT JOIN user c ON t.created_by = c.id
+                ORDER BY t.date_created DESC
+                """;
+
+        List<TicketView> freshTickets = new ArrayList<>();
 
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-
             while (rs.next()) {
-                tickets.add(new TicketView(
+                freshTickets.add(new TicketView(
                         rs.getInt("id"),
                         rs.getString("title"),
                         rs.getString("description"),
@@ -230,9 +247,10 @@ public class TicketDAO {
                         rs.getObject("date_created", LocalDateTime.class),
                         rs.getObject("deadline", LocalDateTime.class)
                 ));
-                System.out.println("added ticket" );
+
             }
 
+            tickets = freshTickets;
             ticketsLoaded = true;
             ticketsDirty = false;
 
@@ -240,33 +258,21 @@ public class TicketDAO {
             e.printStackTrace();
         }
     }
-    public List<TicketView> getViews(){
+
+    public synchronized List<TicketView> getViews() {
         ensureTicketViewsLoaded();
-        return tickets;
+        return new ArrayList<>(tickets);
     }
-    public static void main(String[] args) {
 
-        TicketDAO td = getTicketDAO();
-        td.getTicketViews();
-        td.createTicket(
-                new Ticket(
-                        "JEK GWAPO",
-                        "WAL TEST 2 A LANG TEST LANG",
-                        TicketPriority.HIGH,
-                        LocalDateTime.now(),
-                        TicketStatus.OPEN,
-                        15,
-                        3,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        1));
+  public TicketView getTicketViewById(int id) {
+    ensureTicketViewsLoaded();
 
-        for(TicketView ticketView : tickets){
-            System.out.println(ticketView.toString());
-        }
+    for (TicketView t : tickets) {
+      if (t.getId() == id) {
+        return t;
+      }
     }
+    return null;
+  }
 
 }
-
-
-

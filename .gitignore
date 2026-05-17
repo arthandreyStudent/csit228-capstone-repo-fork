@@ -13,6 +13,16 @@ target/
 *.iml
 *.ipr
 
+
+ARCHITECTURE.md
+BUSINESS_RULES.md
+DATABASE_SCHEMA.md
+KNOWN_ISSUES.md
+PROJECT_CONTEXT.md
+UI_UX_GUIDELINES.md
+
+
+
 .idea/
 .env
 user.ser

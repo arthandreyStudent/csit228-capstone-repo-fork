@@ -2,32 +2,25 @@ package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.UserDAO;
-import com.csit228.capstone.model.Department;
-import com.csit228.capstone.model.Notification;
-import com.csit228.capstone.model.Role;
-import com.csit228.capstone.model.TicketStatus;
-import com.csit228.capstone.model.TicketView;
-import com.csit228.capstone.model.User;
-import com.csit228.capstone.utils.Formatter;
-import com.csit228.capstone.utils.ListRowItem;
+import com.csit228.capstone.enums.Role;
+import com.csit228.capstone.enums.TicketStatus;
+import com.csit228.capstone.model.*;
+import com.csit228.capstone.utils.NotificationManager;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-public abstract class StaffDashboardController extends BaseDashboardController {
+public abstract class StaffTicketController extends BaseTicketController {
 
-    @FXML protected Button createTicketButton;
+    @FXML
+    protected Button createTicketButton;
 
     protected final DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
     protected final UserDAO userDAO = UserDAO.getUserDAO();
@@ -42,29 +35,26 @@ public abstract class StaffDashboardController extends BaseDashboardController {
 
         if (departmentId > 0) {
             List<User> result = new ArrayList<>();
-            for (User user : userDAO.getUserByDepartment(departmentId)) {
+            for (User user : userDAO.getUsersByDepartment(departmentId)) {
                 if (user != null && user.hasRole(Role.MEMBER)) {
                     result.add(user);
                 }
             }
             return result;
         }
-
         return getAllMembers();
     }
 
     protected List<User> getAllMembers() {
-        Map<Integer, User> uniqueUsers = new LinkedHashMap<>();
-
+        List<User> members = new ArrayList<>();
         for (Department department : departments) {
-            for (User user : userDAO.getUserByDepartment(department.getId())) {
+            for (User user : userDAO.getUsersByDepartment(department.getId())) {
                 if (user != null && user.hasRole(Role.MEMBER)) {
-                    uniqueUsers.put(user.getUserId(), user);
+                    members.add(user);
                 }
             }
         }
-
-        return new ArrayList<>(uniqueUsers.values());
+        return members;
     }
 
     protected int getDepartmentIdByName(String departmentName) {
@@ -75,7 +65,6 @@ public abstract class StaffDashboardController extends BaseDashboardController {
                 return department.getId();
             }
         }
-
         return -1;
     }
 
@@ -86,9 +75,10 @@ public abstract class StaffDashboardController extends BaseDashboardController {
         }
 
         boolean assigned = ticketDAO.assignTicket(user.getUserId(), ticket.getId());
-        boolean updated  = ticketDAO.updateStatus(ticket.getId(), TicketStatus.IN_PROGRESS);
+        boolean updated = ticketDAO.updateStatus(ticket.getId(), TicketStatus.IN_PROGRESS);
 
         if (assigned && updated) {
+            NotificationManager.notifyAssignee(user, ticket.getTitle(), ticket.getCreatedBy());
             showInfo("Ticket assigned to " + user.getFullName() + ".");
             refreshDashboard();
         } else {
@@ -111,8 +101,9 @@ public abstract class StaffDashboardController extends BaseDashboardController {
     }
 
     protected void openModal(Parent root, String title) {
-        Window ownerWindow = createTicketButton != null && createTicketButton.getScene() != null
-                ? createTicketButton.getScene().getWindow() : null;
+        Window ownerWindow = (createTicketButton != null && createTicketButton.getScene() != null)
+                ? createTicketButton.getScene().getWindow()
+                : null;
 
         Stage modalStage = new Stage();
         modalStage.setTitle(title);
@@ -131,44 +122,6 @@ public abstract class StaffDashboardController extends BaseDashboardController {
         modalStage.showAndWait();
     }
 
-    protected void loadRecentActivity(VBox activityBox) {
-        activityBox.getChildren().clear();
 
-        int count = 0;
 
-        for (TicketView ticket : tickets) {
-            Notification notification = new Notification(
-                    ticket.getId(),
-                    buildActivityMessage(ticket),
-                    Formatter.trimOrNA(ticket.getStatus()),
-                    false,
-                    LocalDateTime.now(),
-                    getCurrentUserId()
-            );
-
-            activityBox.getChildren().add(ListRowItem.forActivity(notification));
-
-            if (++count >= 8) break;
-        }
-    }
-
-    protected String buildActivityMessage(TicketView ticket) {
-        if (isUnassigned(ticket)) {
-            return "\"" + ticket.getTitle() + "\" is waiting for assignment";
-        }
-
-        if (isStatus(ticket, TicketStatus.COMPLETED.name())) {
-            return "\"" + ticket.getTitle() + "\" is waiting for review";
-        }
-
-        if (isStatus(ticket, TicketStatus.RESOLVED.name())) {
-            return "\"" + ticket.getTitle() + "\" has been resolved";
-        }
-
-        if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) {
-            return "\"" + ticket.getTitle() + "\" is still in progress";
-        }
-
-        return "\"" + ticket.getTitle() + "\" has status " + Formatter.trimOrNA(ticket.getStatus());
-    }
 }
