@@ -6,7 +6,6 @@ import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.ListRowItem;
-import com.csit228.capstone.utils.NotificationManager;
 import com.csit228.capstone.utils.UIStyler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,10 +18,9 @@ import javafx.scene.paint.Paint;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class DashboardMemberController extends StaffDashboardController {
+public class TicketMemberController extends StaffTicketController {
 
   @FXML
   public VBox leftSideBarContainer;
@@ -536,29 +534,6 @@ public class DashboardMemberController extends StaffDashboardController {
     }
   }
 
-  private void loadMemberActivity() {
-    activityBox.getChildren().clear();
-
-    int count = 0;
-
-    for (TicketView ticket : tickets) {
-      if (!isAssignedToCurrentUser(ticket)) continue;
-
-      Notification notification = new Notification(
-        ticket.getId(),
-        "You have \"" + ticket.getTitle() + "\" with status " + safe(ticket.getStatus()),
-        false,                  // isRead
-        LocalDateTime.now(),
-        getCurrentUserId()
-      );
-
-      activityBox.getChildren().add(ListRowItem.forActivity(notification));
-
-      if (++count >= 8)
-        break;
-    }
-  }
-
   private void volunteerTicket (TicketView ticket) {
     User currentUser = AppSession.currentUser;
 
@@ -581,19 +556,6 @@ public class DashboardMemberController extends StaffDashboardController {
 //      showError("Unable to take ticket.");
 //    }
   
-  }
-  
-  private boolean isAvailableTicket(TicketView ticket) {
-    if (ticket == null || !isUnassigned(ticket))
-      return false;
-    return (isStatus(ticket, TicketStatus.OPEN.name()) || isStatus(ticket, TicketStatus.IN_PROGRESS.name()));
-  }
-  
-  private boolean isAssignedToCurrentUser(TicketView ticket) {
-    User currentUser = AppSession.currentUser;
-    if (currentUser == null || ticket.getAssignedToName() == null)
-      return false;
-    return ticket.getAssignedToName().equalsIgnoreCase(currentUser.getFullName());
   }
 
   private boolean isFromUserDepartment(TicketView ticket, int userDeptId) {

@@ -219,37 +219,6 @@ public class TicketEditorController extends StaffTicketController {
     sentBackLabel.setText(String.valueOf(sentBack));
     reviewQueueCountLabel.setText(String.valueOf(getFilteredTicketCount()));
   }
-  private void openTicketDetailModal(TicketView ticket) {
-    try {
-      FXMLLoader loader =
-              new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/EditorViewTicket.fxml"));
-      Parent root = loader.load();
-
-      TicketDetailModelController controller = loader.getController();
-      controller.loadTicket(ticket);
-
-      openModal(root, "Ticket Details");
-      refreshDashboard();
-    } catch (IOException e) {
-      showError("Unable to open Ticket Details modal.");
-    }
-  }
-
-  private boolean isInteractiveTarget(Object target) {
-    if (!(target instanceof Node)) {
-      return false;
-    }
-
-    Node node = (Node) target;
-    while (node != null) {
-      if (node instanceof ButtonBase || node instanceof ComboBoxBase || node instanceof TextInputControl) {
-        return true;
-      }
-      node = node.getParent();
-    }
-
-    return false;
-  }
 
   private void loadReviewQueue() {
     reviewQueueBox.getChildren().clear();

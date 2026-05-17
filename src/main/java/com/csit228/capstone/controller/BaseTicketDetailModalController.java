@@ -1,8 +1,8 @@
 package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.DepartmentDAO;
-import com.csit228.capstone.model.Role;
-import com.csit228.capstone.model.TicketStatus;
+import com.csit228.capstone.enums.Role;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;

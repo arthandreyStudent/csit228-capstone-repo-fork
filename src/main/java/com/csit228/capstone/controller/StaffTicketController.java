@@ -7,13 +7,19 @@ import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.*;
 import com.csit228.capstone.utils.NotificationManager;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
+import javafx.scene.control.ComboBoxBase;
+import javafx.scene.control.TextInputControl;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,7 +127,36 @@ public abstract class StaffTicketController extends BaseTicketController {
         modalStage.setOnShown(event -> modalStage.centerOnScreen());
         modalStage.showAndWait();
     }
-
-
-
+  
+    protected void openTicketDetailModal(TicketView ticket) {
+      try {
+        FXMLLoader loader =
+          new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/BaseTicketDetailModalView.fxml"));
+        Parent root = loader.load();
+        
+        BaseTicketDetailModalController controller = loader.getController();
+        controller.loadTicket(ticket);
+        
+        openModal(root, "Ticket Details");
+      } catch (IOException e) {
+        showError("Unable to open Ticket Details modal.");
+      }
+    }
+  
+    protected boolean isInteractiveTarget(Object target) {
+      if (!(target instanceof Node)) {
+        return false;
+      }
+      
+      Node node = (Node) target;
+      while (node != null) {
+        if (node instanceof ButtonBase || node instanceof ComboBoxBase || node instanceof TextInputControl) {
+          return true;
+        }
+        node = node.getParent();
+      }
+      
+      return false;
+    }
+    
 }

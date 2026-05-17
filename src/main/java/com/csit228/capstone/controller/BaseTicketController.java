@@ -2,12 +2,11 @@ package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.NotificationDAO;
 import com.csit228.capstone.dao.TicketDAO;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.dao.DepartmentDAO;
-import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
-import com.csit228.capstone.observer.DashboardObserver;
 import com.csit228.capstone.observer.NotificationObserver;
 import com.csit228.capstone.observer.NotificationWatcher;
 import com.csit228.capstone.observer.TicketObserver;

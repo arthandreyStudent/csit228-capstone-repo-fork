@@ -231,6 +231,7 @@ public class TicketDAO {
         
         List<TicketView> freshTickets = new ArrayList<>();
 
+        long start = System.nanoTime();
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -250,14 +251,14 @@ public class TicketDAO {
                         rs.getString("return_reason")
                 ));
 
-      }
-      long end = System.nanoTime();
-      double elapsedMs = (end - start) / 1_000_000.0;
+            }
+            long end = System.nanoTime();
+            double elapsedMs = (end - start) / 1_000_000.0;
 
-      System.out.println("Loaded " + tickets.size() + " tickets"+ " in "+ elapsedMs+" ms");
-      tickets = freshTickets;
-      ticketsLoaded = true;
-      ticketsDirty = false;
+            System.out.println("Loaded " + freshTickets.size() + " tickets"+ " in "+ elapsedMs+" ms");
+            tickets = freshTickets;
+            ticketsLoaded = true;
+            ticketsDirty = false;
 
         } catch (SQLException e) {
             e.printStackTrace();

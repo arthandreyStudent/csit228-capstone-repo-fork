@@ -159,6 +159,15 @@ public class UserDAO {
     return listMembers;
   }
   
+  public List<User> getUsersByDepartment(int id) {
+    ensureUsersLoaded();
+    List<User> departmentUsers = usersByDepartment.get(id);
+    if (departmentUsers == null) {
+      return new ArrayList<>();
+    }
+    return new ArrayList<>(departmentUsers);
+  }
+  
   public List<User> getUserByDepartment(int id) {
     return getUsersByDepartment(id);
   }

@@ -167,6 +167,7 @@ public class ListRowItem extends VBox {
   private static final double EXEC_ASSIGN_WIDTH = 160.0;
   private static final double EXEC_ACTION_WIDTH = 65.0;
 
+  
   private static final double EDITOR_DETAILS_WIDTH = 370.0;
   private static final double EDITOR_STATUS_WIDTH = 95.0;
   private static final double EDITOR_PRIORITY_WIDTH = 85.0;
@@ -203,7 +204,7 @@ public class ListRowItem extends VBox {
 
   /**
    * Convenience overload that accepts computed status flags so the caller (the
-   * {@code DashboardMemberController}) drives the button state rather than this
+   * {@code TicketMemberController}) drives the button state rather than this
    * utility class reaching into a session singleton.
    */
   public static ListRowItem forMemberMyWorkTicket(
@@ -450,62 +451,54 @@ public class ListRowItem extends VBox {
     }
 
     public static ListRowItem forEditorReview(TicketView ticket, List<? extends User> users) {
-        ListRowItem item = new ListRowItem();
-        item.sourceObject = ticket;
-
-        HBox row = new HBox();
-        row.setPrefWidth(TABLE_ROW_WIDTH);
-        row.setMinWidth(TABLE_ROW_WIDTH);
-        row.setMaxWidth(TABLE_ROW_WIDTH);
-        row.setMinHeight(66);
-        row.setPrefHeight(66);
-        row.setAlignment(Pos.CENTER_LEFT);
-        row.setCursor(Cursor.HAND);
-        row.setStyle("-fx-background-color: white; -fx-border-color: #eef2fb; -fx-border-width: 1 0 0 0;");
-
-        String ticketNum  = String.format("%03d", ticket.getId());
-        String department = ticket.getDepartmentName() != null ? ticket.getDepartmentName() : "Volunteer";
-
-        VBox detailsBox = makeTicketDetailsBox(ticket.getTitle(), "#TIX-" + ticketNum + " • " + department, EDITOR_DETAILS_WIDTH);
-
-        ComboBox<User> combo = makeAssignComboBox(users, ticket.getAssignedToName());
-        item.assignComboBox = combo;
-        HBox assignBox = new HBox(combo);
-        assignBox.setAlignment(Pos.CENTER_LEFT);
-        assignBox.setPrefWidth(EDITOR_ASSIGN_WIDTH);
-        assignBox.setMinWidth(EDITOR_ASSIGN_WIDTH);
-        assignBox.setMaxWidth(EDITOR_ASSIGN_WIDTH);
-
-        Label statusBadge = UIStyler.makeStatusBadge(ticket.getStatus());
-        HBox statusBox = makeFixedWidthBox(EDITOR_STATUS_WIDTH, statusBadge);
-
-        Label priorityBadge = UIStyler.makePriorityBadge(ticket.getPriority());
-        HBox priorityBox = makeFixedWidthBox(EDITOR_PRIORITY_WIDTH, priorityBadge);
-
-        Label deadlineLabel = makeDeadlineLabel(ticket);
-        deadlineLabel.setPrefWidth(EDITOR_DEADLINE_WIDTH);
-        deadlineLabel.setMinWidth(EDITOR_DEADLINE_WIDTH);
-        deadlineLabel.setMaxWidth(EDITOR_DEADLINE_WIDTH);
-
-        Button approveButton  = makeButton("✓",   28, "#4bcc8a", "white");
-        Button sendBackButton = makeButton("↶",   28, "#ffe0e5", "#f14d5a");
-        item.actionButton          = approveButton;
-        item.thirdActionButton     = sendBackButton;
-
-        HBox actionsBox = new HBox(5, approveButton, sendBackButton);
-        actionsBox.setAlignment(Pos.CENTER_LEFT);
-        actionsBox.setPrefWidth(EDITOR_ACTIONS_WIDTH);
-        actionsBox.setMinWidth(EDITOR_ACTIONS_WIDTH);
-        actionsBox.setMaxWidth(EDITOR_ACTIONS_WIDTH);
-
-        row.getChildren().addAll(detailsBox, statusBox, priorityBox, deadlineLabel, actionsBox);
-
-        String normalStyle = row.getStyle();
-        row.setOnMouseEntered(e -> row.setStyle(normalStyle.replace("-fx-background-color: white;", "-fx-background-color: #f8faff;")));
-        row.setOnMouseExited(e  -> row.setStyle(normalStyle));
-
-        item.getChildren().add(row);
-        return item;
+      ListRowItem item = new ListRowItem();
+      item.sourceObject = ticket;
+      
+      HBox row = new HBox();
+      row.setPrefWidth(TABLE_ROW_WIDTH);
+      row.setMinWidth(TABLE_ROW_WIDTH);
+      row.setMaxWidth(TABLE_ROW_WIDTH);
+      row.setMinHeight(66);
+      row.setPrefHeight(66);
+      row.setAlignment(Pos.CENTER_LEFT);
+      row.setCursor(Cursor.HAND);
+      row.setStyle("-fx-background-color: white; -fx-border-color: #eef2fb; -fx-border-width: 1 0 0 0;");
+      
+      String ticketNum  = String.format("%03d", ticket.getId());
+      String department = ticket.getDepartmentName() != null ? ticket.getDepartmentName() : "Volunteer";
+      
+      VBox detailsBox = makeTicketDetailsBox(ticket.getTitle(), "#TIX-" + ticketNum + " • " + department, EDITOR_DETAILS_WIDTH);
+      
+      Label statusBadge = UIStyler.makeStatusBadge(ticket.getStatus());
+      HBox statusBox = makeFixedWidthBox(EDITOR_STATUS_WIDTH, statusBadge);
+      
+      Label priorityBadge = UIStyler.makePriorityBadge(ticket.getPriority());
+      HBox priorityBox = makeFixedWidthBox(EDITOR_PRIORITY_WIDTH, priorityBadge);
+      
+      Label deadlineLabel = makeDeadlineLabel(ticket);
+      deadlineLabel.setPrefWidth(EDITOR_DEADLINE_WIDTH);
+      deadlineLabel.setMinWidth(EDITOR_DEADLINE_WIDTH);
+      deadlineLabel.setMaxWidth(EDITOR_DEADLINE_WIDTH);
+      
+      Button approveButton  = makeButton("✓",   28, "#4bcc8a", "white");
+      Button sendBackButton = makeButton("↶",   28, "#ffe0e5", "#f14d5a");
+      item.actionButton          = approveButton;
+      item.thirdActionButton     = sendBackButton;
+      
+      HBox actionsBox = new HBox(5, approveButton, sendBackButton);
+      actionsBox.setAlignment(Pos.CENTER_LEFT);
+      actionsBox.setPrefWidth(EDITOR_ACTIONS_WIDTH);
+      actionsBox.setMinWidth(EDITOR_ACTIONS_WIDTH);
+      actionsBox.setMaxWidth(EDITOR_ACTIONS_WIDTH);
+      
+      row.getChildren().addAll(detailsBox, statusBox, priorityBox, deadlineLabel, actionsBox);
+      
+      String normalStyle = row.getStyle();
+      row.setOnMouseEntered(e -> row.setStyle(normalStyle.replace("-fx-background-color: white;", "-fx-background-color: #f8faff;")));
+      row.setOnMouseExited(e  -> row.setStyle(normalStyle));
+      
+      item.getChildren().add(row);
+      return item;
     }
 
 
