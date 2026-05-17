@@ -1,6 +1,7 @@
 package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.DepartmentDAO;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
@@ -179,6 +180,10 @@ public class TicketMemberController extends StaffTicketController {
             || isVolunteerTicket(ticket)))
         continue;
       
+      // Hide overdue OPEN tickets from Summary Cards
+      if (isStatus(ticket, TicketStatus.OPEN.name()) && isOverdue(ticket))
+        continue;
+      
       
       if (isAvailableUnderDept(ticket) || isVolunteerTicket(ticket))
         openTasks++;
@@ -281,6 +286,10 @@ public class TicketMemberController extends StaffTicketController {
       // department of the user are shown in the member dashboard ticket table
       if (!(isAssignedToCurrentUser(ticket) || isAvailableUnderDept(ticket)))
         continue;
+      
+      // Hide overdue OPEN tickets from Available Tickets
+      if (isStatus(ticket, TicketStatus.OPEN.name()) && isOverdue(ticket))
+        continue;
 
       // filter by selected condition
       boolean include = isAvailableUnderDept(ticket);
@@ -300,7 +309,6 @@ public class TicketMemberController extends StaffTicketController {
       boolean resolved        = isResolved(ticket);
       boolean overdueInProg   = isOverdueInProgress(ticket);
       boolean volunteer       = isVolunteerTicket(ticket);
-         // IN_PROGRESS && overdue
 
       ListRowItem row = ListRowItem.forMemberMyWorkTicket(
           ticket, availDept, inProgress, completed, resolved, overdueInProg, volunteer
@@ -350,6 +358,7 @@ public class TicketMemberController extends StaffTicketController {
       case TAKE -> {
         boolean ok = ticketDAO.assignTicket(getCurrentUserId(), ticket.getId());
         if (ok) {
+          showInfo(getSuccessMessage(action));
           refreshDashboard();
         } else {
           showError("Unable to take ticket.");
@@ -360,6 +369,7 @@ public class TicketMemberController extends StaffTicketController {
             com.csit228.capstone.enums.TicketStatus.COMPLETED);
         boolean ok2 = ticketDAO.setLastUpdated(ticket.getId(), java.time.LocalDateTime.now());
         if (ok1 && ok2) {
+          showInfo(getSuccessMessage(action));
           refreshDashboard();
         } else {
           showError("Unable to submit ticket.");
@@ -371,6 +381,16 @@ public class TicketMemberController extends StaffTicketController {
         openTicketDetailModal(ticket);
       }
     }
+  }
+  
+  private String getSuccessMessage(ListRowItem.ButtonAction action) {
+    return switch (action) {
+      case VOLUNTEER -> "You volunteered for the ticket.";
+      case TAKE -> "Ticket successfully assigned to you.";
+      case SUBMIT -> "Ticket submitted successfully.";
+      case SUBMIT_LATE -> "Late ticket submitted successfully.";
+      default -> null;
+    };
   }
 
   private void applyFilterButtonStyle(String filter) {
@@ -393,6 +413,9 @@ public class TicketMemberController extends StaffTicketController {
         continue;
       if (!matchesTicketSearch(ticket, keyword))
         continue;
+      // Hide overdue OPEN tickets from Available Tickets
+      if (isStatus(ticket, TicketStatus.OPEN.name()) && isOverdue(ticket))
+        continue;
 
       ListRowItem row = ListRowItem.forMemberVolunteerTicket(ticket);
       row.setAction(event -> volunteerTicket(ticket));
@@ -413,19 +436,6 @@ public class TicketMemberController extends StaffTicketController {
     }
     
     openTicketDetailModal(ticket);
-
-//    // Only assign the ticket to the current user. Keep status as OPEN until member clicks "Start Work"
-//    boolean assigned = ticketDAO.assignTicket(currentUser.getUserId(), ticket.getId());
-//
-//    if (assigned) {
-//      showInfo("Ticket added to your tasks.");
-//      // Explicitly refresh the DAO cache to ensure we get fresh data from the database
-//      ticketDAO.getTicketViews();
-//      refreshDashboard();
-//    } else {
-//      showError("Unable to take ticket.");
-//    }
-  
   }
 
   private boolean isFromUserDepartment(TicketView ticket, int userDeptId) {

@@ -176,8 +176,6 @@ public class BaseTicketDetailModalController {
       return List.of(ButtonAction.BACK, ButtonAction.SUBMIT);
     }
     
-    if (isOverdue) return List.of(ButtonAction.BACK, ButtonAction.SUBMIT_LATE);
-    
     if (isVolunteer) return List.of(ButtonAction.BACK, ButtonAction.VOLUNTEER);
     
     // Unassigned, OPEN, department-level availability
@@ -388,10 +386,26 @@ public class BaseTicketDetailModalController {
         onTicketMutated.run();
       }
       
+      String successMessage = getSuccessMessage(action);
+      
+      if (successMessage != null) {
+        showInfo(successMessage);
+      }
+      
       closeModal(sourceButton);
     } else {
       showError("Action failed — please try again.");
     }
+  }
+  
+  private String getSuccessMessage(ButtonAction action) {
+    return switch (action) {
+      case VOLUNTEER -> "You volunteered for the ticket.";
+      case TAKE -> "Ticket successfully assigned to you.";
+      case SUBMIT -> "Ticket submitted successfully.";
+      case SUBMIT_LATE -> "Late ticket submitted successfully.";
+      default -> null;
+    };
   }
 
   private void showInfo(String message) {
