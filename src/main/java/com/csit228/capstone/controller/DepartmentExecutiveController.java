@@ -84,6 +84,10 @@ public class DepartmentExecutiveController {
         Controls.switchScreen("DepartmentExecutiveView.fxml");
     }
 
+    public void goToManageUsers() throws IOException {
+        Controls.switchScreen("ManageUserExecutive.fxml");
+    }
+
     public void onClickedLogout(){
         System.out.println("logout");
     }
@@ -224,7 +228,6 @@ public class DepartmentExecutiveController {
     }
 
 
-    public void goToManageUsers() throws IOException {
-        Controls.switchScreen("ManageUserExecutive.fxml");
-    }
+
+
 }

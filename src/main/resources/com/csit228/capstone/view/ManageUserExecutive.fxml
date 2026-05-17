@@ -61,7 +61,7 @@
                     </children>
                 </HBox>
 
-                <HBox fx:id="hboxDepartment" alignment="CENTER_LEFT" onMouseClicked="#goToDashboard" prefHeight="44.0" prefWidth="218.0" spacing="14.0" style="-fx-background-radius: 10;">
+                <HBox fx:id="hboxDepartment" alignment="CENTER_LEFT" onMouseClicked="#goToDepartment" prefHeight="44.0" prefWidth="218.0" spacing="14.0" style="-fx-background-radius: 10;">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
@@ -117,7 +117,7 @@
                 <AnchorPane layoutX="20.0" layoutY="146.0" prefHeight="594.0" prefWidth="1204.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16;">
                     <children>
 
-                        <ScrollPane fx:id="scrollpaneUsers" fitToWidth="true" hbarPolicy="NEVER" layoutX="31.0" layoutY="150.0" prefHeight="430.0" prefWidth="1142.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="NEVER">
+                        <ScrollPane fx:id="scrollpaneUsers" fitToWidth="true" hbarPolicy="NEVER" layoutX="31.0" layoutY="150.0" prefHeight="430.0" prefWidth="1142.0" vbarPolicy="NEVER">
                             <content>
                                 <VBox fx:id="pendingAssignmentQueueBox" prefWidth="850.0" spacing="0.0" style="-fx-background-color: transparent;" />
                             </content>
@@ -143,7 +143,7 @@
                      </font>
                   </Label>
                   <Line endX="1041.0" layoutX="131.0" layoutY="134.0" startX="-100.0" style="-fx-opacity: 40%;" />
-                  <ScrollPane fx:id="scrollpaneDepartment" hbarPolicy="NEVER" layoutX="30.0" layoutY="23.0" prefHeight="56.0" prefWidth="1142.0" vbarPolicy="NEVER" />
+                  <ScrollPane fx:id="scrollpaneDepartment" hbarPolicy="NEVER" layoutX="30.0" layoutY="23.0" prefHeight="56.0" prefWidth="1142.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" vbarPolicy="NEVER" vvalue="0.7" />
                     </children>
                 </AnchorPane>
             <Label layoutX="24.0" layoutY="59.0" text="MANAGE USERS">

@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -62,7 +61,7 @@
                     </children>
                 </HBox>
 
-                <HBox fx:id="hboxDepartment" alignment="CENTER_LEFT" onMouseClicked="#goToDashboard" prefHeight="44.0" prefWidth="218.0" spacing="14.0" style="-fx-background-color: #5b1617; -fx-background-radius: 10;">
+                <HBox fx:id="hboxDepartment" alignment="CENTER_LEFT" onMouseClicked="#goToDepartment" prefHeight="44.0" prefWidth="218.0" spacing="14.0" style="-fx-background-color: #5b1617; -fx-background-radius: 10;">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
@@ -108,47 +107,42 @@
             </children>
         </VBox>
 
-        <AnchorPane prefHeight="758.0" prefWidth="1250.0" style="-fx-background-color: #f5f0e7;">
+        <AnchorPane prefHeight="758.0" prefWidth="1260.0" style="-fx-background-color: #f5f0e7;">
 
             <children>
                 <VBox layoutX="20.0" layoutY="20.0" spacing="2.0" />
 
                 <HBox layoutX="25.0" layoutY="90.0" spacing="15.0" />
 
-                <AnchorPane layoutX="20.0" layoutY="146.0" prefHeight="594.0" prefWidth="1204.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16;">
+                <AnchorPane layoutX="20.0" layoutY="146.0" prefHeight="587.0" prefWidth="1204.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16;">
                     <children>
 
-                        <ScrollPane fx:id="scrollpaneDepartment" fitToWidth="true" hbarPolicy="NEVER" layoutX="31.0" layoutY="150.0" prefHeight="430.0" prefWidth="1142.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
+                        <ScrollPane fx:id="scrollpaneDepartment" fitToWidth="true" hbarPolicy="NEVER" layoutX="31.0" layoutY="80.0" prefHeight="488.0" prefWidth="1142.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
                             <content>
                                 <VBox fx:id="pendingAssignmentQueueBox" prefWidth="850.0" spacing="0.0" style="-fx-background-color: transparent;" />
                             </content>
                         </ScrollPane>
-                  <Label layoutX="34.0" layoutY="101.0" style="-fx-text-fill: #999999;" text="NAME OF DEPARTMENT::">
+                  <Label layoutX="34.0" layoutY="31.0" style="-fx-text-fill: #999999;" text="NAME OF DEPARTMENT::">
                      <font>
                         <Font name="Georgia Bold Italic" size="14.0" />
                      </font>
                   </Label>
-                  <Label layoutX="361.0" layoutY="101.0" prefHeight="16.0" prefWidth="162.0" style="-fx-text-fill: #999999;" text="DESCRIPTION::">
+                  <Label layoutX="361.0" layoutY="31.0" prefHeight="16.0" prefWidth="162.0" style="-fx-text-fill: #999999;" text="DESCRIPTION::">
                      <font>
                         <Font name="Georgia Bold Italic" size="14.0" />
                      </font>
                   </Label>
-                  <Label layoutX="756.0" layoutY="101.0" style="-fx-text-fill: #999999;" text="NO. of POSITIONS::">
+                  <Label layoutX="756.0" layoutY="31.0" style="-fx-text-fill: #999999;" text="NO. of POSITIONS::">
                      <font>
                         <Font name="Georgia Bold Italic" size="14.0" />
                      </font>
                   </Label>
-                  <Label layoutX="949.0" layoutY="101.0" style="-fx-text-fill: #999999;" text="TOTAL NO. of MEMBERS::">
+                  <Label layoutX="949.0" layoutY="31.0" style="-fx-text-fill: #999999;" text="TOTAL NO. of MEMBERS::">
                      <font>
                         <Font name="Georgia Bold Italic" size="14.0" />
                      </font>
                   </Label>
-                  <Line endX="1041.0" layoutX="131.0" layoutY="134.0" startX="-100.0" style="-fx-opacity: 40%;" />
-                  <AnchorPane layoutX="29.0" layoutY="25.0" prefHeight="45.0" prefWidth="564.0" style="-fx-background-color: #eeeeee; -fx-background-radius: 10;">
-                     <children>
-                        <TextField layoutX="66.0" layoutY="10.0" prefHeight="26.0" prefWidth="478.0" />
-                        <Button layoutX="14.0" layoutY="10.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="40.0" text="S" />
-                     </children></AnchorPane>
+                  <Line endX="1041.0" layoutX="131.0" layoutY="64.0" startX="-100.0" style="-fx-opacity: 40%;" />
                     </children>
                 </AnchorPane>
             <Label layoutX="24.0" layoutY="59.0" text="DEPARTMENT VIEW">

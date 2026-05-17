@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -252,6 +253,23 @@ public class ManageUserExecutiveController {
             System.out.println("Unable to open View Department modal.");
             e.printStackTrace();
         }
+    }
+    private Button createTabButton(String text, boolean selected) {
+        Button button = new Button(text);
+        button.setPrefHeight(32.0);
+        button.setMinWidth(58.0);
+        button.setCursor(Cursor.HAND);
+
+        if (selected) {
+            button.setStyle("-fx-background-color: #2f95ff;" + "-fx-background-radius: 20;" + "-fx-text-fill: white;" +
+                    "-fx-font-size: 12px;" + "-fx-font-weight: bold;" + "-fx-padding: 0 18 0 18;");
+        } else {
+            button.setStyle("-fx-background-color: white;" + "-fx-border-color: #dfe7f5;" + "-fx-border-radius: 20;" +
+                    "-fx-background-radius: 20;" + "-fx-text-fill: #9faad2;" + "-fx-font-size: 12px;" +
+                    "-fx-font-weight: bold;" + "-fx-padding: 0 18 0 18;");
+        }
+
+        return button;
     }
 
 
