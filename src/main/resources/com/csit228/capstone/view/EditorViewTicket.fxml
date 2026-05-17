@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox prefHeight="760.0" prefWidth="960.0" style="-fx-background-color: #f5f7fb;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
+<VBox prefHeight="760.0" prefWidth="960.0" style="-fx-background-color: #f5f7fb;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
     <children>
         <HBox fx:id="ticketHeader" alignment="CENTER_LEFT" prefHeight="76.0" spacing="16.0" style="-fx-background-color: #2851ad;">
             <padding>
@@ -113,14 +106,14 @@
                             </children>
                         </HBox>
 
-                        <HBox fx:id="changesRequestedNoticeContainer" alignment="CENTER_LEFT" minHeight="0.0" prefHeight="0.0" visible="false" managed="false" />
+                        <HBox fx:id="changesRequestedNoticeContainer" alignment="CENTER_LEFT" managed="false" minHeight="0.0" prefHeight="0.0" visible="false" />
 
                         <VBox spacing="14.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
                             <padding>
                                 <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
                             </padding>
                             <children>
-                                <Label style="-fx-text-fill: #1c2b63; -fx-font-size: 15px; -fx-font-weight: bold;" text="Review Notes" />
+                        <Label layoutX="29.0" layoutY="29.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 15px; -fx-font-weight: bold;" text="Create Comment" />
                                 <TextArea fx:id="reviewCommentArea" prefHeight="210.0" promptText="Add feedback before returning or resolving this ticket..." style="-fx-background-color: #f7f9fd; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10; -fx-font-size: 13px;" wrapText="true" VBox.vgrow="ALWAYS" />
                                 <HBox spacing="12.0">
                                     <children>

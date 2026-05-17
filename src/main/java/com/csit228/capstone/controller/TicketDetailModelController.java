@@ -14,12 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -100,6 +95,8 @@ public class TicketDetailModelController {
     private final UserDAO userDAO = UserDAO.getUserDAO();
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+    public TextField reviewTitleField;
+
     private TicketView currentTicket;
 
     @FXML
