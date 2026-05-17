@@ -61,6 +61,67 @@ public class UserDAO {
         return -1;
     }
 
+
+    public void updateUser(User u, int role, int department, String jobName) {
+        // SQL queries based on table structures
+        String getJobIdSql = "SELECT id FROM job WHERE name = ?;";
+        String updateUserSql = "UPDATE user SET user_type = ?, department_id = ? WHERE id = ?;";
+        String deleteOldJobSql = "DELETE FROM user_job WHERE user_id = ?;";
+        String insertNewJobSql = "INSERT INTO user_job (user_id, job_id) VALUES (?, ?);";
+
+        try (Connection connection = DBConnector.getConnection()) {
+            // Start transaction to ensure data integrity across multiple tables
+            connection.setAutoCommit(false);
+
+            int jobId = -1;
+            // 1. Get the Job ID from the job name string
+            try (PreparedStatement psJob = connection.prepareStatement(getJobIdSql)) {
+                psJob.setString(1, jobName);
+                try (ResultSet rs = psJob.executeQuery()) {
+                    if (rs.next()) {
+                        jobId = rs.getInt("id");
+                    } else {
+                        System.out.println("Job '" + jobName + "' not found.");
+                        connection.rollback();
+                        return;
+                    }
+                }
+            }
+
+            // 2. Update the user's type and department
+            try (PreparedStatement psUser = connection.prepareStatement(updateUserSql)) {
+                psUser.setInt(1, role);       // maps to user_type
+                psUser.setInt(2, department); // maps to department_id
+                psUser.setInt(3, u.getUserId());
+                psUser.executeUpdate();
+            }
+
+            // 3. Update the user_job table
+            // First remove existing job associations for this user
+            try (PreparedStatement psDel = connection.prepareStatement(deleteOldJobSql)) {
+                psDel.setInt(1, u.getUserId());
+                psDel.executeUpdate();
+            }
+            // Then insert the new job association
+            try (PreparedStatement psIns = connection.prepareStatement(insertNewJobSql)) {
+                psIns.setInt(1, u.getUserId());
+                psIns.setInt(2, jobId);
+                psIns.executeUpdate();
+            }
+
+            connection.commit();
+            System.out.println("Successfully updated user: " + u.getUsername());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Rollback is implicitly handled by some pools, but good to have a catch-all
+        }
+
+        if (usersLoaded) {
+            fetchUsers();
+        }
+    }
+
     public void createUser(User u) throws UsernameAlreadyTakenException {
         ensureTypesLoaded();
         String sql = "INSERT INTO user(firstname,lastname,username,password_hash,user_type,department_id) VALUES (?,?,?,?,?,?);";

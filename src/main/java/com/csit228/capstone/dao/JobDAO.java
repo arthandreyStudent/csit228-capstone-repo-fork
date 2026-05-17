@@ -4,6 +4,7 @@ import com.csit228.capstone.database.DBConnector;
 import com.csit228.capstone.model.Department;
 import com.csit228.capstone.model.Job;
 
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,11 @@ public class JobDAO {
             jobDAO = new JobDAO();
         }
         return jobDAO;
+    }
+
+    public List<Job> getAllJobs(){
+        fetchJobs();
+        return jobs;
     }
 
     private void fetchJobs() {
@@ -64,7 +70,7 @@ public class JobDAO {
     }
 
     private Job searchJob(Job job) {
-        ensureJobsLoaded();
+        fetchJobs();
 
         for (Job j : jobs) {
             if (j.getName().equalsIgnoreCase(job.getName())) {
@@ -111,6 +117,26 @@ public class JobDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteJobFromDepartment(Department department, Job job){
+        try(Connection c = DBConnector.getConnection();
+            PreparedStatement ps = c.prepareStatement("DELETE FROM job_department WHERE job_id = ? AND department_id = ?")){
+
+            ps.setInt(1, job.getId());
+            ps.setInt(2, department.getId());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Deleted Job ID " + job.getId() + " from Department " + department.getName());
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Unable to delete");
+            throw new RuntimeException(e);
+        }
+        getJobByDepartment(department);
     }
 
     public void getJobByDepartment(Department department) {

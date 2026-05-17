@@ -4,6 +4,7 @@ import com.csit228.capstone.model.Department;
 import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXML;
@@ -295,6 +296,16 @@ public class TicketExecutiveController extends StaffTicketController {
     }
 
     return false;
+  }
+
+  public void goToDepartment() throws IOException {
+    System.out.println("PRESSS");
+    Controls.switchScreen("DepartmentExecutiveView.fxml");
+  }
+
+  public void goToManageUser() throws IOException {
+    System.out.println("PRESSS");
+    Controls.switchScreen("ManageUserExecutive.fxml");
   }
 
   private double rate(int value, int total) {

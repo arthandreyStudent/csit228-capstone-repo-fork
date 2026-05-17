@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="421.0" prefWidth="401.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.ViewUserController">
+   <children>
+      <Label fx:id="userLabel" graphicTextGap="0.0" layoutX="30.0" layoutY="43.0" prefHeight="53.0" prefWidth="360.0" text="Name of User">
+         <font>
+            <Font name="Georgia Bold" size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="departmentLabel" layoutX="31.0" layoutY="32.0" text="DEPARTMENT NAME">
+         <font>
+            <Font name="Times New Roman" size="13.0" />
+         </font>
+      </Label>
+      <Line endX="251.5" layoutX="132.0" layoutY="134.0" startX="-100.0" stroke="#808080" />
+      <Label fx:id="positionLabel" layoutX="31.0" layoutY="100.0" text="Position" textFill="#5b5b5b">
+         <font>
+            <Font name="Times New Roman" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="jobLabel" layoutX="31.0" layoutY="82.0" text="Job">
+         <font>
+            <Font name="Times New Roman" size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="departmentLabel1" layoutX="31.0" layoutY="145.0" text="UPDATE USER DETAIL::">
+         <font>
+            <Font name="Times New Roman" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="departmentLabel11" layoutX="31.0" layoutY="212.0" text="POSITION::">
+         <font>
+            <Font name="Times New Roman" size="13.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="comboboxPosition" layoutX="31.0" layoutY="230.0" prefHeight="37.0" prefWidth="150.0" />
+      <Label fx:id="departmentLabel111" layoutX="32.0" layoutY="281.0" text="JOB::">
+         <font>
+            <Font name="Times New Roman" size="13.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="comboboxDepartment" layoutX="191.0" layoutY="230.0" onAction="#updateJobCombobox" prefHeight="37.0" prefWidth="191.0" />
+      <Label fx:id="positionLabel1" layoutX="31.0" layoutY="166.0" prefHeight="15.0" prefWidth="346.0" text="Select the following details to be changes of the user, click save" textFill="#5b5b5b">
+         <font>
+            <Font name="Times New Roman" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="positionLabel11" layoutX="31.0" layoutY="181.0" prefHeight="15.0" prefWidth="346.0" text="changes to update their information::" textFill="#5b5b5b">
+         <font>
+            <Font name="Times New Roman" size="13.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="comboboxJob" layoutX="30.0" layoutY="301.0" prefHeight="37.0" prefWidth="353.0" />
+      <Label fx:id="departmentLabel112" layoutX="191.0" layoutY="212.0" text="DEPARTMENT::">
+         <font>
+            <Font name="Times New Roman" size="13.0" />
+         </font>
+      </Label>
+      <Button fx:id="saveChangeButton" layoutX="169.0" layoutY="363.0" onAction="#handleSaveChanges" prefHeight="37.0" prefWidth="213.0" style="-fx-background-color: #7a1e1f; -fx-background-radius: 10;" text="Save Changes" textFill="WHITE">
+         <font>
+            <Font name="Georgia Bold" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="cancelButton" layoutX="30.0" layoutY="363.0" onAction="#handleCancel" prefHeight="37.0" prefWidth="129.0" style="-fx-background-color: #666666; -fx-background-radius: 10;" text="Cancel" textFill="WHITE">
+         <font>
+            <Font name="Georgia Bold" size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
