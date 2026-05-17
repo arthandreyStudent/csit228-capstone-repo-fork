@@ -13,12 +13,14 @@ public class TicketView {
   private String description;
   private String priority;
   private String status;
+  private int departmentID;
   private String departmentName;
   private String createdBy;
   private String assignedToName;
   private LocalDateTime lastUpdated;
   private LocalDateTime dateCreated;
   private LocalDateTime deadline;
+  private String returnReason;
 
   public int getId() {
     return id;
@@ -66,6 +68,14 @@ public class TicketView {
 
   public void setDepartmentName(String departmentName) {
     this.departmentName = Formatter.formatDepartmentName(departmentName);
+  }
+
+  public int getDepartmentId() {
+    return departmentID;
+  }
+
+  public void setDepartmentId(int departmentId) {
+    this.departmentID = departmentId;
   }
 
   public String getCreatedBy() {
@@ -131,7 +141,8 @@ public class TicketView {
     String assignedToName,
     LocalDateTime lastUpdated,
     LocalDateTime dateCreated,
-    LocalDateTime deadline
+    LocalDateTime deadline,
+    String returnReason
   ) {
     this.id = id;
     this.title = title;
@@ -144,17 +155,26 @@ public class TicketView {
     this.lastUpdated = lastUpdated;
     this.dateCreated = dateCreated;
     this.deadline = deadline;
+    this.returnReason = returnReason;
   }
 
   public LocalDateTime getDeadline() {
     return deadline;
   }
-  
+
   public LocalDateTime getLastUpdated() {
     return lastUpdated;
   }
-  
+
   public LocalDateTime getDateCreated() {
     return dateCreated;
+  }
+
+  public String getReturnReason() {
+    return returnReason;
+  }
+
+  public void setReturnReason(String returnReason) {
+    this.returnReason = returnReason;
   }
 }

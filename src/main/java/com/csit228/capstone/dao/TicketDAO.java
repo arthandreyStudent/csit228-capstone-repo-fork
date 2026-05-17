@@ -199,6 +199,7 @@ public class TicketDAO {
                 t.deadline,
                 t.priority,
                 t.status,
+                t.return_reason,
                 CASE
                     WHEN d.name IS NULL THEN 'volunteer'
                     ELSE d.name
@@ -228,7 +229,8 @@ public class TicketDAO {
                 rs.getString("assigned_to_name"),
                 rs.getObject("last_updated", LocalDateTime.class),
                 rs.getObject("date_created", LocalDateTime.class),
-                rs.getObject("deadline", LocalDateTime.class)
+                rs.getObject("deadline", LocalDateTime.class),
+                rs.getString("return_reason")
         ));
 
       }
@@ -247,6 +249,7 @@ public class TicketDAO {
     ensureTicketViewsLoaded();
     return tickets;
   }
+
   public static void main(String[] args) {
 
     TicketDAO td = getTicketDAO();
@@ -270,3 +273,5 @@ public class TicketDAO {
   }
 
 }
+
+
