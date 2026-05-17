@@ -8,27 +8,29 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnector {
-  
+
   static String url;
   static String user;
   static String password;
   private static boolean envLoaded;
-  
+
   public static Connection getConnection() {
     ensureEnvLoaded();
     try {
-      return DriverManager.getConnection(url, user, password);
+      Connection conn = DriverManager.getConnection(url, user, password);
+      conn.setAutoCommit(true); // Ensure transactions commit immediately for single-statement operations
+      return conn;
     } catch (SQLException e) {
       System.out.println("SAD");
       throw new RuntimeException(e);
     }
   }
-  
+
   private static synchronized void ensureEnvLoaded() {
     if (envLoaded) {
       return;
     }
-    
+
     try (BufferedReader br = new BufferedReader(new FileReader(".env"))) {
       url = br.readLine().trim();
       user = br.readLine().trim();
@@ -38,7 +40,7 @@ public class DBConnector {
       throw new RuntimeException("Unable to load database credentials from .env", e);
     }
   }
-  
+
   public static void main(String[] args) {
     getConnection();
   }
