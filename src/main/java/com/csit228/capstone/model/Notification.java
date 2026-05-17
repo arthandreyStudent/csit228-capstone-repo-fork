@@ -14,7 +14,7 @@ public class Notification implements Serializable {
   private LocalDateTime createdAt;
   private int userId;
   private String title;
-
+  
   public String getTitle() {
     return title;
   }

@@ -62,10 +62,4 @@ These diagrams reflect the overall functionality and structure of TIX.org in rel
 #### 4.Design Pattern: (Tentative)
 + **Singleton** - Centralized connection point for MySQL Database
 + **Factory**  - Creation of Users based on type
-
-
-
-
-
-
-
++ **Composite UI** - `MasterTicketDetailModalView.fxml` acts as the single source for rendering ticket details rather than separate Views per role or ticket state. This is reconfigured at runtime by the Controller strategy.

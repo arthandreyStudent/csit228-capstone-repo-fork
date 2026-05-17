@@ -36,13 +36,13 @@ public class TicketEditorController extends StaffTicketController {
   
   @FXML
   private Label awaitingReviewLabel;
-  
+
   @FXML
   private Label inProgressLabel;
-  
+
   @FXML
   private Label approvedTodayLabel;
-  
+
   @FXML
   private Label sentBackLabel;
   
@@ -51,16 +51,16 @@ public class TicketEditorController extends StaffTicketController {
   
   @FXML
   private Button allFilterButton;
-  
+
   @FXML
   private Button openFilterButton;
-  
+
   @FXML
   private Button inProgressFilterButton;
-  
+
   @FXML
   private Button completedFilterButton;
-  
+
   @FXML
   private Button resolvedFilterButton;
 
@@ -73,16 +73,16 @@ public class TicketEditorController extends StaffTicketController {
   private final NotificationDAO notificationDAO = NotificationDAO.getNotificationDAO();
   
   private ReviewQueueFilter currentFilter = ReviewQueueFilter.ALL;
-  
+
   private enum ReviewQueueFilter {
     ALL, OPEN, IN_PROGRESS, TO_BE_REVIEWED, RESOLVED,
   }
-  
+
   @Override
   protected String getDefaultRoleName() {
     return "EDITOR";
   }
-  
+
   @Override
   protected void refreshDashboard() {
     ticketDAO.getTicketViews();
@@ -98,17 +98,17 @@ public class TicketEditorController extends StaffTicketController {
     updateSummaryCardsAndReviewStats();
     loadReviewQueue();
   }
-  
+
   @Override
   protected void onSearchChanged() {
     loadReviewQueue();
   }
-  
+
   @Override
   protected void onDeadlineSortSelected() {
     loadReviewQueue();
   }
-  
+
   @FXML
   public void initialize() {
     setupProfile();
@@ -119,53 +119,53 @@ public class TicketEditorController extends StaffTicketController {
     refreshDashboard();
     startWatching();
   }
-  
+
   private void setupFilterButtons() {
     setActiveFilterButton(allFilterButton);
   }
-  
+
   @FXML
   public void showAllTickets() {
     currentFilter = ReviewQueueFilter.ALL;
     setActiveFilterButton(allFilterButton);
     loadReviewQueue();
   }
-  
+
   @FXML
   public void showOpenTickets() {
     currentFilter = ReviewQueueFilter.OPEN;
     setActiveFilterButton(openFilterButton);
     loadReviewQueue();
   }
-  
+
   @FXML
   public void showInProgressTickets() {
     currentFilter = ReviewQueueFilter.IN_PROGRESS;
     setActiveFilterButton(inProgressFilterButton);
     loadReviewQueue();
   }
-  
+
   @FXML
   public void showCompletedTickets() {
     currentFilter = ReviewQueueFilter.TO_BE_REVIEWED;
     setActiveFilterButton(completedFilterButton);
     loadReviewQueue();
   }
-  
+
   @FXML
   public void showResolvedTickets() {
     currentFilter = ReviewQueueFilter.RESOLVED;
     setActiveFilterButton(resolvedFilterButton);
     loadReviewQueue();
   }
-  
+
   private void setActiveFilterButton(Button activeButton) {
     setInactiveFilterStyle(allFilterButton);
     setInactiveFilterStyle(openFilterButton);
     setInactiveFilterStyle(inProgressFilterButton);
     setInactiveFilterStyle(completedFilterButton);
     setInactiveFilterStyle(resolvedFilterButton);
-    
+
     if (activeButton != null) {
       activeButton.setStyle("-fx-background-color: " + getActiveFilterColor() + ";" + "-fx-background-radius: 18;" + "-fx-text-fill: white;" +
                             "-fx-font-size: 11px;" + "-fx-font-weight: bold;");
@@ -195,7 +195,7 @@ public class TicketEditorController extends StaffTicketController {
                     "-fx-background-radius: 18;" + "-fx-text-fill: #9faad2;" + "-fx-font-size: 11px;" +
                     "-fx-font-weight: bold;");
   }
-  
+
   private void updateSummaryCardsAndReviewStats() {
     int inProgress = 0, toBeReviewed = 0, resolved = 0, sentBack = 0;
     
@@ -210,13 +210,13 @@ public class TicketEditorController extends StaffTicketController {
         resolved++;
       }
     }
-    
+
     awaitingReviewLabel.setText(String.valueOf(toBeReviewed));
     inProgressLabel.setText(String.valueOf(inProgress));
     approvedTodayLabel.setText(String.valueOf(resolved));
     sentBackLabel.setText(String.valueOf(sentBack));
   }
-  private void openTicketDetailModal(TicketView ticket) {
+  protected void openTicketDetailModal(TicketView ticket) {
     try {
       FXMLLoader loader =
               new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/StaffTicketView.fxml"));
@@ -232,7 +232,7 @@ public class TicketEditorController extends StaffTicketController {
     }
   }
 
-  private boolean isInteractiveTarget(Object target) {
+  protected boolean isInteractiveTarget(Object target) {
     if (!(target instanceof Node)) {
       return false;
     }
@@ -252,7 +252,7 @@ public class TicketEditorController extends StaffTicketController {
     reviewQueueBox.getChildren().clear();
 
     String keyword = searchField != null ? searchField.getText() : "";
-    
+
     for (TicketView ticket : getSortedTicketsByDeadline()) {
       if (ticket.isVolunteerTicket() && isUnassigned(ticket))
         continue;
@@ -280,18 +280,18 @@ public class TicketEditorController extends StaffTicketController {
         reviewQueueBox.getChildren().add(row);
         continue;
       }
-      
+
       row.setAction(event -> updateTicketStatus(ticket, TicketStatus.RESOLVED, "Ticket marked as resolved."));
       row.setThirdAction(
         event -> updateTicketStatus(ticket, TicketStatus.IN_PROGRESS, "Ticket returned to in progress."));
       reviewQueueBox.getChildren().add(row);
     }
   }
-  
+
   private boolean matchesCurrentFilter(TicketView ticket) {
     if (ticket == null)
       return false;
-    
+
     switch (currentFilter) {
       case ALL:
         return true;
@@ -307,7 +307,7 @@ public class TicketEditorController extends StaffTicketController {
         return true;
     }
   }
-  
+
   private int getFilteredTicketCount() {
     int count = 0;
     String keyword = searchField != null ? searchField.getText() : "";
@@ -331,25 +331,25 @@ public class TicketEditorController extends StaffTicketController {
     setButtonHidden(row.getActionButton());
     setButtonHidden(row.getThirdActionButton());
   }
-  
+
   private void lockResolvedTicketRow(ListRowItem row) {
     if (row == null)
       return;
-    
+
     if (row.getAssignComboBox() != null) {
       row.getAssignComboBox().setDisable(true);
       row.getAssignComboBox().setPromptText("Closed");
     }
-    
+
     if (row.getSecondaryActionButton() != null) {
       row.getSecondaryActionButton().setDisable(true);
       row.getSecondaryActionButton().setText("Closed");
     }
-    
+
     setButtonHidden(row.getActionButton());
     setButtonHidden(row.getThirdActionButton());
   }
-  
+
   private void setButtonHidden(Button button) {
     if (button == null)
       return;
@@ -357,7 +357,7 @@ public class TicketEditorController extends StaffTicketController {
     button.setVisible(false);
     button.setManaged(false);
   }
-  
+
   @FXML
   public void handleCreateTicket() {
     try {
@@ -365,9 +365,9 @@ public class TicketEditorController extends StaffTicketController {
         new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/CreateTicketModalEditorView.fxml"));
       Parent root = loader.load();
       CreateTicketModalEditorController controller = loader.getController();
-      
+
       openModal(root, "Create New Ticket");
-      
+
       if (controller != null && controller.isSubmitted()) {
         refreshDashboard();
       }
@@ -442,3 +442,5 @@ public class TicketEditorController extends StaffTicketController {
     return recipients;
   }
 }
+
+

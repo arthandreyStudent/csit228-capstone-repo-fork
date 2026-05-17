@@ -2,8 +2,9 @@ package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.NotificationDAO;
 import com.csit228.capstone.dao.TicketDAO;
-import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.enums.TicketStatus;
+import com.csit228.capstone.model.Notification;
+import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.observer.NotificationObserver;
@@ -86,43 +87,43 @@ public abstract class BaseTicketController implements TicketObserver, Notificati
   }
 
 
-    @Override
-    public void onNotificationsChanged(List<Notification> updatedNotifications) {
-        this.notifications = new ArrayList<>(updatedNotifications);
-        renderDashboard();
-    }
+  @Override
+  public void onNotificationsChanged(List<Notification> updatedNotifications) {
+      this.notifications = new ArrayList<>(updatedNotifications);
+      renderDashboard();
+  }
 
-    protected void refreshActivityBox() {
-        if (activityBox == null) return;
-        activityBox.getChildren().clear();
-        int count = 0;
-        for (Notification n : notifications) {
-            activityBox.getChildren().add(ListRowItem.forActivity(n));
-            if (++count >= 8) break;
-        }
+  protected void refreshActivityBox() {
+    if (activityBox == null) return;
+    activityBox.getChildren().clear();
+    int count = 0;
+    for (Notification n : notifications) {
+        activityBox.getChildren().add(ListRowItem.forActivity(n));
+        if (++count >= 8) break;
     }
+  }
 
-    @Override
-    public int getUserId() {
-        return getCurrentUserId();
-    }
+  @Override
+  public int getUserId() {
+      return getCurrentUserId();
+  }
 
-    protected void startWatching() {
-        TicketWatcher ticketWatcher = TicketWatcher.getInstance();
-        ticketWatcher.addObserver(this);
-        ticketWatcher.start(2);
+  protected void startWatching() {
+    TicketWatcher ticketWatcher = TicketWatcher.getInstance();
+    ticketWatcher.addObserver(this);
+    ticketWatcher.start(2);
 
-        NotificationWatcher notifWatcher = NotificationWatcher.getInstance();
-        int initialCount = notificationDAO.getNotificationsByUserId(getCurrentUserId()).size();
-        notifWatcher.setInitialCount(getCurrentUserId(), initialCount);
-        notifWatcher.addObserver(this);
-        notifWatcher.start(2);
-    }
+    NotificationWatcher notifWatcher = NotificationWatcher.getInstance();
+    int initialCount = notificationDAO.getNotificationsByUserId(getCurrentUserId()).size();
+    notifWatcher.setInitialCount(getCurrentUserId(), initialCount);
+    notifWatcher.addObserver(this);
+    notifWatcher.start(2);
+  }
 
-    protected void stopWatching() {
-        TicketWatcher.getInstance().removeObserver(this);
-        NotificationWatcher.getInstance().removeObserver(this);
-    }
+  protected void stopWatching() {
+    TicketWatcher.getInstance().removeObserver(this);
+    NotificationWatcher.getInstance().removeObserver(this);
+  }
 
   protected void setupSearch() {
     if (searchField == null) return;
@@ -130,7 +131,9 @@ public abstract class BaseTicketController implements TicketObserver, Notificati
     searchField.textProperty().addListener((obs, oldVal, newVal) -> onSearchChanged());
   }
 
-  protected void onSearchChanged() {}
+  protected void onSearchChanged() {
+  
+  }
 
   protected void setupDeadlineSortComboBox() {
     if (deadlineSortComboBox == null)
@@ -155,6 +158,19 @@ public abstract class BaseTicketController implements TicketObserver, Notificati
     return sorted;
   }
   
+  protected boolean isAvailableTicket(TicketView ticket) {
+    if (ticket == null || !isUnassigned(ticket))
+      return false;
+    return isStatus(ticket, TicketStatus.OPEN.name());
+  }
+  
+  protected boolean isAssignedToCurrentUser(TicketView ticket) {
+    User currentUser = AppSession.currentUser;
+    if (currentUser == null || ticket.getAssignedToName() == null)
+      return false;
+    return ticket.getAssignedToName().equalsIgnoreCase(currentUser.getFullName());
+  }
+  
   protected boolean isStatus(TicketView ticket, String status) {
     return (ticket != null && ticket.getStatus() != null && ticket.getStatus().equalsIgnoreCase(status));
   }
@@ -163,8 +179,17 @@ public abstract class BaseTicketController implements TicketObserver, Notificati
     return (ticket == null || ticket.getAssignedToName() == null || ticket.getAssignedToName().trim().isEmpty());
   }
   
-  protected boolean isResolved(TicketView ticket) {
-    return (isStatus(ticket, TicketStatus.RESOLVED.name()) || isStatus(ticket, TicketStatus.COMPLETED.name()));
+  protected boolean isAvailableUnderDept(TicketView ticket) {
+    User currentUser = AppSession.currentUser;
+    if (currentUser == null || ticket == null || !isUnassigned(ticket) || !isStatus(ticket, TicketStatus.OPEN.name())) {
+      return false;
+    }
+
+    String currentDeptName = DepartmentDAO.getDepartmentDAO().getDepartmentNameByID(currentUser.getDepartment_id());
+    String ticketDeptName = ticket.getDepartmentName();
+
+    return currentDeptName != null && ticketDeptName != null &&
+           currentDeptName.trim().equalsIgnoreCase(ticketDeptName.trim());
   }
   
   protected boolean isOverdue(TicketView ticket) {
@@ -175,6 +200,29 @@ public abstract class BaseTicketController implements TicketObserver, Notificati
     return LocalDate.now().isAfter(ticket.getDeadline().toLocalDate());
   }
 
+  protected boolean isInProgress(TicketView ticket) {
+    return (isStatus(ticket, TicketStatus.IN_PROGRESS.name()));
+  }
+  
+  protected boolean isCompleted(TicketView ticket) {
+    return (isStatus(ticket, TicketStatus.COMPLETED.name()));
+  }
+  
+  protected boolean isResolved(TicketView ticket) {
+    return (isStatus(ticket, TicketStatus.RESOLVED.name()));
+  }
+  
+  protected boolean isOverdueInProgress(TicketView ticket) {
+    return isInProgress(ticket) && isOverdue(ticket);
+  }
+  
+  protected boolean isVolunteerTicket(TicketView ticket) {
+    if (ticket == null)
+      return false;
+    String dept = ticket.getDepartmentName();
+    return dept.equalsIgnoreCase("Volunteer") && isUnassigned(ticket) && isStatus(ticket, TicketStatus.OPEN.name());
+  }
+  
   protected boolean matchesTicketSearch(TicketView ticket, String keyword) {
     if (keyword == null || keyword.trim().isEmpty())
       return true;
@@ -194,65 +242,65 @@ public abstract class BaseTicketController implements TicketObserver, Notificati
 
   @FXML
   public void onClickedProfile() {
-      if (isProfileViewOpen) {
-          return;
+    if (isProfileViewOpen) {
+      return;
+    }
+
+    try {
+      isProfileViewOpen = true;
+
+      if (profileButton != null) {
+        profileButton.setDisable(true);
       }
 
-      try {
-          isProfileViewOpen = true;
-
-          if (profileButton != null) {
-              profileButton.setDisable(true);
-          }
-
-          if (mainContentPane == null) {
-              showError("Main content area was not found.");
-              resetProfileButton();
-              return;
-          }
-
-          if (dashboardContentNodes.isEmpty()) {
-              dashboardContentNodes.addAll(mainContentPane.getChildren());
-          }
-
-          FXMLLoader loader = new FXMLLoader(
-                  getClass().getResource("/com/csit228/capstone/view/ProfileView.fxml")
-          );
-
-          Parent profileView = loader.load();
-
-          ProfileViewController profileController = loader.getController();
-          profileController.setBackAction(this::showDashboardContent);
-
-          AnchorPane.setTopAnchor(profileView, 0.0);
-          AnchorPane.setRightAnchor(profileView, 0.0);
-          AnchorPane.setBottomAnchor(profileView, 0.0);
-          AnchorPane.setLeftAnchor(profileView, 0.0);
-
-          mainContentPane.getChildren().setAll(profileView);
-
-      } catch (IOException e) {
-          e.printStackTrace();
-          showError("Unable to open Profile.");
-          resetProfileButton();
+      if (mainContentPane == null) {
+        showError("Main content area was not found.");
+        resetProfileButton();
+        return;
       }
+
+      if (dashboardContentNodes.isEmpty()) {
+        dashboardContentNodes.addAll(mainContentPane.getChildren());
+      }
+
+      FXMLLoader loader = new FXMLLoader(
+              getClass().getResource("/com/csit228/capstone/view/ProfileView.fxml")
+      );
+
+      Parent profileView = loader.load();
+
+      ProfileViewController profileController = loader.getController();
+      profileController.setBackAction(this::showDashboardContent);
+
+      AnchorPane.setTopAnchor(profileView, 0.0);
+      AnchorPane.setRightAnchor(profileView, 0.0);
+      AnchorPane.setBottomAnchor(profileView, 0.0);
+      AnchorPane.setLeftAnchor(profileView, 0.0);
+
+      mainContentPane.getChildren().setAll(profileView);
+
+    } catch (IOException e) {
+      e.printStackTrace();
+      showError("Unable to open Profile.");
+      resetProfileButton();
+    }
   }
 
   private void showDashboardContent() {
-      if (mainContentPane == null) {
-          return;
-      }
+    if (mainContentPane == null) {
+      return;
+    }
 
-      mainContentPane.getChildren().setAll(dashboardContentNodes);
-      resetProfileButton();
+    mainContentPane.getChildren().setAll(dashboardContentNodes);
+    resetProfileButton();
   }
 
   private void resetProfileButton() {
-      isProfileViewOpen = false;
+    isProfileViewOpen = false;
 
-      if (profileButton != null) {
-          profileButton.setDisable(false);
-      }
+    if (profileButton != null) {
+      profileButton.setDisable(false);
+    }
   }
 
   @FXML
@@ -278,13 +326,13 @@ public abstract class BaseTicketController implements TicketObserver, Notificati
     alert.showAndWait();
   }
 
-    protected void loadRecentActivity(VBox activityBox) {
-        this.activityBox = activityBox;
+  protected void loadRecentActivity(VBox activityBox) {
+    this.activityBox = activityBox;
 
-        if (this.notifications.isEmpty()) {
-            this.notifications = notificationDAO.getNotificationsByUserId(getCurrentUserId());
-        }
-
-        refreshActivityBox();
+    if (this.notifications.isEmpty()) {
+      this.notifications = notificationDAO.getNotificationsByUserId(getCurrentUserId());
     }
+
+    refreshActivityBox();
+  }
 }

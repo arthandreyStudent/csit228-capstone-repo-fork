@@ -29,55 +29,55 @@ public class TicketExecutiveController extends StaffTicketController {
   
   @FXML
   private Label unassignedLabel;
-  
+
   @FXML
   private Label inProgressLabel;
-  
+
   @FXML
   private Label resolvedLabel;
-  
+
   @FXML
   private Label overdueLabel;
-  
+
   @FXML
   private Label resolutionRateLabel;
-  
+
   @FXML
   private Label resolvedRatePercentLabel;
-  
+
   @FXML
   private Label inProgressRatePercentLabel;
-  
+
   @FXML
   private Label overdueRatePercentLabel;
-  
+
   @FXML
   private ProgressBar resolvedProgressBar;
-  
+
   @FXML
   private ProgressBar inProgressProgressBar;
-  
+
   @FXML
   private ProgressBar overdueProgressBar;
-  
+
   @FXML
   private HBox departmentTabsBox;
-  
+
   @FXML
   private VBox pendingAssignmentQueueBox;
-  
+
   @FXML
   private VBox recentActivityBox;
-  
+
   private static final String VOLUNTEER_TAB_NAME = "Volunteer";
-  
+
   private String selectedDepartmentName = null;
-  
+
   @Override
   protected String getDefaultRoleName() {
     return "EXECUTIVE";
   }
-  
+
   @Override
   protected void refreshDashboard() {
     ticketDAO.getTicketViews();
@@ -92,17 +92,17 @@ public class TicketExecutiveController extends StaffTicketController {
     loadPendingAssignmentQueue();
     refreshActivityBox();
   }
-  
+
   @Override
   protected void onSearchChanged() {
     loadPendingAssignmentQueue();
   }
-  
+
   @Override
   protected void onDeadlineSortSelected() {
     loadPendingAssignmentQueue();
   }
-  
+
   @FXML
   public void initialize() {
     setupProfile();
@@ -113,15 +113,15 @@ public class TicketExecutiveController extends StaffTicketController {
     refreshDashboard();
     startWatching();
   }
-  
+
   private void loadDepartmentsAndTabs() {
     loadDepartments();
     renderDepartmentTabs();
   }
-  
+
   private void renderDepartmentTabs() {
     departmentTabsBox.getChildren().clear();
-    
+
     Button allButton = createTabButton("All Depts", selectedDepartmentName == null);
     allButton.setOnAction(event -> {
       selectedDepartmentName = null;
@@ -129,7 +129,7 @@ public class TicketExecutiveController extends StaffTicketController {
       loadPendingAssignmentQueue();
     });
     departmentTabsBox.getChildren().add(allButton);
-    
+
     Button volunteerButton =
       createTabButton(VOLUNTEER_TAB_NAME, VOLUNTEER_TAB_NAME.equalsIgnoreCase(selectedDepartmentName));
     volunteerButton.setOnAction(event -> {
@@ -138,12 +138,12 @@ public class TicketExecutiveController extends StaffTicketController {
       loadPendingAssignmentQueue();
     });
     departmentTabsBox.getChildren().add(volunteerButton);
-    
+
     for (Department department : departments) {
       String name = department.getName();
       if (name != null && name.equalsIgnoreCase(VOLUNTEER_TAB_NAME))
         continue;
-      
+
       Button btn = createTabButton(name, name != null && name.equalsIgnoreCase(selectedDepartmentName));
       btn.setOnAction(event -> {
         selectedDepartmentName = name;
@@ -154,13 +154,13 @@ public class TicketExecutiveController extends StaffTicketController {
       departmentTabsBox.getChildren().add(btn);
     }
   }
-  
+
   private Button createTabButton(String text, boolean selected) {
     Button button = new Button(text);
     button.setPrefHeight(32.0);
     button.setMinWidth(58.0);
     button.setCursor(Cursor.HAND);
-    
+
     if (selected) {
       button.setStyle("-fx-background-color: #2f95ff;" + "-fx-background-radius: 20;" + "-fx-text-fill: white;" +
                       "-fx-font-size: 12px;" + "-fx-font-weight: bold;" + "-fx-padding: 0 18 0 18;");
@@ -169,14 +169,14 @@ public class TicketExecutiveController extends StaffTicketController {
                       "-fx-background-radius: 20;" + "-fx-text-fill: #9faad2;" + "-fx-font-size: 12px;" +
                       "-fx-font-weight: bold;" + "-fx-padding: 0 18 0 18;");
     }
-    
+
     return button;
   }
-  
+
   private void updateSummaryCardsAndResolutionRate() {
     int total = tickets.size();
     int unassigned = 0, inProgress = 0, resolved = 0, overdue = 0;
-    
+
     for (TicketView ticket : tickets) {
       if (isUnassigned(ticket))
         unassigned++;
@@ -187,31 +187,31 @@ public class TicketExecutiveController extends StaffTicketController {
       if (isOverdue(ticket))
         overdue++;
     }
-    
+
     unassignedLabel.setText(String.valueOf(unassigned));
     inProgressLabel.setText(String.valueOf(inProgress));
     resolvedLabel.setText(String.valueOf(resolved));
     overdueLabel.setText(String.valueOf(overdue));
-    
+
     double resolvedRate = rate(resolved, total);
     double inProgressRate = rate(inProgress, total);
     double overdueRate = rate(overdue, total);
-    
+
     resolutionRateLabel.setText(Formatter.formatPercent(resolvedRate));
     resolvedRatePercentLabel.setText(Formatter.formatPercent(resolvedRate));
     inProgressRatePercentLabel.setText(Formatter.formatPercent(inProgressRate));
     overdueRatePercentLabel.setText(Formatter.formatPercent(overdueRate));
-    
+
     resolvedProgressBar.setProgress(resolvedRate);
     inProgressProgressBar.setProgress(inProgressRate);
     overdueProgressBar.setProgress(overdueRate);
   }
-  
+
   private void loadPendingAssignmentQueue() {
     pendingAssignmentQueueBox.getChildren().clear();
-    
+
     String keyword = searchField != null ? searchField.getText() : "";
-    
+
     for (TicketView ticket : getSortedTicketsByDeadline()) {
       if (!ticket.isVolunteerTicket() && !isAssignableTicket(ticket))
         continue;
@@ -219,7 +219,7 @@ public class TicketExecutiveController extends StaffTicketController {
         continue;
       if (!matchesTicketSearch(ticket, keyword))
         continue;
-      
+
       List<User> assignableUsers = getAssignableMembersForTicket(ticket);
       ListRowItem row = ListRowItem.forExecutiveAssignment(ticket, assignableUsers);
 
@@ -234,13 +234,13 @@ public class TicketExecutiveController extends StaffTicketController {
       pendingAssignmentQueueBox.getChildren().add(row);
     }
   }
-  
+
   private boolean isAssignableTicket(TicketView ticket) {
     if (ticket == null)
       return false;
     return (!isStatus(ticket, TicketStatus.COMPLETED.name()) && !isStatus(ticket, TicketStatus.RESOLVED.name()));
   }
-  
+
   private boolean matchesSelectedDepartment(TicketView ticket) {
     if (selectedDepartmentName == null || selectedDepartmentName.trim().isEmpty())
       return true;
@@ -248,7 +248,7 @@ public class TicketExecutiveController extends StaffTicketController {
       return ticket.isVolunteerTicket();
     return (ticket.getDepartmentName() != null && ticket.getDepartmentName().equalsIgnoreCase(selectedDepartmentName));
   }
-  
+
   @FXML
   public void handleCreateTicket() {
     try {
@@ -256,9 +256,9 @@ public class TicketExecutiveController extends StaffTicketController {
         new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/CreateTicketModalExecView.fxml"));
       Parent root = loader.load();
       CreateTicketModalExecController controller = loader.getController();
-      
+
       openModal(root, "Create New Ticket");
-      
+
       if (controller != null && controller.isSubmitted()) {
         refreshDashboard();
       }
@@ -267,14 +267,12 @@ public class TicketExecutiveController extends StaffTicketController {
     }
   }
 
-  private void openTicketDetailModal(TicketView ticket) {
+  protected void openTicketDetailModal(TicketView ticket) {
     try {
       FXMLLoader loader =
               new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/StaffTicketView.fxml"));
       Parent root = loader.load();
 
-      TicketDetailModelController controller = loader.getController();
-      controller.loadTicket(ticket);
 
       openModal(root, "Ticket Details");
       refreshDashboard();
@@ -283,7 +281,7 @@ public class TicketExecutiveController extends StaffTicketController {
     }
   }
 
-  private boolean isInteractiveTarget(Object target) {
+  protected boolean isInteractiveTarget(Object target) {
     if (!(target instanceof Node)) {
       return false;
     }
@@ -313,3 +311,6 @@ public class TicketExecutiveController extends StaffTicketController {
     return total <= 0 ? 0 : (double) value / total;
   }
 }
+
+
+

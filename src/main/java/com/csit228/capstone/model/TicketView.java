@@ -13,6 +13,7 @@ public class TicketView {
   private String description;
   private String priority;
   private String status;
+  private int departmentID;
   private String departmentName;
   private String createdBy;
   private String assignedToName;
@@ -68,12 +69,28 @@ public class TicketView {
     this.departmentName = Formatter.formatDepartmentName(departmentName);
   }
 
+  public int getDepartmentId() {
+    return departmentID;
+  }
+
+  public void setDepartmentId(int departmentId) {
+    this.departmentID = departmentId;
+  }
+
   public String getCreatedBy() {
     return createdBy;
   }
 
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
+
   public String getAssignedToName() {
       return assignedToName;
+  }
+
+  public void setAssignedToName(String assignedToName) {
+    this.assignedToName = assignedToName;
   }
 
   @Override
@@ -141,11 +158,11 @@ public class TicketView {
   public LocalDateTime getDeadline() {
     return deadline;
   }
-  
+
   public LocalDateTime getLastUpdated() {
     return lastUpdated;
   }
-  
+
   public LocalDateTime getDateCreated() {
     return dateCreated;
   }
