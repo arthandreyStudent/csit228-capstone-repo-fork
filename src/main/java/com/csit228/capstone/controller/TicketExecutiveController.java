@@ -266,17 +266,18 @@ public class TicketExecutiveController extends StaffTicketController {
       showError("Unable to open Create Ticket modal.");
     }
   }
-  
+
   private void openTicketDetailModal(TicketView ticket) {
     try {
       FXMLLoader loader =
-        new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/MasterTicketDetailModalView.fxml"));
+              new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/StaffTicketView.fxml"));
       Parent root = loader.load();
 
       TicketDetailModelController controller = loader.getController();
       controller.loadTicket(ticket);
 
       openModal(root, "Ticket Details");
+      refreshDashboard();
     } catch (IOException e) {
       showError("Unable to open Ticket Details modal.");
     }
