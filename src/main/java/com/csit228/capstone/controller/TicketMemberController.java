@@ -310,7 +310,7 @@ public class TicketMemberController extends StaffTicketController {
       boolean overdueInProg   = isOverdueInProgress(ticket);
       boolean volunteer       = isVolunteerTicket(ticket);
 
-      ListRowItem row = ListRowItem.forMemberMyWorkTicket(
+      ListRowItem row = ListRowItem.forMemberAvailableTicket(
           ticket, availDept, inProgress, completed, resolved, overdueInProg, volunteer
       );
 

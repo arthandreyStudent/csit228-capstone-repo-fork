@@ -6,7 +6,7 @@
 
 <VBox prefHeight="760.0" prefWidth="960.0" style="-fx-background-color: #f5f7fb;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
     <children>
-        <HBox fx:id="ticketHeader" alignment="CENTER_LEFT" prefHeight="76.0" spacing="16.0" style="-fx-background-color: #2851ad;">
+        <HBox fx:id="ticketHeader" alignment="CENTER_LEFT" prefHeight="76.0" spacing="16.0" style="-fx-background-color: #7a1e1f;">
             <padding>
                 <Insets bottom="18.0" left="24.0" right="24.0" top="18.0" />
             </padding>

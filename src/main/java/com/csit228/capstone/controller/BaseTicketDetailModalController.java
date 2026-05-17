@@ -188,7 +188,7 @@ public class BaseTicketDetailModalController {
    * Creates a themed action button from a {@link ListRowItem.ButtonAction} descriptor.
    * A {@link FontIcon} is placed on the left side of the button text.
    */
-  private static Button makeActionButton(ButtonAction action) {
+  public static Button makeActionButton(ButtonAction action) {
     // minimum width so the pill retains visual weight when stretched
     double btnMinWidth = action.text.length() * 8.5 + 30;
 

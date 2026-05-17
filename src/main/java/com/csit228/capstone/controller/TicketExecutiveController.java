@@ -4,6 +4,7 @@ import com.csit228.capstone.model.Department;
 import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
+import com.csit228.capstone.utils.Controls;
 import com.csit228.capstone.utils.Formatter;
 import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXML;
@@ -212,7 +213,7 @@ public class TicketExecutiveController extends StaffTicketController {
     String keyword = searchField != null ? searchField.getText() : "";
 
     for (TicketView ticket : getSortedTicketsByDeadline()) {
-      if (!isAssignableTicket(ticket))
+      if (!ticket.isVolunteerTicket() && !isAssignableTicket(ticket))
         continue;
       if (!matchesSelectedDepartment(ticket))
         continue;
@@ -266,6 +267,45 @@ public class TicketExecutiveController extends StaffTicketController {
     }
   }
 
+  private void openTicketDetailModal(TicketView ticket) {
+    try {
+      FXMLLoader loader =
+              new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/StaffTicketView.fxml"));
+      Parent root = loader.load();
+
+
+      openModal(root, "Ticket Details");
+      refreshDashboard();
+    } catch (IOException e) {
+      showError("Unable to open Ticket Details modal.");
+    }
+  }
+
+  private boolean isInteractiveTarget(Object target) {
+    if (!(target instanceof Node)) {
+      return false;
+    }
+
+    Node node = (Node) target;
+    while (node != null) {
+      if (node instanceof ButtonBase || node instanceof ComboBoxBase || node instanceof TextInputControl) {
+        return true;
+      }
+      node = node.getParent();
+    }
+
+    return false;
+  }
+
+  public void goToDepartment() throws IOException {
+    System.out.println("PRESSS");
+    Controls.switchScreen("DepartmentExecutiveView.fxml");
+  }
+
+  public void goToManageUser() throws IOException {
+    System.out.println("PRESSS");
+    Controls.switchScreen("ManageUserExecutive.fxml");
+  }
 
   private double rate(int value, int total) {
     return total <= 0 ? 0 : (double) value / total;
