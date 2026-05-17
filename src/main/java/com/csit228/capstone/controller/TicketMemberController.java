@@ -171,11 +171,16 @@ public class TicketMemberController extends StaffTicketController {
     int resolved = 0;
 
     for (TicketView ticket : tickets) {
-      if (isVolunteerTicket(ticket) || !isUnassigned(ticket) || !isAvailableUnderDept(ticket)) {
+      // only tickets assigned to current user OR unassigned tickets
+      // under the same department OR volunteer tickets
+      // are shown/countable in the member dashboard
+      if (!(isAssignedToCurrentUser(ticket)
+            || isAvailableUnderDept(ticket)
+            || isVolunteerTicket(ticket)))
         continue;
-      }
-
-      if (isAvailableUnderDept(ticket))
+      
+      
+      if (isAvailableUnderDept(ticket) || isVolunteerTicket(ticket))
         openTasks++;
       if (isInProgress(ticket))
         inProgress++;
@@ -200,9 +205,10 @@ public class TicketMemberController extends StaffTicketController {
     int overdueCountResolved = 0;
 
     for (TicketView ticket : tickets) {
-      if (isVolunteerTicket(ticket) || !isUnassigned(ticket) || !isAvailableUnderDept(ticket)) {
+      // only tickets assigned to current user OR unassigned tickets but belongs to the same
+      // department of the user are shown in the member dashboard ticket table and counted in the summary cards
+      if (!(isAssignedToCurrentUser(ticket) || isAvailableUnderDept(ticket)))
         continue;
-      }
 
       if (isInProgress(ticket) && isOverdueInDeadline(ticket)) {
         overdueCountInProgress++;
@@ -239,7 +245,6 @@ public class TicketMemberController extends StaffTicketController {
     } else {
       resolvedOverdueContainer.getChildren().clear();
     }
-    
   }
   
   public boolean isOverdueInDeadline(TicketView ticket) {
@@ -293,23 +298,22 @@ public class TicketMemberController extends StaffTicketController {
       boolean inProgress      = isInProgress(ticket);
       boolean completed       = isCompleted(ticket);
       boolean resolved        = isResolved(ticket);
-      boolean overdue         = isOverdue(ticket);
       boolean overdueInProg   = isOverdueInProgress(ticket);
       boolean volunteer       = isVolunteerTicket(ticket);
          // IN_PROGRESS && overdue
 
       ListRowItem row = ListRowItem.forMemberMyWorkTicket(
-          ticket, availDept, inProgress, completed, resolved, overdue, overdueInProg, volunteer
+          ticket, availDept, inProgress, completed, resolved, overdueInProg, volunteer
       );
 
       // Derive the ButtonAction so the controller decides the semantics
       // (open modal vs state-transition) rather than hard-coding text strings.
       ListRowItem.ButtonAction action =
           ListRowItem.getDynamicActionButtonInfo(ticket, availDept,
-              inProgress, completed, resolved, overdue, overdueInProg, volunteer);
+              inProgress, completed, resolved, overdueInProg, volunteer);
 
       // Attach the correct handler according to the resolved action type.
-      row.setAction(event -> handleMemberAction(ticket, action));
+      row.setAction(event -> handleDetailModalAction(ticket, action));
 
       // Row click (not the button) always opens the detail modal.
       row.setRowClick(event -> {
@@ -324,42 +328,48 @@ public class TicketMemberController extends StaffTicketController {
   }
 
   /**
-   * Routes a member's action button click to the correct business operation.
+   * Handles the primary (right-bar) action button placed by
+   * {@link ListRowItem#getDynamicActionButtonInfo(ListRowItem.ButtonAction)}
+   * inside each member "My Work" table row.
+   *
    * <ul>
-   *   <li>{@link ButtonAction#TAKE}       — claim ownership via takeTicket</li>
-   *   <li>{@link ButtonAction#START_TASK} — transition OPEN → IN_PROGRESS</li>
-   *   <li>{@link ButtonAction#SUBMIT}     — transition IN_PROGRESS → COMPLETED</li>
-   *   <li>{@link ButtonAction#RESUBMIT}   — re-submit an editor-returned ticket (non-null return_reason) → COMPLETED</li>
-   *   <li>{@link ButtonAction#SUBMIT_LATE}— late submission (in-progress work, past deadline)</li>
-   *   <li>{@link ButtonAction#VIEW_DETAILS}— open the ticket detail modal (read-only)</li>
+   *   <li>{@link ButtonAction#TAKE}        — claim ownership via takeTicket</li>
+   *   <li>{@link ButtonAction#START_TASK}  — transition OPEN → IN_PROGRESS</li>
+   *   <li>{@link ButtonAction#SUBMIT}      — transition IN_PROGRESS → COMPLETED</li>
+   *   <li>{@link ButtonAction#RESUBMIT}    — IN_PROGRESS (returned) → COMPLETED</li>
+   *   <li>{@link ButtonAction#SUBMIT_LATE} — late submission → COMPLETED</li>
+   *   <li>{@link ButtonAction#VIEW_DETAILS}— open the detail modal (read-only)</li>
+   *   <li>{@link ButtonAction#BACK}        — open the detail modal</li>
    * </ul>
+   *
+   * The DAO logic here mirrors {@code BaseTicketDetailModalController.handleDetailModalAction}
+   * so that row-level and modal-level actions always behave identically.
    */
-  public void handleMemberAction(TicketView ticket, ListRowItem.ButtonAction action) {
+  public void handleDetailModalAction(TicketView ticket, ListRowItem.ButtonAction action) {
     switch (action) {
-      case TAKE:
-        // TODO: Use the TicketDAO to assign this ticket's assigned_to to the user_id of the current user
-        // that can be get from the AppSession.currentUser.
-        // Also update the TicketView's assignedToName.
-        
-        break;
-      case SUBMIT:
-        // TODO: Update the status of the ticket from IN_PROGRESS to COMPLETED through the TicketDAO.
-        // Update the ticket's last_updated to the datetime of when was the ticket submitted.
-        // Also update the TicketView's status
-        
-        break;
-      case SUBMIT_LATE:
-        // TODO: Update the status of the ticket from IN_PROGRESS to COMPLETED through the TicketDAO.
-        // Update the ticket's last_updated to the datetime of when was the ticket submitted.
-        // Also update the TicketView's status
-        
-        break;
-      
-      case VIEW_DETAILS:
-        // Completed / Resolved tickets are read-only.
-        // Only open the ticket view modal
-        
-        break;
+      case TAKE -> {
+        boolean ok = ticketDAO.assignTicket(getCurrentUserId(), ticket.getId());
+        if (ok) {
+          refreshDashboard();
+        } else {
+          showError("Unable to take ticket.");
+        }
+      }
+      case SUBMIT, SUBMIT_LATE -> {
+        boolean ok1 = ticketDAO.updateStatus(ticket.getId(),
+            com.csit228.capstone.enums.TicketStatus.COMPLETED);
+        boolean ok2 = ticketDAO.setLastUpdated(ticket.getId(), java.time.LocalDateTime.now());
+        if (ok1 && ok2) {
+          refreshDashboard();
+        } else {
+          showError("Unable to submit ticket.");
+        }
+      }
+      case VIEW_DETAILS -> {
+        // Completed / Resolved tickets are read-only; back/detail clicks
+        // simply re-open the detail modal so the member can read notes.
+        openTicketDetailModal(ticket);
+      }
     }
   }
 

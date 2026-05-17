@@ -136,6 +136,7 @@ public abstract class StaffTicketController extends BaseTicketController {
         
         BaseTicketDetailModalController controller = loader.getController();
         controller.loadTicket(ticket);
+        controller.setOnTicketMutated(this::refreshDashboard);
         
         openModal(root, "Ticket Details");
       } catch (IOException e) {

@@ -88,6 +88,31 @@ public class TicketDAO {
 
     }
 
+    public boolean setLastUpdated(int ticketId, LocalDateTime updatedAt) {
+        String sql = """
+                UPDATE ticket
+                SET last_updated = ?
+                WHERE id = ?;
+                """;
+
+        try (Connection connection = DBConnector.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setTimestamp(1, Timestamp.valueOf(updatedAt));
+            stmt.setInt(2, ticketId);
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                ticketsDirty = true;
+            }
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
     public static TicketDAO getTicketDAO() {
         if (ticketDAO == null) {
             ticketDAO = new TicketDAO();

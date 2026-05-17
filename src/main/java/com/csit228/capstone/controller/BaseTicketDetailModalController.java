@@ -1,8 +1,10 @@
 package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.DepartmentDAO;
+import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.enums.Role;
 import com.csit228.capstone.enums.TicketStatus;
+import com.csit228.capstone.model.Ticket;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
@@ -20,6 +22,7 @@ import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -82,9 +85,16 @@ public class BaseTicketDetailModalController {
   @FXML
   public HBox volunteerMsgBoxContainer;
   
+  private Runnable onTicketMutated;
+  
   private TicketView currentTicket;
   
   private User currentUser = AppSession.currentUser;
+  private final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
+  
+  public void setOnTicketMutated(Runnable onTicketMutated) {
+    this.onTicketMutated = onTicketMutated;
+  }
   
   public enum ButtonAction {
     BACK("Back", "fas-long-arrow-alt-left", "#f1eded", "#1d1d1f"),
@@ -236,6 +246,7 @@ public class BaseTicketDetailModalController {
   }
   
   private void handleVolunteerMsgBox(TicketView ticket) {
+    
     if (isVolunteerTicket(ticket)) {
       volunteerMsgBoxContainer.setStyle("-fx-background-color: #d1ffdb;" +
                                         "-fx-background-radius: 10px;");
@@ -258,6 +269,22 @@ public class BaseTicketDetailModalController {
   }
   
   private void handleButtons(TicketView ticket) {
+    switch (currentUser.getRole()) {
+      case MEMBER:
+        handleButtonsForMember(ticket);
+        break;
+      case EDITOR:
+        handleButtonsForEditor(ticket);
+        break;
+      case EXECUTIVE:
+        handleButtonsForExecutive(ticket);
+        break;
+      default:
+        break;
+    }
+  }
+  
+  private void handleButtonsForMember(TicketView ticket) {
     // Compute all status booleans once and pass them into the factory.
     // This avoids duplicating the status-detection logic here and in
     // ListRowItem.getDynamicActionButtonInfo.
@@ -268,70 +295,121 @@ public class BaseTicketDetailModalController {
     boolean overdue         = isOverdue(ticket);
     boolean overdueInProg   = isOverdueInProgress(ticket);   // IN_PROGRESS && overdue
     boolean volunteer       = isVolunteerTicket(ticket);
-
+    
     List<ButtonAction> actions = getDynamicTicketModalButton(
       ticket, availDept, inProgress, completed, resolved, overdue, overdueInProg, volunteer
     );
-
+    
     // BACK button is actions[0], primary action button is actions[1]
     // The order guarantees from getDynamicActionButtonInfo.
-
-    // --- Left container: BACK (cancels/returns, strongly anchored left)
+    
+    // --- Left container: BACK (closes modal, no data mutation)
     Button backButton = (actions.size() > 0)
-        ? makeActionButton(actions.get(0)) : null;
+                        ? makeActionButton(actions.get(0)) : null;
     if (backButton != null) {
-      leftButtonContainer.getChildren().add(backButton);
+      leftButtonContainer.getChildren().setAll(backButton);
       HBox.setHgrow(backButton, Priority.ALWAYS);
+      backButton.setOnAction(e -> closeModal(backButton));
     }
-
+    
     // --- Right container: primary action (Submit / Resubmit / Start / Take / etc.)
     Button actionButton = (actions.size() > 1)
-        ? makeActionButton(actions.get(1)) : null;
+                          ? makeActionButton(actions.get(1)) : null;
     if (actionButton != null) {
-      rightButtonContainer.getChildren().add(actionButton);
-      // Let the action button absorb every remaining pixel in its HBox.
-      // makeActionButton already leaves maxWidth unbounded (Double.MAX_VALUE).
+      rightButtonContainer.getChildren().setAll(actionButton);
       HBox.setHgrow(actionButton, Priority.ALWAYS);
+      actionButton.setOnAction(e -> handleDetailModalAction(ticket, actions.get(1), actionButton));
     } else {
       rightButtonContainer.setManaged(false);
       rightButtonContainer.setVisible(false);
     }
   }
   
-  public void handleMemberAction(TicketView ticket, ButtonAction action) {
-    switch (action) {
-      case VOLUNTEER:
-        // TODO: Use the TicketDAO to assign this ticket's assigned_to to the user_id of the current user
-        // that can be get from the AppSession.currentUser.
-        // Also update the TicketView's assignedToName.
-        
-        break;
-      case TAKE:
-        // TODO: Use the TicketDAO to assign this ticket's assigned_to to the user_id of the current user
-        // that can be get from the AppSession.currentUser.
-        // Also update the TicketView's assignedToName.
-        
-        break;
-      case SUBMIT:
-        // TODO: Update the status of the ticket from IN_PROGRESS to COMPLETED through the TicketDAO.
-        // Update the ticket's last_updated to the datetime of when was the ticket submitted.
-        // Also update the TicketView's status
-        
-        break;
-      case SUBMIT_LATE:
-        // TODO: Update the status of the ticket from IN_PROGRESS to COMPLETED through the TicketDAO.
-        // Update the ticket's last_updated to the datetime of when was the ticket submitted.
-        // Also update the TicketView's status
-        
-        break;
-      
-      case VIEW_DETAILS:
-      case BACK:
-        // Completed / Resolved tickets are read-only; open the detail modal.
-        // Just handle the BACK button where when clicked, it will close the opened modal.
-
-        break;
+  private void handleButtonsForEditor(TicketView ticket) {
+    // Implement mga buttons ari sa ticket modal view paras editor
+  }
+  
+  private void handleButtonsForExecutive(TicketView ticket) {
+    // Implement mga buttons ari sa ticket modal view paras executive
+  }
+  
+  /**
+   * Handles the primary (right-bar) action button inside the ticket detail modal.
+   * Each {@link ButtonAction} maps to one or more {@link TicketDAO} mutations.
+   * BACK is handled inline as {@link #closeModal(Button)}; all other transitions
+   * land here.
+   * <p>
+   * After every successful mutation the modal is reloaded via
+   * {@link #loadTicket(TicketView)} so that badges, notices, and the button bar
+   * all reflect the new state without the caller having to do it manually.
+   */
+  private void handleDetailModalAction(TicketView ticket,
+                                       ButtonAction action,
+                                       Button sourceButton) {
+    User currentUser = AppSession.currentUser;
+    if (currentUser == null) {
+      showError("No logged-in user found.");
+      return;
     }
+
+    boolean mutated = switch (action) {
+      case VOLUNTEER -> {
+        // Assign the volunteer ticket to the current member; keep status OPEN
+        // until they explicitly click "Start Work".
+        boolean ok =
+          ticketDAO.assignTicket(currentUser.getUserId(), ticket.getId()) &&
+          ticketDAO.updateStatus(ticket.getId(), TicketStatus.IN_PROGRESS);
+        yield ok;
+      }
+      case TAKE -> {
+        // Same as VOLUNTEER but surfaced for department-scoped unassigned tickets.
+        boolean ok = ticketDAO.assignTicket(currentUser.getUserId(), ticket.getId()) &&
+                     ticketDAO.updateStatus(ticket.getId(), TicketStatus.IN_PROGRESS);
+        yield ok;
+      }
+      case SUBMIT, SUBMIT_LATE -> {
+        // IN_PROGRESS → COMPLETED: member is submitting the finished ticket.
+        // last_updated is set to "now" to mark the submission time.
+        boolean ok1 = ticketDAO.updateStatus(ticket.getId(), TicketStatus.COMPLETED);
+        boolean ok2 = ticketDAO.setLastUpdated(ticket.getId(), LocalDateTime.now());
+        yield ok1 && ok2;
+      }
+      default -> {
+        // VIEW_DETAILS, BACK and any unrecognised action carry no mutation.
+        yield true;
+      }
+    };
+
+    if (mutated) {
+      // Pull fresh data from the DAO so badges / notices re-render correctly.
+      ticketDAO.getTicketViews();
+      
+      if (onTicketMutated != null) {
+        onTicketMutated.run();
+      }
+      
+      closeModal(sourceButton);
+    } else {
+      showError("Action failed — please try again.");
+    }
+  }
+
+  private void showInfo(String message) {
+    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+        javafx.scene.control.Alert.AlertType.INFORMATION);
+    alert.setTitle("TIX.org");
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
+  }
+
+  private void showError(String message) {
+    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+        javafx.scene.control.Alert.AlertType.ERROR);
+    alert.setTitle("TIX.org");
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
   }
   
   private void handleTimeLine(TicketView ticket) {
@@ -396,7 +474,7 @@ public class BaseTicketDetailModalController {
           activityContentScrollPane.setPrefHeight(ScrollPane.USE_COMPUTED_SIZE);
         }
 
-        // Implement more
+        // I-implement pa na makita ang comment threads here
 
         break;
     }

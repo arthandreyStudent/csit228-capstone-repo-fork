@@ -93,7 +93,6 @@ public class ListRowItem extends VBox {
       boolean isInProgress,
       boolean isCompleted,
       boolean isResolved,
-      boolean isOverdue,
       boolean isOverdueInProgress,
       boolean isVolunteer) {
       
@@ -110,8 +109,6 @@ public class ListRowItem extends VBox {
       // to distinguish it from a normal active work ticket.
       return ButtonAction.SUBMIT;
     }
-    
-    if (isOverdue) return ButtonAction.SUBMIT_LATE;
     
     // Unassigned, OPEN, department-level availability
     if (isAvailableUnderDept) return ButtonAction.TAKE;
@@ -175,7 +172,6 @@ public class ListRowItem extends VBox {
         false,   // isInProgress
         false,   // isCompleted
         false,   // isResolved
-        false,   // isOverdue
         false,   // isOverdueInProgress
         false);  // isVolunteer
   }
@@ -192,7 +188,6 @@ public class ListRowItem extends VBox {
       boolean isInProgress,
       boolean isCompleted,
       boolean isResolved,
-      boolean isOverdue,
       boolean isOverdueInProgress,
       boolean isVolunteer) {
 
@@ -246,7 +241,7 @@ public class ListRowItem extends VBox {
     // -- Dynamic action button --
     ButtonAction action = getDynamicActionButtonInfo(
         ticket, isAvailableUnderDept,
-        isInProgress, isCompleted, isResolved, isOverdue, isOverdueInProgress, isVolunteer
+        isInProgress, isCompleted, isResolved, isOverdueInProgress, isVolunteer
     );
     item.actionButton = makeActionButton(action);
     HBox actionBox = makeFixedWidthBox(MEMBER_ACTION_WIDTH, item.actionButton);
@@ -565,7 +560,6 @@ public class ListRowItem extends VBox {
         return item;
     }
 
-
     private static VBox makeTicketDetailsBox(String title, String subtitle, double width) {
         String safeTitle    = title    != null ? title    : "Untitled Ticket";
         String safeSubtitle = subtitle != null ? subtitle : "";
@@ -633,27 +627,6 @@ public class ListRowItem extends VBox {
         }
 
         return label;
-    }
-    
-    private static Label makeLastUpdatedLabel(TicketView ticket) {
-      
-      String text;
-      if (ticket == null || ticket.getLastUpdated() == null) {
-        text = "—";
-      } else {
-        text = ticket.getLastUpdated().format(DATE_FORMATTER);
-      }
-      
-      String color = "#1c2b63";
-      
-      Label label = new Label(text);
-      label.setWrapText(true);
-      label.setAlignment(Pos.CENTER_LEFT);
-      label.setStyle("-fx-text-fill: " + color + "; " +
-                     "-fx-font-size: 10px; " +
-                     "-fx-font-family: 'Inter 18pt SemiBold'");
-      
-      return label;
     }
 
     private static Button makeButton(String text, double width, String bgColor, String textColor) {
