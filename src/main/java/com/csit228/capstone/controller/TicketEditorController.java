@@ -215,7 +215,6 @@ public class TicketEditorController extends StaffTicketController {
     inProgressLabel.setText(String.valueOf(inProgress));
     approvedTodayLabel.setText(String.valueOf(resolved));
     sentBackLabel.setText(String.valueOf(sentBack));
-
   }
   private void openTicketDetailModal(TicketView ticket) {
     try {
@@ -287,8 +286,6 @@ public class TicketEditorController extends StaffTicketController {
         event -> updateTicketStatus(ticket, TicketStatus.IN_PROGRESS, "Ticket returned to in progress."));
       reviewQueueBox.getChildren().add(row);
     }
-    
-
   }
   
   private boolean matchesCurrentFilter(TicketView ticket) {
