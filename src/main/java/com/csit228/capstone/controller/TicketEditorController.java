@@ -32,9 +32,7 @@ public class TicketEditorController extends StaffTicketController {
   private static final String STATUS_COMPLETED = "#22C55E";
   private static final String STATUS_RESOLVED = "#8B5CF6";
   private static final String FILTER_ALL = "#1c2b63";
-  
-  @FXML
-  private Label reviewQueueCountLabel;
+
   
   @FXML
   private Label awaitingReviewLabel;
@@ -217,7 +215,7 @@ public class TicketEditorController extends StaffTicketController {
     inProgressLabel.setText(String.valueOf(inProgress));
     approvedTodayLabel.setText(String.valueOf(resolved));
     sentBackLabel.setText(String.valueOf(sentBack));
-    reviewQueueCountLabel.setText(String.valueOf(getFilteredTicketCount()));
+
   }
   private void openTicketDetailModal(TicketView ticket) {
     try {
@@ -290,7 +288,7 @@ public class TicketEditorController extends StaffTicketController {
       reviewQueueBox.getChildren().add(row);
     }
     
-    reviewQueueCountLabel.setText(String.valueOf(reviewQueueBox.getChildren().size()));
+
   }
   
   private boolean matchesCurrentFilter(TicketView ticket) {
