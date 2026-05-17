@@ -91,7 +91,7 @@ public class TicketMemberController extends BaseTicketController {
     private boolean showingMyTasks = false;
     private String currentMyTasksFilter = TicketStatus.IN_PROGRESS.name();
 
-    private final String activeMenuStyle = "-fx-background-color: #2b376b; -fx-background-radius: 10;";
+    private final String activeMenuStyle = "-fx-background-color: #5b1617; -fx-background-radius: 10;";
     private final String inactiveMenuStyle = "-fx-background-color: transparent;";
 
     private final String activeTabStyle = "-fx-background-color: #2f95ff; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;";

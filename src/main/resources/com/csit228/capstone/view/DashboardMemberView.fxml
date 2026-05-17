@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -54,6 +55,9 @@
                         <Font name="Georgia Bold" size="14.0" />
                      </font></Label>
                     </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
                 </HBox>
 
                 <Label text="MEMBER" textFill="#d3cec2">
@@ -65,7 +69,7 @@
                </font>
                 </Label>
 
-                <HBox fx:id="myTasksMenuItem" alignment="CENTER_LEFT" onMouseClicked="#onClickedMyTasks" prefHeight="34.0" prefWidth="218.0" spacing="12.0">
+                <HBox fx:id="myTasksMenuItem" alignment="CENTER_LEFT" onMouseClicked="#onClickedMyTasks" prefHeight="42.0" prefWidth="218.0" spacing="12.0">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
@@ -76,11 +80,14 @@
                         <Font name="Georgia Bold" size="14.0" />
                      </font></Label>
                         <Region prefHeight="34.0" prefWidth="43.0" />
-                        <Label fx:id="myTasksSidebarCountLabel" alignment="CENTER" prefHeight="24.0" prefWidth="24.0" style="-fx-background-color: #8b642b; -fx-background-radius: 50;" text="0" textFill="#ffdf81">
+                        <Label fx:id="myTasksSidebarCountLabel" alignment="CENTER" prefHeight="24.0" prefWidth="24.0" style="-fx-background-color: #8b642b; -fx-background-radius: 10;" text="0" textAlignment="CENTER" textFill="#ffdf81">
                      <font>
-                        <Font name="Georgia Bold" size="14.0" />
+                        <Font name="Georgia Bold" size="12.0" />
                      </font></Label>
                     </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="14.0">
@@ -137,7 +144,7 @@
 
                         <HBox spacing="8.0">
                             <children>
-                                <Button fx:id="profileButton" onAction="#onClickedProfile" prefHeight="30.0" prefWidth="82.0" style="-fx-background-color: #e6f0ff; -fx-background-radius: 18; -fx-text-fill: #1b2b5f;" text="Profile" />
+                                <Button fx:id="profileButton" onAction="#onClickedProfile" prefHeight="30.0" prefWidth="82.0" style="-fx-background-color: #e6f0ff; -fx-background-radius: 18; -fx-text-fill: #1b2b5f; -fx-font-family: Georgia; -fx-font-weight: bold;" text="Profile" />
                                 <Button fx:id="buttonLogout" onAction="#onClickedLogout" prefHeight="30.0" prefWidth="96.0" style="-fx-background-color: #ef4c56; -fx-background-radius: 18; -fx-text-fill: white;" text="Logout">
                            <font>
                               <Font name="Georgia Bold" size="12.0" />
@@ -149,7 +156,7 @@
             </children>
         </VBox>
 
-        <AnchorPane fx:id="mainContentPane" prefHeight="758.0" prefWidth="1250.0" style="-fx-background-color: #f6e9dd;">
+        <AnchorPane fx:id="mainContentPane" prefHeight="758.0" prefWidth="1250.0" style="-fx-background-color: #eddecc;">
 
             <children>
                 <VBox layoutX="20.0" layoutY="20.0" spacing="2.0">
@@ -180,72 +187,60 @@
 
                 <HBox layoutX="25.0" layoutY="90.0" spacing="15.0">
                     <children>
-                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: #45403d; -fx-background-radius: 14;">
                             <children>
-                                <Label layoutX="16.0" layoutY="16.0" text="Open Tasks" textFill="#756c6c">
+                                <Label layoutX="16.0" layoutY="16.0" text="Open Tasks" textFill="#ebe3e3">
                            <font>
                               <Font name="Georgia Bold" size="12.0" />
                            </font></Label>
-                                <Label fx:id="openTasksLabel" layoutX="16.0" layoutY="35.0" text="0" textFill="#7fadd0">
-                           <font>
-                              <Font name="Georgia Bold" size="30.0" />
-                           </font></Label>
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #e9eff5; -fx-background-radius: 50;">
+                                <Label fx:id="openTasksLabel" layoutX="16.0" layoutY="35.0" styleClass="summary-card-counter" text="0" textFill="WHITE" />
+                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #575e61; -fx-background-radius: 50;">
                            <children>
-                              <FontIcon iconColor="#97c3e8" iconLiteral="fas-box-open" iconSize="22" />
+                              <FontIcon iconColor="#81c4eb" iconLiteral="fas-box-open" iconSize="22" />
                            </children>
                                 </StackPane>
                             </children>
                         </AnchorPane>
 
-                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: #45403d; -fx-background-radius: 14;">
                             <children>
-                                <Label layoutX="16.0" layoutY="16.0" text="In Progress" textFill="#756c6c">
+                                <Label layoutX="16.0" layoutY="16.0" text="In Progress" textFill="#ebe3e3">
                            <font>
                               <Font name="Georgia Bold" size="12.0" />
                            </font></Label>
-                                <Label fx:id="inProgressLabel" layoutX="16.0" layoutY="35.0" text="0" textFill="#a47e58">
-                           <font>
-                              <Font name="Georgia Bold" size="30.0" />
-                           </font></Label>
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #ffedcc; -fx-background-radius: 50;">
+                                <Label fx:id="inProgressLabel" layoutX="16.0" layoutY="35.0" styleClass="summary-card-counter" text="0" textFill="WHITE" />
+                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #665f58; -fx-background-radius: 50;">
                            <children>
-                              <FontIcon iconColor="#c39966" iconLiteral="fas-spinner" iconSize="25" />
+                              <FontIcon iconColor="#e4bc6b" iconLiteral="fas-spinner" iconSize="25" />
                            </children>
                                 </StackPane>
                             </children>
                         </AnchorPane>
 
-                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                        <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: #45403d; -fx-background-radius: 14;">
                             <children>
-                                <Label layoutX="16.0" layoutY="16.0" text="Completed" textFill="#756c6c">
+                                <Label layoutX="16.0" layoutY="16.0" text="Completed" textFill="#ebe3e3">
                            <font>
                               <Font name="Georgia Bold" size="12.0" />
                            </font></Label>
-                                <Label fx:id="completedLabel" layoutX="16.0" layoutY="35.0" text="0" textFill="#a0b593">
-                           <font>
-                              <Font name="Georgia Bold" size="30.0" />
-                           </font></Label>
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #e0f5d6; -fx-background-radius: 50;">
+                                <Label fx:id="completedLabel" layoutX="16.0" layoutY="35.0" styleClass="summary-card-counter" text="0" textFill="WHITE" />
+                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #676e60; -fx-background-radius: 50;">
                            <children>
-                              <FontIcon iconColor="#a0b593" iconLiteral="fas-clipboard-check" iconSize="25" />
+                              <FontIcon iconColor="#afda92" iconLiteral="fas-clipboard-check" iconSize="25" />
                            </children></StackPane>
                             </children>
                         </AnchorPane>
 
-                        <AnchorPane prefHeight="92.0" prefWidth="299.0" style="-fx-background-color: white; -fx-background-radius: 14;">
+                        <AnchorPane prefHeight="92.0" prefWidth="299.0" style="-fx-background-color: #45403d; -fx-background-radius: 14;">
                             <children>
-                                <Label layoutX="16.0" layoutY="16.0" text="Overdue" textFill="#756c6c">
+                                <Label layoutX="16.0" layoutY="16.0" text="Overdue" textFill="#ebe3e3">
                            <font>
                               <Font name="Georgia Bold" size="12.0" />
                            </font></Label>
-                                <Label fx:id="overdueLabel" layoutX="16.0" layoutY="35.0" text="0" textFill="#cd6261">
-                           <font>
-                              <Font name="Georgia Bold" size="30.0" />
-                           </font></Label>
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #f6d8d6; -fx-background-radius: 50;">
+                                <Label fx:id="overdueLabel" layoutX="16.0" layoutY="35.0" styleClass="summary-card-counter" text="0" textFill="WHITE" />
+                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #706262; -fx-background-radius: 50;">
                            <children>
-                              <FontIcon iconColor="#946969" iconLiteral="fas-clock" iconSize="23" />
+                              <FontIcon iconColor="#eec1bf" iconLiteral="fas-clock" iconSize="23" />
                            </children></StackPane>
                             </children>
                         </AnchorPane>
@@ -254,7 +249,7 @@
 
                 <AnchorPane layoutX="25.0" layoutY="195.0" prefHeight="535.0" prefWidth="860.0" style="-fx-background-color: white; -fx-background-radius: 16;">
                     <children>
-                        <Label layoutX="18.0" layoutY="18.0" text="Available Tickets" textFill="#80736d">
+                        <Label layoutX="18.0" layoutY="18.0" text="Available Tickets" textFill="#5b4d48">
                      <font>
                         <Font name="Georgia Bold" size="20.0" />
                      </font></Label>
@@ -264,7 +259,10 @@
                                 <Button prefHeight="28.0" prefWidth="57.0" style="-fx-background-color: #98c97b; -fx-background-radius: 18; -fx-text-fill: white;" text="All">
                            <font>
                               <Font name="Georgia Bold" size="12.0" />
-                           </font></Button>
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
                             </children>
                         </HBox>
 
@@ -305,7 +303,7 @@
 
                 <AnchorPane layoutX="898.0" layoutY="195.0" prefHeight="250.0" prefWidth="321.0" style="-fx-background-color: white; -fx-background-radius: 16;">
                     <children>
-                        <Label layoutX="14.0" layoutY="14.0" text="Volunteer Board" textFill="#80736d">
+                        <Label layoutX="14.0" layoutY="14.0" text="Volunteer Board" textFill="#5b4d48">
                      <font>
                         <Font name="Georgia Bold" size="18.0" />
                      </font></Label>
@@ -324,7 +322,7 @@
 
                 <AnchorPane layoutX="898.0" layoutY="460.0" prefHeight="270.0" prefWidth="330.0" style="-fx-background-color: white; -fx-background-radius: 16;">
                     <children>
-                        <Label layoutX="14.0" layoutY="14.0" text="My Activity" textFill="#80736d">
+                        <Label layoutX="14.0" layoutY="14.0" text="My Activity" textFill="#5b4d48">
                      <font>
                         <Font name="Georgia Bold" size="18.0" />
                      </font></Label>

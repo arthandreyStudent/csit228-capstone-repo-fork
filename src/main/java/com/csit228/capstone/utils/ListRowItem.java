@@ -30,10 +30,10 @@ public class ListRowItem extends VBox {
 
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, hh:mm a");
 
-  private static final String STATUS_OPEN = "#3B82F6";
-  private static final String STATUS_OPEN_BG = "#DBEAFE";
-  private static final String STATUS_IN_PROGRESS = "#F59E0B";
-  private static final String STATUS_IN_PROGRESS_BG = "#FEF3C7";
+  private static final String STATUS_OPEN = "#5c9ef5";
+  private static final String STATUS_OPEN_BG = "#d6edfa";
+  private static final String STATUS_IN_PROGRESS = "#dda94e";
+  private static final String STATUS_IN_PROGRESS_BG = "#f3efdd";
   private static final String STATUS_COMPLETED = "#22C55E";
   private static final String STATUS_COMPLETED_BG = "#DCFCE7";
   private static final String STATUS_RESOLVED = "#8B5CF6";
@@ -480,12 +480,19 @@ public class ListRowItem extends VBox {
         Label titleLabel = new Label(safeTitle);
         titleLabel.setWrapText(true);
         titleLabel.setMaxWidth(width - 8);
-        titleLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-text-fill: #3a3837; " +
+                            "-fx-font-size: 13px;" +
+                            "-fx-font-family: 'Georgia'; " +
+                            " -fx-font-weight: bold;"
+                            );
 
         Label subtitleLabel = new Label(safeSubtitle);
         subtitleLabel.setWrapText(true);
         subtitleLabel.setMaxWidth(width - 8);
-        subtitleLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 10px;");
+        subtitleLabel.setStyle("-fx-text-fill: #6b605b; " +
+                               "-fx-font-family: 'Times New Roman'; " +
+                               " -fx-font-size: 11px;"
+                              );
 
         VBox box = new VBox(2, titleLabel, subtitleLabel);
         box.setAlignment(Pos.CENTER_LEFT);
@@ -566,12 +573,13 @@ public class ListRowItem extends VBox {
         badge.setAlignment(Pos.CENTER);
         badge.setMinWidth(44);
         badge.setPrefHeight(22);
-        badge.setPadding(new Insets(0, 7, 0, 7));
+        badge.setPadding(new Insets(3, 10, 3, 10));
         badge.setStyle(
-                "-fx-background-color: " + bgColor + ";" +
+                        "-fx-background-color: " + bgColor + ";" +
                         "-fx-text-fill: " + textColor + ";" +
                         "-fx-background-radius: 6;" +
-                        "-fx-font-size: 9px;" +
+                        "-fx-font-size: 11px;" +
+                        "-fx-font-family: 'Georgia'; " +
                         "-fx-font-weight: bold;"
         );
         return badge;
