@@ -4,6 +4,7 @@ import com.csit228.capstone.dao.CommentDAO;
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.TicketDAO;
 import com.csit228.capstone.dao.UserDAO;
+import com.csit228.capstone.enums.Role;
 import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.Comment;
 import com.csit228.capstone.model.TicketView;
@@ -217,8 +218,10 @@ public class TicketDetailModelController {
             return departmentUsers;
         }
 
+        int currentUserId = AppSession.currentUser != null ? AppSession.currentUser.getUserId() : -1;
+
         for (User user : userDAO.getUsersByDepartment(departmentId)) {
-            if (user != null) {
+            if (user != null && user.hasRole(Role.MEMBER) && user.getUserId() != currentUserId) {
                 departmentUsers.add(user);
             }
         }
