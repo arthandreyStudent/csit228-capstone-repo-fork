@@ -6,6 +6,7 @@ import com.csit228.capstone.enums.Role;
 import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.*;
 import com.csit228.capstone.utils.NotificationManager;
+import com.csit228.capstone.utils.AppSession;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -93,6 +94,16 @@ public abstract class StaffTicketController extends BaseTicketController {
         }
 
         if (ticketDAO.updateStatus(ticket.getId(), status)) {
+            if (status == TicketStatus.IN_PROGRESS) {
+                NotificationManager.notifyReturnTicket(ticket, getCurrentUserName());
+            }
+
+            if (status == TicketStatus.RESOLVED) {
+                NotificationManager.notifyApproved(ticket, getCurrentUserName());
+            }
+
+            ticket.setStatus(status.name());
+
             showInfo(successMessage);
             refreshDashboard();
         } else {
@@ -120,6 +131,14 @@ public abstract class StaffTicketController extends BaseTicketController {
         modalStage.sizeToScene();
         modalStage.setOnShown(event -> modalStage.centerOnScreen());
         modalStage.showAndWait();
+    }
+
+    private String getCurrentUserName() {
+        if (AppSession.currentUser != null) {
+            return AppSession.currentUser.getFullName();
+        }
+
+        return "TIX.org";
     }
 
 

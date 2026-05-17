@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketMemberController">
+<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketMemberController">
 
     <children>
         <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #121d49;">
@@ -27,7 +35,7 @@
                     </VBox.margin>
                 </Label>
 
-                <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #2b376b; -fx-background-radius: 10;">
+                <HBox fx:id="dashboardMenuItem" alignment="CENTER_LEFT" onMouseClicked="#onClickedDashboard" prefHeight="42.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #2b376b; -fx-background-radius: 10;">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
@@ -43,7 +51,7 @@
                     </VBox.margin>
                 </Label>
 
-                <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="12.0">
+                <HBox fx:id="myTasksMenuItem" alignment="CENTER_LEFT" onMouseClicked="#onClickedMyTasks" prefHeight="34.0" prefWidth="218.0" spacing="12.0">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
@@ -51,7 +59,7 @@
                         <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="☷" />
                         <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="My Tasks" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label alignment="CENTER" prefHeight="18.0" prefWidth="24.0" style="-fx-background-color: #8b642b; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;" text="0" />
+                        <Label fx:id="myTasksSidebarCountLabel" alignment="CENTER" prefHeight="18.0" prefWidth="24.0" style="-fx-background-color: #8b642b; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;" text="0" />
                     </children>
                 </HBox>
 
@@ -59,30 +67,18 @@
                     <padding>
                         <Insets left="18.0" />
                     </padding>
-                    <children>
-                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="☁" />
-                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="Volunteer Board" />
-                    </children>
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="14.0">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
-                    <children>
-                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="▥" />
-                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="Department" />
-                    </children>
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="218.0" spacing="14.0">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
-                    <children>
-                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 16px;" text="♟" />
-                        <Label style="-fx-text-fill: #aab4dc; -fx-font-size: 14px;" text="Notifications" />
-                    </children>
                 </HBox>
 
                 <Region VBox.vgrow="ALWAYS" />
@@ -146,10 +142,10 @@
                         <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
                             <children>
                                 <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Open Tasks" />
-                                <Label fx:id="openTasksLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #3B82F6; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #DBEAFE; -fx-background-radius: 50;">
+                                <Label fx:id="openTasksLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #2f95ff; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #e0efff; -fx-background-radius: 50;">
                                     <children>
-                                        <Label style="-fx-text-fill: #3B82F6; -fx-font-size: 22px;" text="▰" />
+                                        <Label style="-fx-text-fill: #2f95ff; -fx-font-size: 22px;" text="▰" />
                                     </children>
                                 </StackPane>
                             </children>
@@ -158,10 +154,10 @@
                         <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
                             <children>
                                 <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="In Progress" />
-                                <Label fx:id="inProgressLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #F59E0B; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #FEF3C7; -fx-background-radius: 50;">
+                                <Label fx:id="inProgressLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #ff9900; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #ffedcc; -fx-background-radius: 50;">
                                     <children>
-                                        <Label style="-fx-text-fill: #F59E0B; -fx-font-size: 22px;" text="⠿" />
+                                        <Label style="-fx-text-fill: #ff9900; -fx-font-size: 22px;" text="⠿" />
                                     </children>
                                 </StackPane>
                             </children>
@@ -170,10 +166,10 @@
                         <AnchorPane prefHeight="92.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 14;">
                             <children>
                                 <Label layoutX="16.0" layoutY="16.0" style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Completed (MTD)" />
-                                <Label fx:id="completedLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #22C55E; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
-                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #DCFCE7; -fx-background-radius: 50;">
+                                <Label fx:id="completedLabel" layoutX="16.0" layoutY="35.0" style="-fx-text-fill: #4bcc8a; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                                <StackPane layoutX="229.0" layoutY="22.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #dcffef; -fx-background-radius: 50;">
                                     <children>
-                                        <Label style="-fx-text-fill: #22C55E; -fx-font-size: 28px; -fx-font-weight: bold;" text="✓" />
+                                        <Label style="-fx-text-fill: #4bcc8a; -fx-font-size: 28px; -fx-font-weight: bold;" text="✓" />
                                     </children>
                                 </StackPane>
                             </children>
@@ -245,6 +241,96 @@
                                 <VBox fx:id="activityBox" prefWidth="299.0" spacing="10.0" style="-fx-background-color: transparent;" />
                             </content>
                         </ScrollPane>
+                    </children>
+                </AnchorPane>
+
+                <AnchorPane fx:id="myTasksPage" managed="false" prefHeight="758.0" prefWidth="1250.0" style="-fx-background-color: #eef2fb;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <VBox layoutX="20.0" layoutY="20.0" spacing="2.0">
+                            <children>
+                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 12px;" text="Pages / My Tasks" />
+                                <Label style="-fx-text-fill: #1c2b63; -fx-font-size: 28px; -fx-font-weight: bold;" text="My Tasks" />
+                            </children>
+                        </VBox>
+
+
+                        <AnchorPane layoutX="25.0" layoutY="90.0" prefHeight="650.0" prefWidth="1195.0" style="-fx-background-color: white; -fx-background-radius: 16;">
+                            <children>
+                                <HBox alignment="CENTER_LEFT"
+                                      layoutX="885.0"
+                                      layoutY="28.0"
+                                      prefHeight="36.0"
+                                      prefWidth="280.0"
+                                      spacing="8.0"
+                                      style="-fx-background-color: #f7f9ff; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18;">
+                                    <padding>
+                                        <Insets left="14.0" right="10.0" />
+                                    </padding>
+
+                                    <children>
+                                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 16px;" text="⌕" />
+
+                                        <TextField fx:id="myTasksSearchField"
+                                                   prefWidth="220.0"
+                                                   promptText="Search my tasks..."
+                                                   style="-fx-background-color: transparent; -fx-text-fill: #1c2b63; -fx-prompt-text-fill: #9faad2;" />
+                                    </children>
+                                </HBox>
+                                <Label layoutX="22.0" layoutY="18.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Assigned To Me" />
+                                <Label layoutX="22.0" layoutY="43.0" style="-fx-text-fill: #9faad2; -fx-font-size: 11px;" text="Only tickets assigned to your account will appear here." />
+                                <Label fx:id="myTasksCountLabel"
+                                       alignment="CENTER"
+                                       layoutX="165.0"
+                                       layoutY="15.0"
+                                       prefHeight="22.0"
+                                       prefWidth="32.0"
+                                       style="-fx-background-color: #2f95ff; -fx-background-radius: 11; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;"
+                                       text="0" />
+
+                                <HBox layoutX="22.0" layoutY="75.0" spacing="8.0">
+                                    <children>
+                                        <Button fx:id="myTasksInProgressButton" onAction="#showMyTasksInProgress" prefHeight="28.0" prefWidth="96.0" style="-fx-background-color: #2f95ff; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;" text="In Progress" />
+                                        <Button fx:id="myTasksCompletedButton" onAction="#showMyTasksCompleted" prefHeight="28.0" prefWidth="90.0" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="Completed" />
+                                        <Button fx:id="myTasksResolvedButton" onAction="#showMyTasksResolved" prefHeight="28.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="Resolved" />
+                                    </children>
+                                </HBox>
+
+                                <ComboBox fx:id="myTasksDeadlineSortComboBox"
+                                          layoutX="985.0"
+                                          layoutY="72.0"
+                                          onAction="#onMyTasksDeadlineSortChanged"
+                                          prefHeight="28.0"
+                                          prefWidth="180.0"
+                                          promptText="Sort Deadline"
+                                          style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-font-size: 11px;" />
+
+                                <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="125.0" prefHeight="30.0" prefWidth="1120.0">
+                                    <children>
+                                        <Label prefWidth="500.0"
+                                               style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
+                                               text="TASK DETAILS" />
+
+                                        <Label prefWidth="160.0"
+                                               style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
+                                               text="PRIORITY" />
+
+                                        <Label prefWidth="260.0"
+                                               style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
+                                               text="DEADLINE" />
+
+                                        <Label prefWidth="200.0"
+                                               style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
+                                               text="STATUS" />
+                                    </children>
+                                </HBox>
+
+                                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="35.0" layoutY="160.0" prefHeight="470.0" prefWidth="1125.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
+                                    <content>
+                                        <VBox fx:id="myTasksBox" prefWidth="1120.0" spacing="0.0" style="-fx-background-color: transparent;" />
+                                    </content>
+                                </ScrollPane>
+                            </children>
+                        </AnchorPane>
                     </children>
                 </AnchorPane>
 
