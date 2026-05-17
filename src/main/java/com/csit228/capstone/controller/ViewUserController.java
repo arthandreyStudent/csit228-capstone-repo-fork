@@ -89,7 +89,7 @@ public class ViewUserController {
         Department department = comboboxDepartment != null ? comboboxDepartment.getValue() : departmentDAO.getDepartmentByID(user.getDepartment_id());
         String job = comboboxJob != null ? comboboxJob.getValue().getName() : userJobDAO.getJobByUser(user.getUsername());
 
-        userDAO.updateUser(user, role.ordinal(), department.getId(), job);
+        userDAO.updateUser(user, userDAO.getTypeRev(role), department.getId(), job);
 
     }
 
