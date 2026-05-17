@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
@@ -23,18 +24,132 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public class ListRowItem extends VBox {
+
+  public enum ButtonAction {
+    BACK("Back", "fas-long-arrow-alt-left", "#f1eded", "#1d1d1f"),
+    
+    VOLUNTEER("Volunteer", "fas-hand-paper", "#50CD89", "#ffffff"),
+    /**
+     * Ticket is unassigned and available (OPEN, unassigned).
+     * Action: claim ownership ("Take").
+     */
+    TAKE("Take", "fas-hand-holding", "#48c7cb", "#e6f2ff"),
+    
+    /**
+     * Ticket is owned by current user, status OPEN — has not been started yet.
+     * Action: transition to IN_PROGRESS ("Start Task").
+     */
+    START_TASK("Start Task", "fas-play", "#2f95ff", "#e6f2ff"),
+    
+    /**
+     * Ticket is owned by current user, status IN_PROGRESS (first cycle) — work is active.
+     * Action: mark as COMPLETED ("Submit").
+     */
+    SUBMIT("Submit", "fas-check", "#4bcc8a", "#dcffef"),
+    
+    /**
+     * Ticket has a non-null return_reason and was returned by an editor for revisions.
+     * Action: re-submit as COMPLETED ("Resubmit").
+     */
+    RESUBMIT("Resubmit", "fas-reply-all", "#f14d5a", "#ffe0e5"),
+    
+    /**
+     * Ticket deadline has passed and is overdue.
+     * Action: same as Submit but labelled to signal late submission.
+     */
+    SUBMIT_LATE("Submit Late", "fas-clock", "#ff9900", "#ffedcc"),
+    
+    /**
+     * Ticket is COMPLETED or RESOLVED — read-only display.
+     * Action: open detail modal (no state change).
+     */
+    VIEW_DETAILS("View Details", "fas-eye", "#7f77dd", "#ecebf9");
+    
+    public final String text;
+    public final String iconLiteral;
+    public final String bgColor;
+    public final String textColor;
+    
+    ButtonAction(String text, String iconLiteral, String bgColor, String textColor) {
+      this.text = text;
+      this.iconLiteral = iconLiteral;
+      this.bgColor = bgColor;
+      this.textColor = textColor;
+    }
+  }
+
+  /**
+   * Determines the dynamic button action for a ticket in the member "My Work" table.
+   *
+   * <p>Priority order (highest to lowest):
+   * <ol>
+   *   <li>Completed / Resolved → VIEW_DETAILS</li>
+   *   <li>Overdue In Progress (IN_PROGRESS AND overdue) → SUBMIT_LATE</li>
+   *   <li>Editor-returned (IN_PROGRESS with non-null return_reason) → RESUBMIT</li>
+   *   <li>In Progress (regular active work) → SUBMIT</li>
+   *   <li>Overdue (OPEN + overdue) → SUBMIT_LATE</li>
+   *   <li>Owned + Open (To Do) → START_TASK</li>
+   *   <li>Available (unassigned dept ticket) → TAKE</li>
+   *   <li>Otherwise → default action (fallback)</li>
+   * </ol>
+   *
+   * Hanging-comment parameters allow callers to inject the related status helpers
+   * without imposing an internal dependency (keeps {@code ListRowItem} dep-free).
+   */
+  public static ButtonAction getDynamicActionButtonInfo(
+      TicketView ticket,
+      boolean isAvailableUnderDept,
+      boolean isAssignedToCurrentUser,
+      boolean isInProgress,
+      boolean isCompleted,
+      boolean isResolved,
+      boolean isOverdue,
+      boolean isReturned,
+      boolean isOverdueInProgress,
+      boolean isVolunteer) {
+        
+    
+    if (isCompleted || isResolved) return ButtonAction.VIEW_DETAILS;
+    
+    // SUBMIT_LATE takes priority over SUBMIT/RESUBMIT so that an overdue in-progress
+    // ticket surfaces a "Submit Late" button (late-submission action) rather than the
+    // plain "Submit" button.
+    if (isOverdueInProgress) return ButtonAction.SUBMIT_LATE;
+    
+    if (isInProgress) {
+      // An editor-returned ticket carries a non-null return_reason; surface "Resubmit"
+      // to distinguish it from a normal active work ticket.
+      if (isReturned)
+        return ButtonAction.RESUBMIT;
+      return ButtonAction.SUBMIT;
+    }
+    
+    if (isOverdue) return ButtonAction.SUBMIT_LATE;
+    
+    // Owned and still OPEN
+    if (isAssignedToCurrentUser) return ButtonAction.START_TASK;
+    
+    // Unassigned, OPEN, department-level availability
+    if (isAvailableUnderDept) return ButtonAction.TAKE;
+    
+    if (isVolunteer) return ButtonAction.VOLUNTEER;
+    
+    return ButtonAction.START_TASK; // sensible fallback
   
+  }
+
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, hh:mm a");
 
   private static final double TABLE_ROW_WIDTH = 850.0;
 
-  private static final double MEMBER_DETAILS_WIDTH = 300.0;
-  private static final double MEMBER_PRIORITY_WIDTH = 110.0;
-  private static final double MEMBER_DEADLINE_WIDTH = 170.0;
-  private static final double MEMBER_STATUS_WIDTH = 140.0;
-  private static final double MEMBER_ACTION_WIDTH = 110.0;
+  private static final double MEMBER_DETAILS_WIDTH = 230.0;
+  private static final double MEMBER_PRIORITY_WIDTH = 100.0;
+  private static final double MEMBER_DEADLINE_WIDTH = 140.0;
+  private static final double MEMBER_STATUS_WIDTH = 150.0;
+  private static final double MEMBER_ACTION_WIDTH = 210.0;
 
   private static final double EXEC_DETAILS_WIDTH = 230.0;
   private static final double EXEC_DEPT_WIDTH = 122.0;
@@ -64,7 +179,37 @@ public class ListRowItem extends VBox {
     setStyle("-fx-background-color: transparent;");
   }
   
-  public static ListRowItem forMemberAvailableTicket(TicketView ticket) {
+  public static ListRowItem forMemberMyWorkTicket(TicketView ticket) {
+    return forMemberMyWorkTicket(ticket,
+        false,   // isAvailableUnderDept — default, overridden in controller
+        false,   // isAssignedToCurrentUser
+        false,   // isInProgress
+        false,   // isCompleted
+        false,   // isResolved
+        false,   // isOverdue
+        false,   // returned
+        false,   // isOverdueInProgress
+        false);  // isVolunteer
+  }
+
+
+  /**
+   * Convenience overload that accepts computed status flags so the caller (the
+   * {@code DashboardMemberController}) drives the button state rather than this
+   * utility class reaching into a session singleton.
+   */
+  public static ListRowItem forMemberMyWorkTicket(
+      TicketView ticket,
+      boolean isAvailableUnderDept,
+      boolean isAssignedToCurrentUser,
+      boolean isInProgress,
+      boolean isCompleted,
+      boolean isResolved,
+      boolean isOverdue,
+      boolean isReturned,
+      boolean isOverdueInProgress,
+      boolean isVolunteer) {
+
     ListRowItem item = new ListRowItem();
     item.sourceObject = ticket;
 
@@ -72,18 +217,24 @@ public class ListRowItem extends VBox {
     row.setPrefWidth(TABLE_ROW_WIDTH);
     row.setMinWidth(TABLE_ROW_WIDTH);
     row.setMaxWidth(TABLE_ROW_WIDTH);
-    row.setMinHeight(66);
-    row.setPrefHeight(66);
+    // No fixed height — row grows naturally when the status column stacks two badges
+    row.setMinHeight(USE_COMPUTED_SIZE);
+    row.setPrefHeight(USE_COMPUTED_SIZE);
+    row.setMaxHeight(USE_COMPUTED_SIZE);
+    row.setPadding(new Insets(12, 0, 12, 0));
     row.setAlignment(Pos.CENTER_LEFT);
     row.setCursor(Cursor.HAND);
-    row.setStyle("-fx-background-color: white; -fx-border-color: #eef2fb; -fx-border-width: 1 0 0 0;");
+    row.setStyle("-fx-background-color: white; " +
+                 "-fx-border-color: #eef2fb; " +
+                 "-fx-border-width: 1 0 0 0;"
+                );
 
     String createdBy = ticket.getCreatedBy() != null ? ticket.getCreatedBy() : "Unknown";
     String ticketNum = String.format("%03d", ticket.getId());
 
     VBox detailsBox = makeTicketDetailsBox(ticket.getTitle(), "By " + createdBy + " • #TIX-" + ticketNum, MEMBER_DETAILS_WIDTH);
 
-    Label priorityBadge = makePriorityBadge(ticket.getPriority());
+    Label priorityBadge = UIStyler.makePriorityBadge(ticket.getPriority());
     HBox priorityBox = makeFixedWidthBox(MEMBER_PRIORITY_WIDTH, priorityBadge);
 
     Label deadlineLabel = makeDeadlineLabel(ticket);
@@ -91,12 +242,31 @@ public class ListRowItem extends VBox {
     deadlineLabel.setMinWidth(MEMBER_DEADLINE_WIDTH);
     deadlineLabel.setMaxWidth(MEMBER_DEADLINE_WIDTH);
 
-    Label statusBadge = makeStatusBadge(ticket.getStatus());
-    HBox statusBox = makeFixedWidthBox(MEMBER_STATUS_WIDTH, statusBadge);
+    Label statusBadge = UIStyler.makeStatusBadge(ticket.getStatus());
+    // VBox so an "Overdue" badge can be stacked beneath the status badge
+    VBox statusVBox = new VBox(statusBadge);
+    statusVBox.setAlignment(Pos.CENTER_LEFT);
+    statusVBox.setPrefWidth(MEMBER_STATUS_WIDTH);
+    statusVBox.setMinWidth(MEMBER_STATUS_WIDTH);
+    statusVBox.setMaxWidth(MEMBER_STATUS_WIDTH);
+    statusVBox.setSpacing(5);
+    if (isOverdueInProgress) {
+      Label overdueSubBadge = UIStyler.makeOverdueBadge();
+      statusVBox.getChildren().add(overdueSubBadge);
+    } else if (isReturned) {
+      Label returnedSubBadge = UIStyler.makeReturnedBadge();
+      statusVBox.getChildren().add(returnedSubBadge);
+    }
+    
+    HBox statusBox = makeFixedWidthBox(MEMBER_STATUS_WIDTH, statusVBox);
 
-    Button startButton = makeButton("Start", 82, "#2f95ff", "white");
-    item.actionButton = startButton;
-    HBox actionBox = makeFixedWidthBox(MEMBER_ACTION_WIDTH, startButton);
+    // -- Dynamic action button --
+    ButtonAction action = getDynamicActionButtonInfo(
+        ticket, isAvailableUnderDept, isAssignedToCurrentUser,
+        isInProgress, isCompleted, isResolved, isOverdue, isReturned, isOverdueInProgress, isVolunteer
+    );
+    item.actionButton = makeActionButton(action);
+    HBox actionBox = makeFixedWidthBox(MEMBER_ACTION_WIDTH, item.actionButton);
 
     row.getChildren().addAll(detailsBox, priorityBox, deadlineLabel, statusBox, actionBox);
 
@@ -107,7 +277,39 @@ public class ListRowItem extends VBox {
     item.getChildren().add(row);
     return item;
   }
+  
+  /**
+   * Creates a themed action button from a {@link ButtonAction} descriptor.
+   * A {@link FontIcon} is placed on the left side of the button text.
+   */
+  private static Button makeActionButton(ButtonAction action) {
+    // Width adapts to label length; minimum 90px to fit "View Details" comfortably
+    double btnWidth = Math.max(action.text.length() * 8.5 + 30, 90.0);
 
+    Button button = new Button(action.text);
+    button.setPrefWidth(btnWidth);
+    button.setMinWidth(btnWidth);
+    button.setMaxWidth(btnWidth);
+    button.setPrefHeight(28);
+    button.setCursor(Cursor.HAND);
+    button.setStyle(
+        "-fx-background-color: " + action.bgColor + ";" +
+        "-fx-background-radius: 7;" +
+        "-fx-text-fill: " + action.textColor + ";" +
+        "-fx-font-size: 11px;" +
+        "-fx-font-family: 'Inter 18pt ExtraBold'"
+    );
+
+    // Icon on the left
+    FontIcon icon = new FontIcon(action.iconLiteral);
+    icon.setIconSize(12);
+    icon.setIconColor(javafx.scene.paint.Color.web(action.textColor));
+    button.setGraphic(icon);
+    button.setContentDisplay(javafx.scene.control.ContentDisplay.LEFT);
+    button.setGraphicTextGap(5);
+
+    return button;
+  }
 
   public static ListRowItem forMemberVolunteerTicket(TicketView ticket) {
     ListRowItem item = new ListRowItem();
@@ -116,7 +318,7 @@ public class ListRowItem extends VBox {
     String title       = ticket.getTitle()       != null ? ticket.getTitle()       : "Untitled Ticket";
     String description = ticket.getDescription() != null ? ticket.getDescription() : "No ticket description available.";
 
-    Label priorityBadge = makePriorityBadge(ticket.getPriority());
+        Label priorityBadge = UIStyler.makePriorityBadge(ticket.getPriority());
 
         Label volunteerTag = new Label("Volunteer");
         volunteerTag.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 10px;");
@@ -139,7 +341,28 @@ public class ListRowItem extends VBox {
 
         Label deadlineLabel = makeDeadlineLabel(ticket);
 
-        Button volunteerButton = makeButton("Volunteer", SMALL_CARD_WIDTH - 24, "#4bcc8a", "white");
+        // Volunteer board tickets are OPEN, unassigned, and are not tied to any department → "Volunteer" action
+        ButtonAction volunteerAction = ButtonAction.VOLUNTEER;
+        FontIcon volunteerIcon = new FontIcon(volunteerAction.iconLiteral);
+        volunteerIcon.setIconSize(12);
+        volunteerIcon.setIconColor(javafx.scene.paint.Color.web(volunteerAction.textColor));
+
+        Button volunteerButton = new Button(volunteerAction.text);
+        volunteerButton.setPrefWidth(SMALL_CARD_WIDTH - 24);
+        volunteerButton.setMaxWidth(SMALL_CARD_WIDTH - 24);
+        volunteerButton.setPrefHeight(28);
+        volunteerButton.setCursor(Cursor.HAND);
+        volunteerButton.setStyle(
+                "-fx-background-color: " + volunteerAction.bgColor + ";" +
+                        "-fx-background-radius: 7;" +
+                        "-fx-text-fill: " + volunteerAction.textColor + ";" +
+                        "-fx-font-size: 11px;" +
+                        "-fx-font-weight: bold;"
+        );
+        volunteerButton.setGraphic(volunteerIcon);
+        volunteerButton.setContentDisplay(javafx.scene.control.ContentDisplay.LEFT);
+        volunteerButton.setGraphicTextGap(5);
+
         item.actionButton = volunteerButton;
 
         VBox card = new VBox(8, topRow, titleLabel, descriptionLabel, deadlineLabel, volunteerButton);
@@ -187,7 +410,7 @@ public class ListRowItem extends VBox {
         deptLabel.setTooltip(new Tooltip(department));
         deptLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 11px; -fx-font-weight: bold;");
 
-        Label priorityBadge = makePriorityBadge(ticket.getPriority());
+        Label priorityBadge = UIStyler.makePriorityBadge(ticket.getPriority());
         HBox priorityBox = makeFixedWidthBox(EXEC_PRIORITY_WIDTH, priorityBadge);
 
         Label deadlineLabel = makeDeadlineLabel(ticket);
@@ -245,10 +468,10 @@ public class ListRowItem extends VBox {
         assignBox.setMinWidth(EDITOR_ASSIGN_WIDTH);
         assignBox.setMaxWidth(EDITOR_ASSIGN_WIDTH);
 
-        Label statusBadge = makeStatusBadge(ticket.getStatus());
+        Label statusBadge = UIStyler.makeStatusBadge(ticket.getStatus());
         HBox statusBox = makeFixedWidthBox(EDITOR_STATUS_WIDTH, statusBadge);
 
-        Label priorityBadge = makePriorityBadge(ticket.getPriority());
+        Label priorityBadge = UIStyler.makePriorityBadge(ticket.getPriority());
         HBox priorityBox = makeFixedWidthBox(EDITOR_PRIORITY_WIDTH, priorityBadge);
 
         Label deadlineLabel = makeDeadlineLabel(ticket);
@@ -294,7 +517,9 @@ public class ListRowItem extends VBox {
         Label messageLabel = new Label(messageText);
         messageLabel.setWrapText(true);
         messageLabel.setMaxWidth(SMALL_CARD_TEXT_WIDTH);
-        messageLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 11px; -fx-font-weight: bold;");
+        messageLabel.setStyle("-fx-text-fill: #1c2b63; " +
+                              "-fx-font-size: 11px; " +
+                              "-fx-font-family: 'Inter 18pt Medium';");
 
         String timeText = notification.getCreatedAt() != null ? notification.getCreatedAt().format(DATE_FORMATTER) : "No date";
         Label timeLabel = new Label(timeText);
@@ -314,7 +539,11 @@ public class ListRowItem extends VBox {
         row.setStyle("-fx-background-color: transparent;");
 
         String normalStyle = row.getStyle();
-        row.setOnMouseEntered(e -> row.setStyle("-fx-background-color: #f8faff; -fx-background-radius: 10; -fx-padding: 4 6 4 6;"));
+        row.setOnMouseEntered(e -> row.setStyle("-fx-background-color: #f8faff; " +
+                                                "-fx-background-radius: 10; " +
+                                                "-fx-font-size: 11px; " +
+                                                "-fx-font-family: 'Inter 18pt SemiBold';" +
+                                                "-fx-padding: 3 4 3 4;"));
         row.setOnMouseExited(e  -> row.setStyle(normalStyle));
 
         item.getChildren().add(row);
@@ -371,12 +600,17 @@ public class ListRowItem extends VBox {
         Label titleLabel = new Label(safeTitle);
         titleLabel.setWrapText(true);
         titleLabel.setMaxWidth(width - 8);
-        titleLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-text-fill: #203477; " +
+                            "-fx-font-size: 12px; " +
+                            "-fx-font-family: 'Inter 18pt ExtraBold'");
 
         Label subtitleLabel = new Label(safeSubtitle);
         subtitleLabel.setWrapText(true);
         subtitleLabel.setMaxWidth(width - 8);
-        subtitleLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 10px;");
+        subtitleLabel.setStyle("-fx-text-fill: #7482b2;" +
+                               "-fx-font-size: 10px;" +
+                               "-fx-font-family: 'Inter 18pt SemiBold'"
+                              );
 
         VBox box = new VBox(2, titleLabel, subtitleLabel);
         box.setAlignment(Pos.CENTER_LEFT);
@@ -400,9 +634,7 @@ public class ListRowItem extends VBox {
 
         String text;
         if (ticket == null || ticket.getDeadline() == null) {
-            text = "No deadline";
-        } else if (overdue) {
-            text = ticket.getDeadline().format(DATE_FORMATTER) + " !";
+            text = "—";
         } else {
             text = ticket.getDeadline().format(DATE_FORMATTER);
         }
@@ -412,60 +644,43 @@ public class ListRowItem extends VBox {
         Label label = new Label(text);
         label.setWrapText(true);
         label.setAlignment(Pos.CENTER_LEFT);
-        label.setStyle("-fx-text-fill: " + color + "; -fx-font-size: 10px; -fx-font-weight: bold;");
+        label.setStyle("-fx-text-fill: " + color + "; " +
+                       "-fx-font-size: 10px; " +
+                       "-fx-font-family: 'Inter 18pt SemiBold'");
+
+        if (overdue) {
+            // Use a FontIcon instead of the Unicode ⚠U+FE0F sequence so the deadline
+            // cell renders identically on every OS / JDK / font combination.
+            FontIcon warningIcon = new FontIcon("fas-exclamation-triangle");
+            warningIcon.setIconSize(10);
+            warningIcon.setIconColor(javafx.scene.paint.Color.web("#f14d5a"));
+            label.setGraphic(warningIcon);
+            label.setContentDisplay(javafx.scene.control.ContentDisplay.LEFT);
+            label.setGraphicTextGap(3);
+        }
+
         return label;
     }
-
-    private static Label makePriorityBadge(String priority) {
-        String text = priority != null ? priority.toUpperCase() : "MEDIUM";
-
-        String bgColor;
-        String textColor;
-        switch (text) {
-            case "URGENT": bgColor = "#ffe0e5"; textColor = "#f14d5a"; break;
-            case "HIGH":   bgColor = "#ffe7b5"; textColor = "#ff9900"; break;
-            case "LOW":    bgColor = "#d9ffed"; textColor = "#4bcc8a"; break;
-            default:       bgColor = "#dceeff"; textColor = "#2f95ff"; break;
-        }
-
-        return makeBadge(text, bgColor, textColor);
-    }
-
-    private static Label makeStatusBadge(String status) {
-        String text = status != null ? status.toUpperCase().replace("_", " ") : "OPEN";
-
-        String bgColor;
-        String textColor;
-        switch (text) {
-            case "IN PROGRESS": bgColor = "#ffedcc"; textColor = "#ff9900"; break;
-            case "RESOLVED":
-            case "APPROVED":    bgColor = "#dcffef"; textColor = "#4bcc8a"; break;
-            case "OVERDUE":
-            case "SENT BACK":   bgColor = "#ffe0e5"; textColor = "#f14d5a"; break;
-            case "COMPLETED":   bgColor = "#dceeff"; textColor = "#00a2ff"; break;
-            default:            bgColor = "#dceeff"; textColor = "#2f95ff"; break;
-        }
-
-        return makeBadge(text, bgColor, textColor);
-    }
-
-    private static Label makeBadge(String text, String bgColor, String textColor) {
-        String display = text.length() > 8 ? text.substring(0, 8) : text;
-        if (display.equals("IN PROGR")) display = "IN PROG";
-
-        Label badge = new Label(display);
-        badge.setAlignment(Pos.CENTER);
-        badge.setMinWidth(44);
-        badge.setPrefHeight(22);
-        badge.setPadding(new Insets(0, 7, 0, 7));
-        badge.setStyle(
-                "-fx-background-color: " + bgColor + ";" +
-                        "-fx-text-fill: " + textColor + ";" +
-                        "-fx-background-radius: 6;" +
-                        "-fx-font-size: 9px;" +
-                        "-fx-font-weight: bold;"
-        );
-        return badge;
+    
+    private static Label makeLastUpdatedLabel(TicketView ticket) {
+      
+      String text;
+      if (ticket == null || ticket.getLastUpdated() == null) {
+        text = "—";
+      } else {
+        text = ticket.getLastUpdated().format(DATE_FORMATTER);
+      }
+      
+      String color = "#1c2b63";
+      
+      Label label = new Label(text);
+      label.setWrapText(true);
+      label.setAlignment(Pos.CENTER_LEFT);
+      label.setStyle("-fx-text-fill: " + color + "; " +
+                     "-fx-font-size: 10px; " +
+                     "-fx-font-family: 'Inter 18pt SemiBold'");
+      
+      return label;
     }
 
     private static Button makeButton(String text, double width, String bgColor, String textColor) {
@@ -535,8 +750,7 @@ public class ListRowItem extends VBox {
 
         String status = ticket.getStatus() != null ? ticket.getStatus() : "";
         boolean alreadyDone = status.equalsIgnoreCase("COMPLETED")
-                || status.equalsIgnoreCase("RESOLVED")
-                || status.equalsIgnoreCase("APPROVED");
+                || status.equalsIgnoreCase("RESOLVED");
 
         return !alreadyDone && ticket.getDeadline().isBefore(LocalDateTime.now());
     }

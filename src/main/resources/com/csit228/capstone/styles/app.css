@@ -1,8 +1,6 @@
 .text-area {
     -fx-background-color: #f3f3fb;
     -fx-background-radius: 15;
-    -fx-border-radius: 15;
-    -fx-border-color: #d0d7e9;
     -fx-font-family: "Inter 18pt";
     -fx-font-size: 12px;
     -fx-prompt-text-fill: #7a809c;
@@ -32,8 +30,6 @@
 .text-field {
     -fx-background-color: #f3f3fb;
     -fx-background-radius: 15;
-    -fx-border-radius: 15;
-    -fx-border-color: #d0d7e9;
     -fx-font-family: "Inter 18pt";
     -fx-font-size: 12px;
     -fx-prompt-text-fill: #7a809c;
@@ -63,13 +59,13 @@
 }
 
 .icon-button-dark {
-    -fx-background-color: #4a78c9;
+    -fx-background-color: #6292ef;
     -fx-background-radius: 50;
     -fx-cursor: hand;
 }
 
 .icon-button-dark:hover {
-    -fx-background-color: #5788e1;
+    -fx-background-color: #75a1f5;
 }
 
 .icon-button-dark .fontIcon-x-mark {
@@ -79,8 +75,6 @@
 .combo-box  {
     -fx-background-color: #f3f3fb;
     -fx-background-radius: 15;
-    -fx-border-color: #d0d7e9;
-    -fx-border-radius: 15;
     -fx-font-family: "Inter 18pt";
     -fx-font-size: 12px;
     -fx-cursor: hand;
@@ -125,8 +119,6 @@
 .date-picker {
     -fx-background-color: #f3f3fb;
     -fx-background-radius: 15;
-    -fx-border-color: #d0d7e9;
-    -fx-border-radius: 15;
     -fx-font-family: "Inter 18pt";
     -fx-font-size: 12px;
     -fx-padding: 4px 8px 4px 8px;
@@ -243,6 +235,8 @@
     -emerald-green-accent: #50CD89;
     -web-orange-bg-accent: #ffedc9;
     -web-orange-accent: #F59E0B;
+    -brown-bg-accent: #efbba6;
+    -brown-accent: #702d10;
     -carnation-red-bg-accent: #fddbdf;
     -carnation-red-accent: #F64E60;
     -pink-accent: #FECACA;
@@ -277,7 +271,7 @@
 
 .desc-text-label {
     -fx-font-family: "Inter 18pt Regular";
-    -fx-font-size: 11px;
+    -fx-font-size: 12px;
 }
 
 .subheader-blue-label {
@@ -314,6 +308,104 @@
 .department-container {
     -fx-background-color: -lightgray-bg-accent;
     -fx-background-radius: 10px;
+}
+
+
+
+/*MEMBER DASHBOARD SECTION*/
+.left-sidebar-subheader {
+    -fx-text-fill: #5b678e;
+    -fx-font-family: "Inter 18pt SemiBold";
+    -fx-font-size: 11px;
+}
+
+.left-sidebar-row-container {
+    -fx-spacing: 10px;
+    -fx-cursor: hand;
+    -fx-background-radius: 10px;
+}
+
+.left-sidebar-row-container.clicked{
+    -fx-background-color: #283256;
+}
+
+.left-sidebar-row-container:hover {
+    -fx-background-color: #283256;
+}
+
+.left-sidebar-row-container .ikonli-font-icon {
+    -fx-icon-color: #a1aed1;
+    -fx-icon-size: 14;
+}
+
+.left-sidebar-row-container .label {
+    -fx-font-family: "Inter 18pt SemiBold";
+    -fx-font-size: 14px;
+    -fx-text-fill: #a1aed1;
+}
+
+.sort-buttons-container .button{
+    -fx-font-family: "Inter 18pt SemiBold";
+    -fx-text-fill: #0c1a42;
+    -fx-font-size: 11px;
+    -fx-background-color: white;
+    -fx-background-radius: 50px;
+    -fx-border-width: 1px;
+    -fx-border-color: #dedede;
+    -fx-border-radius: 50px;
+    -fx-cursor: hand;
+}
+
+.sort-buttons-container .button:hover {
+    -fx-background-color: -athens-gray-accent;
+}
+
+.sort-buttons-container .button.all-filter-style {
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-background-color: #0c1c3b;
+}
+
+.sort-buttons-container .button.available-filter-style {
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-background-color: #48c7cb;
+}
+
+.sort-buttons-container .button.todo-filter-style {
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-background-color: #2f95ff;
+}
+
+.sort-buttons-container .button.inprogress-filter-style {
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-background-color: #ff9900;
+}
+
+.sort-buttons-container .button.overdue-filter-style {
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-background-color: -carnation-red-accent;
+}
+
+.sort-buttons-container .button.returned-filter-style {
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-background-color: #702d10;
+}
+
+.sort-buttons-container .button.completed-filter-style {
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-background-color: -emerald-green-accent;
+}
+
+.sort-buttons-container .button.resolved-filter-style {
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-background-color: -blue-violet-accent;
 }
 
 
