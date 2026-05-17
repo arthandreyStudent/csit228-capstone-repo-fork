@@ -94,8 +94,17 @@ public class TicketMemberController extends BaseTicketController {
     private final String activeMenuStyle = "-fx-background-color: #5b1617; -fx-background-radius: 10;";
     private final String inactiveMenuStyle = "-fx-background-color: transparent;";
 
-    private final String activeTabStyle = "-fx-background-color: #2f95ff; -fx-background-radius: 18; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;";
-    private final String inactiveTabStyle = "-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;";
+    private final String activeTabStyle = "-fx-background-color: #5d0808;" +
+                                          " -fx-background-radius: 18; -fx-text-fill: white; " +
+                                          "-fx-font-family: 'Georgia'; " +
+                                          "-fx-font-size: 12px; " +
+                                          "-fx-font-weight: bold;";
+    
+    private final String inactiveTabStyle = "-fx-background-color: white;" +
+                                            " -fx-border-color: #dfe7f5; -fx-border-radius: 18; " +
+                                            "-fx-background-radius: 18; -fx-text-fill: #75706b;" +
+                                            "-fx-font-family: 'Georgia'; " +
+                                            "-fx-font-size: 12px; -fx-font-weight: bold;";
 
     @Override
     protected String getDefaultRoleName() {
@@ -318,7 +327,12 @@ public class TicketMemberController extends BaseTicketController {
 
         if (count == 0) {
             Label emptyLabel = new Label("No tickets found for this tab.");
-            emptyLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 13px; -fx-padding: 20 0 0 0;");
+            emptyLabel.setStyle("" +
+                                "-fx-text-fill: #918683; " +
+                                "-fx-font-family: 'Georgia'; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-font-size: 13px; " +
+                                "-fx-padding: 20 0 0 0;");
             myTasksBox.getChildren().add(emptyLabel);
         }
     }
@@ -383,7 +397,7 @@ public class TicketMemberController extends BaseTicketController {
 
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/csit228/capstone/view/MasterTicketDetailModalView.fxml")
+                    getClass().getResource("/com/csit228/capstone/view/StaffTicketView.fxml")
             );
 
             Parent root = loader.load();

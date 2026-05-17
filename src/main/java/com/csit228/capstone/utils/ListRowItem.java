@@ -104,7 +104,7 @@ public class ListRowItem extends VBox {
     Label statusBadge = makeStatusBadge(ticket.getStatus());
     HBox statusBox = makeFixedWidthBox(MEMBER_STATUS_WIDTH, statusBadge);
 
-    Button startButton = makeButton("Start", 82, "#2f95ff", "white");
+    Button startButton = makeButton("Start", 82, " #821010", "white");
     item.actionButton = startButton;
     HBox actionBox = makeFixedWidthBox(MEMBER_ACTION_WIDTH, startButton);
 
@@ -180,8 +180,11 @@ public class ListRowItem extends VBox {
 
     Label priorityBadge = makePriorityBadge(ticket.getPriority());
 
-        Label volunteerTag = new Label("Volunteer");
-        volunteerTag.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 10px;");
+        Label volunteerTag = new Label("VOLUNTEER");
+        volunteerTag.setStyle("-fx-text-fill: #c07a45;" +
+                              "-fx-font-family: 'Georgia'; " +
+                              "-fx-font-weight: bold; " +
+                              " -fx-font-size: 10px;");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -191,26 +194,34 @@ public class ListRowItem extends VBox {
 
         Label titleLabel = new Label(title);
         titleLabel.setWrapText(true);
-        titleLabel.setMaxWidth(SMALL_CARD_WIDTH - 24);
-        titleLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;");
+        titleLabel.setMaxWidth(USE_COMPUTED_SIZE);
+        titleLabel.setStyle("-fx-text-fill: #342522; " +
+                            "-fx-font-size: 13px; " +
+                            "-fx-font-family: 'Georgia'; " +
+                            "-fx-font-weight: bold;");
 
         Label descriptionLabel = new Label(description);
         descriptionLabel.setWrapText(true);
-        descriptionLabel.setMaxWidth(SMALL_CARD_WIDTH - 24);
-        descriptionLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 10px;");
+        descriptionLabel.setMaxWidth(USE_COMPUTED_SIZE);
+        descriptionLabel.setStyle("-fx-text-fill: #605350;" +
+                                  "-fx-font-family: 'Georgia'; " +
+                                  "-fx-font-size: 11px;");
 
         Label deadlineLabel = makeDeadlineLabel(ticket);
 
-        Button volunteerButton = makeButton("Volunteer", SMALL_CARD_WIDTH - 24, "#4bcc8a", "white");
+        Button volunteerButton = makeButton("Volunteer", SMALL_CARD_WIDTH - 24, "#493728", "white");
         item.actionButton = volunteerButton;
 
-        VBox card = new VBox(8, topRow, titleLabel, descriptionLabel, deadlineLabel, volunteerButton);
-        card.setPrefWidth(SMALL_CARD_WIDTH);
-        card.setMaxWidth(SMALL_CARD_WIDTH);
+        VBox card = new VBox(10, topRow, titleLabel, descriptionLabel, deadlineLabel, volunteerButton);
+        card.setPrefWidth(USE_COMPUTED_SIZE);
+        card.setMaxWidth(USE_COMPUTED_SIZE);
         card.setMinHeight(118);
         card.setPadding(new Insets(12));
         card.setCursor(Cursor.HAND);
-        card.setStyle("-fx-background-color: white; -fx-border-color: #e7ecf8; -fx-border-radius: 12; -fx-background-radius: 12;");
+        card.setStyle("-fx-background-color: #fff7f4;" +
+                      " -fx-border-color: #eeded0;" +
+                      " -fx-border-radius: 12;" +
+                      " -fx-background-radius: 12;");
 
         String normalStyle = card.getStyle();
         card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: #f8faff; -fx-border-color: #d7e4fb; -fx-border-radius: 12; -fx-background-radius: 12;"));
@@ -357,11 +368,15 @@ public class ListRowItem extends VBox {
         Label messageLabel = new Label(messageText);
         messageLabel.setWrapText(true);
         messageLabel.setMaxWidth(SMALL_CARD_TEXT_WIDTH);
-        messageLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 11px; -fx-font-weight: bold;");
+        messageLabel.setStyle("-fx-text-fill: #544a4a; " +
+                              "-fx-font-size: 11px; " +
+                              "-fx-font-family: 'Georgia'; ");
 
         String timeText = notification.getCreatedAt() != null ? notification.getCreatedAt().format(DATE_FORMATTER) : "No date";
         Label timeLabel = new Label(timeText);
-        timeLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 9px;");
+        timeLabel.setStyle("-fx-text-fill: #655e59; " +
+                           "-fx-font-family: 'Times New Roman'; " +
+                           "-fx-font-size: 10px;");
 
         VBox textBox = new VBox(3, messageLabel, timeLabel);
         textBox.setAlignment(Pos.CENTER_LEFT);
@@ -523,12 +538,15 @@ public class ListRowItem extends VBox {
             text = ticket.getDeadline().format(DATE_FORMATTER);
         }
 
-        String color = overdue ? "#f14d5a" : "#1c2b63";
+        String color = overdue ? "#f14d5a" : "#5d1005";
 
         Label label = new Label(text);
         label.setWrapText(true);
         label.setAlignment(Pos.CENTER_LEFT);
-        label.setStyle("-fx-text-fill: " + color + "; -fx-font-size: 10px; -fx-font-weight: bold;");
+        label.setStyle("-fx-text-fill: " + color + "; " +
+                       "-fx-font-size: 11px; " +
+                       "-fx-font-family: 'Times New Roman'; " +
+                       "-fx-font-weight: bold;");
         return label;
     }
 
@@ -597,6 +615,7 @@ public class ListRowItem extends VBox {
                         "-fx-background-radius: 7;" +
                         "-fx-text-fill: " + textColor + ";" +
                         "-fx-font-size: 11px;" +
+                        "-fx-font-family: 'Georgia'; " +
                         "-fx-font-weight: bold;"
         );
         return button;
