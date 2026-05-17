@@ -523,7 +523,7 @@ public class TicketDetailModelController {
             }
 
             if (status == TicketStatus.RESOLVED) {
-                NotificationManager.notifyApproved(currentTicket, getCurrentUserName());
+                NotificationManager.notifyApprove(currentTicket, getCurrentUserName());
             }
 
             currentTicket.setStatus(status.name());
