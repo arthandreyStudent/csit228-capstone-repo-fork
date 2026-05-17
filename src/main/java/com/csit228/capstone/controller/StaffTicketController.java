@@ -99,7 +99,7 @@ public abstract class StaffTicketController extends BaseTicketController {
             }
 
             if (status == TicketStatus.RESOLVED) {
-                NotificationManager.notifyApproved(ticket, getCurrentUserName());
+                NotificationManager.notifyApprove(ticket, getCurrentUserName());
             }
 
             ticket.setStatus(status.name());
