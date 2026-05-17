@@ -118,7 +118,59 @@ public class ListRowItem extends VBox {
     return item;
   }
 
+  public static ListRowItem forMemberTaskTicket(TicketView ticket) {
+        ListRowItem item = new ListRowItem();
+        item.sourceObject = ticket;
 
+        double rowWidth = 1120.0;
+        double detailsWidth = 500.0;
+        double priorityWidth = 160.0;
+        double deadlineWidth = 260.0;
+        double statusWidth = 200.0;
+
+        HBox row = new HBox();
+        row.setPrefWidth(rowWidth);
+        row.setMinWidth(rowWidth);
+        row.setMaxWidth(rowWidth);
+        row.setMinHeight(66);
+        row.setPrefHeight(66);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setCursor(Cursor.HAND);
+        row.setStyle("-fx-background-color: white; -fx-border-color: #eef2fb; -fx-border-width: 1 0 0 0;");
+
+        String department = ticket.getDepartmentName() != null ? ticket.getDepartmentName() : "Volunteer";
+        String ticketNum = String.format("%03d", ticket.getId());
+
+        VBox detailsBox = makeTicketDetailsBox(
+                ticket.getTitle(),
+                department + " • #TIX-" + ticketNum,
+                detailsWidth
+        );
+
+        Label priorityBadge = makePriorityBadge(ticket.getPriority());
+        HBox priorityBox = makeFixedWidthBox(priorityWidth, priorityBadge);
+
+        Label deadlineLabel = makeDeadlineLabel(ticket);
+        deadlineLabel.setPrefWidth(deadlineWidth);
+        deadlineLabel.setMinWidth(deadlineWidth);
+        deadlineLabel.setMaxWidth(deadlineWidth);
+
+        Label statusBadge = makeStatusBadge(ticket.getStatus());
+        HBox statusBox = makeFixedWidthBox(statusWidth, statusBadge);
+
+        row.getChildren().addAll(detailsBox, priorityBox, deadlineLabel, statusBox);
+
+        String normalStyle = row.getStyle();
+
+        row.setOnMouseEntered(e ->
+                row.setStyle(normalStyle.replace("-fx-background-color: white;", "-fx-background-color: #f8faff;"))
+        );
+
+        row.setOnMouseExited(e -> row.setStyle(normalStyle));
+
+        item.getChildren().add(row);
+        return item;
+  }
   public static ListRowItem forMemberVolunteerTicket(TicketView ticket) {
     ListRowItem item = new ListRowItem();
     item.sourceObject = ticket;

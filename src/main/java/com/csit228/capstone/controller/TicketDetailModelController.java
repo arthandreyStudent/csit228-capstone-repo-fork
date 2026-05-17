@@ -98,6 +98,8 @@ public class TicketDetailModelController {
     public TextField reviewTitleField;
 
     private TicketView currentTicket;
+    private boolean memberMode = false;
+    private Runnable refreshCallback;
 
     @FXML
     public void initialize() {
@@ -121,22 +123,62 @@ public class TicketDetailModelController {
     public void loadTicket(TicketView ticket) {
         this.currentTicket = ticket;
 
-        if (ticket != null) {
-            setText(ticketCode, "#TIX-" + String.format("%03d", ticket.getId()));
-            setText(ticketTitle, safe(ticket.getTitle(), "Untitled Ticket"));
-            setText(descriptionLabel, safe(ticket.getDescription(), "No description provided."));
-            setText(createdBy, safe(ticket.getCreatedBy(), "N/A"));
-            setText(assignedToLabel, safe(ticket.getAssignedToName(), "Unassigned"));
-            setText(departmentLabel, safe(ticket.getDepartmentName(), "N/A"));
-            configureAssignmentDropdown(ticket);
-            configureActionButtons(ticket);
-            setDateTime(createdDateLabel, createdTimeLabel, ticket.getDateCreated());
-            setDateTime(lastUpdatedDateLabel, lastUpdatedTimeLabel, ticket.getLastUpdated());
-            setDateTime(deadlineDateLabel, deadlineTimeLabel, ticket.getDeadline());
+        if (ticket == null) {
+            return;
+        }
 
-            populateBadges(ticket);
-            handleChangesRequestedNotice(ticket);
-            loadCommentHistory(ticket);
+        String assignedToName = ticket.getAssignedToName();
+
+        String assignedToDisplay = assignedToName == null || assignedToName.trim().isEmpty()
+                ? "Ticket Still Unassigned"
+                : assignedToName.trim();
+
+        setText(ticketCode, "#TIX-" + String.format("%03d", ticket.getId()));
+        setText(ticketTitle, safe(ticket.getTitle(), "Untitled Ticket"));
+        setText(descriptionLabel, safe(ticket.getDescription(), "No description provided."));
+        setText(createdBy, safe(ticket.getCreatedBy(), "N/A"));
+        setText(assignedToLabel, assignedToDisplay);
+        setText(departmentLabel, safe(ticket.getDepartmentName(), "N/A"));
+
+        configureAssignmentDropdown(ticket);
+        configureActionButtons(ticket);
+
+        setDateTime(createdDateLabel, createdTimeLabel, ticket.getDateCreated());
+        setDateTime(lastUpdatedDateLabel, lastUpdatedTimeLabel, ticket.getLastUpdated());
+        setDateTime(deadlineDateLabel, deadlineTimeLabel, ticket.getDeadline());
+
+        populateBadges(ticket);
+        loadCommentHistory(ticket);
+    }
+
+    public void loadTicketForMember(TicketView ticket, Runnable refreshCallback) {
+        this.memberMode = true;
+        this.refreshCallback = refreshCallback;
+
+        loadTicket(ticket);
+
+        boolean canSubmit = isStatus(ticket, TicketStatus.IN_PROGRESS);
+
+        setVisible(returnTicketButton, false);
+        setVisible(resolveTicketButton, false);
+        setVisible(assignedToComboBox, false);
+        setVisible(assignedToLabel, true);
+
+        if (saveAssignmentButton != null) {
+            saveAssignmentButton.setText("Submit");
+            setVisible(saveAssignmentButton, canSubmit);
+            saveAssignmentButton.setDisable(!canSubmit);
+        }
+
+        if (reviewCommentArea != null) {
+            reviewCommentArea.clear();
+            reviewCommentArea.setEditable(canSubmit);
+
+            if (canSubmit) {
+                reviewCommentArea.setPromptText("Add a note before submitting your task...");
+            } else {
+                reviewCommentArea.setPromptText("This ticket is no longer editable.");
+            }
         }
     }
 
@@ -178,6 +220,11 @@ public class TicketDetailModelController {
 
     @FXML
     public void onClickedSaveAssignment(ActionEvent event) {
+        if (memberMode) {
+            submitMemberTicket(event);
+            return;
+        }
+
         if (isOpenUnassigned(currentTicket)) {
             assignSelectedUser();
             return;
@@ -189,7 +236,16 @@ public class TicketDetailModelController {
     }
 
     private void updateSaveAssignmentButtonState() {
-        if (saveAssignmentButton == null || assignedToComboBox == null) {
+        if (saveAssignmentButton == null) {
+            return;
+        }
+
+        if (memberMode) {
+            saveAssignmentButton.setDisable(!isStatus(currentTicket, TicketStatus.IN_PROGRESS));
+            return;
+        }
+
+        if (assignedToComboBox == null) {
             return;
         }
 
@@ -267,6 +323,20 @@ public class TicketDetailModelController {
     }
 
     private void configureActionButtons(TicketView ticket) {
+        if (memberMode) {
+            boolean canSubmit = isStatus(ticket, TicketStatus.IN_PROGRESS);
+
+            setVisible(saveAssignmentButton, canSubmit);
+            if (saveAssignmentButton != null) {
+                saveAssignmentButton.setText("Submit");
+                saveAssignmentButton.setDisable(!canSubmit);
+            }
+
+            setVisible(returnTicketButton, false);
+            setVisible(resolveTicketButton, false);
+            return;
+        }
+
         boolean showReviewActions = hasAssignee(ticket) && isStatus(ticket, TicketStatus.COMPLETED);
         boolean showSaveAction = isOpenUnassigned(ticket) || isStatus(ticket, TicketStatus.IN_PROGRESS);
 
@@ -274,6 +344,7 @@ public class TicketDetailModelController {
         if (saveAssignmentButton != null) {
             saveAssignmentButton.setText(isStatus(ticket, TicketStatus.IN_PROGRESS) ? "Comment" : "Save");
         }
+
         updateSaveAssignmentButtonState();
 
         setVisible(returnTicketButton, showReviewActions);
@@ -310,82 +381,7 @@ public class TicketDetailModelController {
         return safe(currentTicket != null ? currentTicket.getCreatedBy() : null, "TIX.org");
     }
 
-    private void handleChangesRequestedNotice(TicketView ticket) {
-        if (changesRequestedNoticeContainer == null) {
-            return;
-        }
 
-        changesRequestedNoticeContainer.getChildren().clear();
-        changesRequestedNoticeContainer.setVisible(false);
-        changesRequestedNoticeContainer.setManaged(false);
-
-        // Also hide the parent HBox that wraps the notice container to completely remove its footprint
-        if (changesRequestedNoticeContainer.getParent() instanceof HBox) {
-            changesRequestedNoticeContainer.getParent().setVisible(false);
-            changesRequestedNoticeContainer.getParent().setManaged(false);
-        }
-
-        if (AppSession.currentUser == null || !AppSession.currentUser.getRole().name().equals("MEMBER")) {
-            return;
-        }
-
-        if (ticket.getStatus() == null ||
-                (!ticket.getStatus().equals("SENT_BACK") && !ticket.getStatus().equals("IN_PROGRESS"))) {
-            return;
-        }
-
-
-        String returnedByStr = "Editor/Executive";
-        String returnedDate = "Recently";
-
-        if (ticket.getLastUpdated() != null) {
-            returnedDate = ticket.getLastUpdated().format(DateTimeFormatter.ofPattern("MMM d, yyyy • hh:mm a"));
-        }
-
-
-        changesRequestedNoticeContainer.setVisible(true);
-        changesRequestedNoticeContainer.setManaged(true);
-        if (changesRequestedNoticeContainer.getParent() instanceof HBox) {
-            changesRequestedNoticeContainer.getParent().setVisible(true);
-            changesRequestedNoticeContainer.getParent().setManaged(true);
-        }
-
-        VBox noticeBox = new VBox();
-        noticeBox.setSpacing(12);
-        noticeBox.setPadding(new Insets(20));
-        noticeBox.setStyle(
-                "-fx-background-color: #FFF6F1; " + "-fx-background-radius: 12; " + "-fx-border-color: #FFE4D6; " +
-                        "-fx-border-radius: 12;");
-        noticeBox.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(noticeBox, Priority.ALWAYS);
-
-        HBox headerBox = new HBox();
-        headerBox.setAlignment(Pos.CENTER_LEFT);
-        headerBox.setSpacing(10);
-
-        Label warningIcon = new Label("!");
-        warningIcon.setStyle(
-                "-fx-background-color: #F64E60; -fx-background-radius: 10; -fx-text-fill: white; " +
-                        "-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 2 7 2 7;");
-
-        Label headerLabel = new Label("Changes Requested");
-        headerLabel.setStyle("-fx-text-fill: #F64E60; -fx-font-family: 'Inter 18pt ExtraBold'; -fx-font-size: 16px;");
-        headerBox.getChildren().addAll(warningIcon, headerLabel);
-
-        Label bodyLabel = new Label(
-                "Your submission was reviewed and requires changes before it can be approved.\nPlease review the feedback below" +
-                        " and resubmit when ready.");
-        bodyLabel.setWrapText(true);
-        bodyLabel.setStyle(
-                "-fx-text-fill: #4B5563; -fx-font-family: 'Inter 18pt Regular'; -fx-font-size: 13px; -fx-line-spacing: 4px;");
-
-        Label footerLabel = new Label("Returned by " + returnedByStr + " • " + returnedDate);
-        footerLabel.setStyle("-fx-text-fill: #9CA3AF; -fx-font-family: 'Inter 18pt Regular'; -fx-font-size: 12px;");
-
-        noticeBox.getChildren().addAll(headerBox, bodyLabel, footerLabel);
-
-        changesRequestedNoticeContainer.getChildren().add(noticeBox);
-    }
 
     private Label createBadge(String text, String bgVar, String textVar) {
         Label badge = new Label(text);
@@ -518,6 +514,21 @@ public class TicketDetailModelController {
         saveReviewComment();
 
         if (ticketDAO.updateStatus(currentTicket.getId(), status)) {
+
+            if (status == TicketStatus.IN_PROGRESS) {
+                NotificationManager.notifyReturnTicket(currentTicket, getCurrentUserName());
+            }
+
+            if (status == TicketStatus.RESOLVED) {
+                NotificationManager.notifyApproved(currentTicket, getCurrentUserName());
+            }
+
+            currentTicket.setStatus(status.name());
+
+            if (refreshCallback != null) {
+                refreshCallback.run();
+            }
+
             closeModal(event);
         } else {
             showError("Unable to update ticket status.");
@@ -538,6 +549,33 @@ public class TicketDetailModelController {
         reviewCommentArea.clear();
     }
 
+    private void submitMemberTicket(ActionEvent event) {
+        if (currentTicket == null) {
+            showError("No ticket selected.");
+            return;
+        }
+
+        if (!isStatus(currentTicket, TicketStatus.IN_PROGRESS)) {
+            showError("Only in-progress tickets can be submitted.");
+            return;
+        }
+
+        saveReviewComment();
+
+        boolean updated = ticketDAO.updateStatus(currentTicket.getId(), TicketStatus.COMPLETED);
+
+        if (updated) {
+            currentTicket.setStatus(TicketStatus.COMPLETED.name());
+
+            if (refreshCallback != null) {
+                refreshCallback.run();
+            }
+
+            closeModal(event);
+        } else {
+            showError("Unable to submit task.");
+        }
+    }
     @FXML
     public void onClickedButtonClose(ActionEvent event) {
         closeModal(event);
