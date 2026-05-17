@@ -24,6 +24,7 @@ The database uses a relational model (MySQL) focused around Users, Tickets, and 
   - `created_by` (FK to `user.id`) - Who spawned the task.
   - `assigned_to` (FK to `user.id`, Nullable) - Current owner.
   - `department_id` (FK to `department.id`, Nullable)
+  - `return_reason` (TEXT, Nullable) - Freeform rejection note filled by an Editor when returning a `COMPLETED` ticket to `IN_PROGRESS`. Non-null value surfaces the "RETURNED" badge and "Changes Requested" notice in the Member detail modal.
   - `date_created`, `last_updated`, `deadline` (DATETIME)
 
 ### 3. `department`
