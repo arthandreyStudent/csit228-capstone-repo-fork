@@ -70,6 +70,9 @@ public class TicketEditorController extends StaffTicketController {
   @FXML
   private TextField descriptionTextField;
 
+  @FXML
+  private VBox notificationPane;
+
   private final NotificationDAO notificationDAO = NotificationDAO.getNotificationDAO();
   
   private ReviewQueueFilter currentFilter = ReviewQueueFilter.ALL;
@@ -97,6 +100,7 @@ public class TicketEditorController extends StaffTicketController {
   protected void renderDashboard() {
     updateSummaryCardsAndReviewStats();
     loadReviewQueue();
+    refreshActivityBox();
   }
   
   @Override
@@ -108,7 +112,7 @@ public class TicketEditorController extends StaffTicketController {
   protected void onDeadlineSortSelected() {
     loadReviewQueue();
   }
-  
+
   @FXML
   public void initialize() {
     setupProfile();
@@ -116,6 +120,7 @@ public class TicketEditorController extends StaffTicketController {
     setupFilterButtons();
     setupDeadlineSortComboBox();
     loadDepartments();
+    loadRecentActivity(notificationPane);
     refreshDashboard();
     startWatching();
   }
@@ -129,6 +134,12 @@ public class TicketEditorController extends StaffTicketController {
     currentFilter = ReviewQueueFilter.ALL;
     setActiveFilterButton(allFilterButton);
     loadReviewQueue();
+  }
+
+  @FXML
+  public void onClickedDashboard() {
+      showDashboardContent();
+      refreshDashboard();
   }
   
   @FXML

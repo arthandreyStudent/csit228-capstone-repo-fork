@@ -14,7 +14,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.Node;
@@ -301,22 +300,16 @@ public class TicketExecutiveController extends StaffTicketController {
   }
 
   public void goToDepartment() throws IOException {
-    System.out.println("PRESSS");
-    Controls.switchScreen("DepartmentExecutiveView.fxml");
+      showDashboardContent();
+      Controls.switchScreen("DepartmentExecutiveView.fxml");
   }
 
-  public void goToManageUsers() throws IOException {
-    System.out.println("PRESSS");
-    Controls.switchScreen("ManageUserExecutive.fxml");
+  public void goToManageUser() throws IOException {
+      showDashboardContent();
+      Controls.switchScreen("ManageUserExecutive.fxml");
   }
 
   private double rate(int value, int total) {
     return total <= 0 ? 0 : (double) value / total;
   }
-
-  public void goToDashboard() throws IOException {
-    Controls.switchScreen("CreateTicketModalExecView.fxml");
-  }
-
-
 }
