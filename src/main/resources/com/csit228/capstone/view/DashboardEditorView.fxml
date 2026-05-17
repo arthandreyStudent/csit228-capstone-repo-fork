@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #f5f0e7;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketEditorController">
+<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #f5f0e7;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketEditorController">
 
     <children>
         <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #7a1e1f;">
@@ -184,11 +192,16 @@
                 <AnchorPane layoutX="960.0" layoutY="205.0" prefHeight="535.0" prefWidth="285.0" style="-fx-background-color: white; -fx-background-radius: 16;">
                     <children>
                         <Label layoutX="18.0" layoutY="18.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Create Announcement" />
-                  <TextField fx:id="descriptionTextField" layoutX="24.0" layoutY="171.0" prefHeight="142.0" prefWidth="238.0" />
-                  <Button fx:id="submitForm" layoutX="208.0" layoutY="339.0" mnemonicParsing="false" onAction="#createAnnouncement" text="submit" />
-                  <TextField fx:id="titleField" layoutX="24.0" layoutY="102.0" />
-                  <Label layoutX="24.0" layoutY="63.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Title" />
-                  <Label layoutX="24.0" layoutY="134.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Description" />
+                  <TextField fx:id="descriptionTextField" layoutX="24.0" layoutY="140.0" prefHeight="142.0" prefWidth="238.0" />
+                  <Button fx:id="submitForm" layoutX="208.0" layoutY="287.0" mnemonicParsing="false" onAction="#createAnnouncement" text="submit" />
+                  <TextField fx:id="titleField" layoutX="24.0" layoutY="76.0" />
+                  <Label layoutX="24.0" layoutY="50.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Title" />
+                  <Label layoutX="24.0" layoutY="112.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Description" />
+                  <ScrollPane layoutX="24.0" layoutY="321.0" prefHeight="200.0" prefWidth="238.0">
+                     <content>
+                        <VBox fx:id="notificationPane" prefHeight="198.0" prefWidth="236.0" />
+                     </content>
+                  </ScrollPane>
                     </children>
                 </AnchorPane>
             </children>
