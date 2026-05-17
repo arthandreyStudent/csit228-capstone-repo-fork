@@ -220,7 +220,7 @@ public class TicketEditorController extends StaffTicketController {
   private void openTicketDetailModal(TicketView ticket) {
     try {
       FXMLLoader loader =
-              new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/EditorViewTicket.fxml"));
+              new FXMLLoader(getClass().getResource("/com/csit228/capstone/view/StaffTicketView.fxml"));
       Parent root = loader.load();
 
       TicketDetailModelController controller = loader.getController();
