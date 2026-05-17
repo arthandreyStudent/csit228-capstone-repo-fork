@@ -409,9 +409,17 @@ public class TicketMemberController extends BaseTicketController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/csit228/capstone/view/EditorViewTicket.fxml")
-            );
+            String fxmlPath = "/com/csit228/capstone/view/StaffTicketView.fxml";
+
+            var resource = getClass().getResource(fxmlPath);
+
+            if (resource == null) {
+                showError("FXML file not found: " + fxmlPath);
+                System.out.println("FXML file not found: " + fxmlPath);
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(resource);
 
             Parent root = loader.load();
 
