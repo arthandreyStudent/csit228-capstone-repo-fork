@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketMemberController">
+<HBox alignment="CENTER_LEFT" prefHeight="758.0" prefWidth="1500.0" style="-fx-background-color: #eef2fb;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketMemberController">
 
     <children>
-        <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #121d49;">
+        <VBox prefHeight="758.0" prefWidth="250.0" spacing="18.0" style="-fx-background-color: #7a1e1f;">
             <padding>
                 <Insets bottom="18.0" left="16.0" right="16.0" top="22.0" />
             </padding>
@@ -35,7 +27,7 @@
                     </VBox.margin>
                 </Label>
 
-                <HBox fx:id="dashboardMenuItem" alignment="CENTER_LEFT" onMouseClicked="#onClickedDashboard" prefHeight="42.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #2b376b; -fx-background-radius: 10;">
+                <HBox fx:id="dashboardMenuItem" alignment="CENTER_LEFT" onMouseClicked="#onClickedDashboard" prefHeight="42.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #5b1617; -fx-background-radius: 10;">
                     <padding>
                         <Insets left="18.0" />
                     </padding>
@@ -83,7 +75,7 @@
 
                 <Region VBox.vgrow="ALWAYS" />
 
-                <VBox prefHeight="120.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #1d2a5a; -fx-background-radius: 12;">
+                <VBox prefHeight="120.0" prefWidth="218.0" spacing="12.0" style="-fx-background-color: #5b1617; -fx-background-radius: 12;">
                     <padding>
                         <Insets bottom="14.0" left="14.0" right="14.0" top="16.0" />
                     </padding>
@@ -256,13 +248,7 @@
 
                         <AnchorPane layoutX="25.0" layoutY="90.0" prefHeight="650.0" prefWidth="1195.0" style="-fx-background-color: white; -fx-background-radius: 16;">
                             <children>
-                                <HBox alignment="CENTER_LEFT"
-                                      layoutX="885.0"
-                                      layoutY="28.0"
-                                      prefHeight="36.0"
-                                      prefWidth="280.0"
-                                      spacing="8.0"
-                                      style="-fx-background-color: #f7f9ff; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18;">
+                                <HBox alignment="CENTER_LEFT" layoutX="885.0" layoutY="28.0" prefHeight="36.0" prefWidth="280.0" spacing="8.0" style="-fx-background-color: #f7f9ff; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18;">
                                     <padding>
                                         <Insets left="14.0" right="10.0" />
                                     </padding>
@@ -270,22 +256,12 @@
                                     <children>
                                         <Label style="-fx-text-fill: #9faad2; -fx-font-size: 16px;" text="⌕" />
 
-                                        <TextField fx:id="myTasksSearchField"
-                                                   prefWidth="220.0"
-                                                   promptText="Search my tasks..."
-                                                   style="-fx-background-color: transparent; -fx-text-fill: #1c2b63; -fx-prompt-text-fill: #9faad2;" />
+                                        <TextField fx:id="myTasksSearchField" prefWidth="220.0" promptText="Search my tasks..." style="-fx-background-color: transparent; -fx-text-fill: #1c2b63; -fx-prompt-text-fill: #9faad2;" />
                                     </children>
                                 </HBox>
                                 <Label layoutX="22.0" layoutY="18.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 18px; -fx-font-weight: bold;" text="Assigned To Me" />
                                 <Label layoutX="22.0" layoutY="43.0" style="-fx-text-fill: #9faad2; -fx-font-size: 11px;" text="Only tickets assigned to your account will appear here." />
-                                <Label fx:id="myTasksCountLabel"
-                                       alignment="CENTER"
-                                       layoutX="165.0"
-                                       layoutY="15.0"
-                                       prefHeight="22.0"
-                                       prefWidth="32.0"
-                                       style="-fx-background-color: #2f95ff; -fx-background-radius: 11; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;"
-                                       text="0" />
+                                <Label fx:id="myTasksCountLabel" alignment="CENTER" layoutX="165.0" layoutY="15.0" prefHeight="22.0" prefWidth="32.0" style="-fx-background-color: #2f95ff; -fx-background-radius: 11; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;" text="0" />
 
                                 <HBox layoutX="22.0" layoutY="75.0" spacing="8.0">
                                     <children>
@@ -295,32 +271,17 @@
                                     </children>
                                 </HBox>
 
-                                <ComboBox fx:id="myTasksDeadlineSortComboBox"
-                                          layoutX="985.0"
-                                          layoutY="72.0"
-                                          onAction="#onMyTasksDeadlineSortChanged"
-                                          prefHeight="28.0"
-                                          prefWidth="180.0"
-                                          promptText="Sort Deadline"
-                                          style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-font-size: 11px;" />
+                                <ComboBox fx:id="myTasksDeadlineSortComboBox" layoutX="985.0" layoutY="72.0" onAction="#onMyTasksDeadlineSortChanged" prefHeight="28.0" prefWidth="180.0" promptText="Sort Deadline" style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 18; -fx-background-radius: 18; -fx-font-size: 11px;" />
 
                                 <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="125.0" prefHeight="30.0" prefWidth="1120.0">
                                     <children>
-                                        <Label prefWidth="500.0"
-                                               style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
-                                               text="TASK DETAILS" />
+                                        <Label prefWidth="500.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="TASK DETAILS" />
 
-                                        <Label prefWidth="160.0"
-                                               style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
-                                               text="PRIORITY" />
+                                        <Label prefWidth="160.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="PRIORITY" />
 
-                                        <Label prefWidth="260.0"
-                                               style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
-                                               text="DEADLINE" />
+                                        <Label prefWidth="260.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="DEADLINE" />
 
-                                        <Label prefWidth="200.0"
-                                               style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;"
-                                               text="STATUS" />
+                                        <Label prefWidth="200.0" style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="STATUS" />
                                     </children>
                                 </HBox>
 
