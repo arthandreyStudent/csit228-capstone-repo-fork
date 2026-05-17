@@ -132,27 +132,6 @@ public class JobDAO {
     }
   }
 
-  public static void main(String[] args) {
-    DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
-    Department sport = departmentDAO.getDepartments().get(3);
-    Department news = departmentDAO.getDepartments().get(1);
-    Department editorial = departmentDAO.getDepartments().get(0);
-
-    for (Department d : departmentDAO.getDepartments()) {
-      System.out.println(d);
-      for (Job j : d.getJobs()) {
-        System.out.println("    Job: " + j.getName());
-      }
-    }
-    getJobDAO().addJobToDepartment(news, new Job(1, "Senior Writer"));
-    getJobDAO().addJobToDepartment(news, new Job(1, "Junior Writer"));
-    getJobDAO().addJobToDepartment(editorial, new Job(1, "Creative Writer"));
-    getJobDAO().addJobToDepartment(editorial, new Job(1, "Politics Writer"));
-    getJobDAO().addJobToDepartment(editorial, new Job(1, "Cartoonist"));
-    getJobDAO().addJobToDepartment(sport, new Job(1, "Sports Viewer"));
-    getJobDAO().addJobToDepartment(sport, new Job(1, "Sports Photographer"));
-  }
-
   private void ensureJobsLoaded() {
     if (!jobsLoaded) {
       fetchJobs();

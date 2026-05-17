@@ -22,7 +22,19 @@ public class DepartmentDAO {
 
   public List<Department> getDepartments() {
     ensureDepartmentsLoaded();
-    return departments;
+    return new ArrayList<>(departments);
+  }
+
+  public Integer getDepartmentByName(String name) {
+    if (name == null || name.trim().isEmpty()) {
+      return null;
+    }
+
+    ensureDepartmentsLoaded();
+    for (Department d : departments) {
+      if (d.getName().equalsIgnoreCase(name.trim())) return d.getId();
+    }
+    return null;
   }
 
   public Department getDepartmentByID(int id) {
@@ -98,17 +110,6 @@ public class DepartmentDAO {
   private void ensureDepartmentsLoaded() {
     if (!departmentsLoaded) {
       fetchDepartments();
-    }
-  }
-
-  public static void main(String[] args) {
-    getDepartmentDAO();
-
-    for (Department d : departments) {
-      System.out.println(d);
-      for (Job j : d.getJobs()) {
-        System.out.println("    Job: " + j.getName());
-      }
     }
   }
 }

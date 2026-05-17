@@ -1,28 +1,36 @@
 package com.csit228.capstone.controller;
 
+import com.csit228.capstone.dao.NotificationDAO;
 import com.csit228.capstone.dao.TicketDAO;
+import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.model.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.observer.DashboardObserver;
+import com.csit228.capstone.observer.NotificationObserver;
+import com.csit228.capstone.observer.NotificationWatcher;
+import com.csit228.capstone.observer.TicketObserver;
 import com.csit228.capstone.observer.TicketWatcher;
-import com.csit228.capstone.utils.AppSession;
-import com.csit228.capstone.utils.Controls;
-import com.csit228.capstone.utils.Formatter;
-import com.csit228.capstone.utils.TicketDeadlineComparator;
+import com.csit228.capstone.utils.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Node;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Button;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseDashboardController implements DashboardObserver {
+public abstract class BaseTicketController implements TicketObserver, NotificationObserver {
 
   @FXML
   protected Label profileInitialsLabel;
@@ -35,12 +43,25 @@ public abstract class BaseDashboardController implements DashboardObserver {
   
   @FXML
   protected TextField searchField;
+
+  @FXML
+  protected AnchorPane mainContentPane;
+
+  private final List<Node> dashboardContentNodes = new ArrayList<>();
   
   @FXML
   protected ComboBox<String> deadlineSortComboBox;
-  
+
+  @FXML
+  protected Button profileButton;
+
+  private boolean isProfileViewOpen = false;
   protected final TicketDAO ticketDAO = TicketDAO.getTicketDAO();
   protected List<TicketView> tickets = new ArrayList<>();
+  protected List<Notification> notifications = new ArrayList<>();
+  protected final NotificationDAO notificationDAO = NotificationDAO.getNotificationDAO();
+  @FXML
+  protected VBox activityBox;
 
   protected abstract String getDefaultRoleName();
   protected abstract void refreshDashboard();
@@ -62,18 +83,47 @@ public abstract class BaseDashboardController implements DashboardObserver {
   }
 
   @Override
-  public void onDataChanged(List<TicketView> updatedTickets) {
-    this.tickets = updatedTickets != null ? new ArrayList<>(updatedTickets) : new ArrayList<>();
-    renderDashboard();
+  public void onTicketChange(List<TicketView> updatedTickets) {
+      refreshDashboard();
+  }
+
+
+  @Override
+  public void onNotificationsChanged(List<Notification> updatedNotifications) {
+      this.notifications = new ArrayList<>(updatedNotifications);
+      renderDashboard();
+  }
+
+  protected void refreshActivityBox() {
+    if (activityBox == null) return;
+    activityBox.getChildren().clear();
+    int count = 0;
+    for (Notification n : notifications) {
+        activityBox.getChildren().add(ListRowItem.forActivity(n));
+        if (++count >= 8) break;
+    }
+  }
+
+  @Override
+  public int getUserId() {
+      return getCurrentUserId();
   }
 
   protected void startWatching() {
-    TicketWatcher.getInstance().addObserver(this);
-    TicketWatcher.getInstance().start(2);
+    TicketWatcher ticketWatcher = TicketWatcher.getInstance();
+    ticketWatcher.addObserver(this);
+    ticketWatcher.start(2);
+
+    NotificationWatcher notifWatcher = NotificationWatcher.getInstance();
+    int initialCount = notificationDAO.getNotificationsByUserId(getCurrentUserId()).size();
+    notifWatcher.setInitialCount(getCurrentUserId(), initialCount);
+    notifWatcher.addObserver(this);
+    notifWatcher.start(2);
   }
 
   protected void stopWatching() {
     TicketWatcher.getInstance().removeObserver(this);
+    NotificationWatcher.getInstance().removeObserver(this);
   }
 
   protected void setupSearch() {
@@ -200,6 +250,69 @@ public abstract class BaseDashboardController implements DashboardObserver {
   }
 
   @FXML
+  public void onClickedProfile() {
+    if (isProfileViewOpen) {
+      return;
+    }
+
+    try {
+      isProfileViewOpen = true;
+
+      if (profileButton != null) {
+        profileButton.setDisable(true);
+      }
+
+      if (mainContentPane == null) {
+        showError("Main content area was not found.");
+        resetProfileButton();
+        return;
+      }
+
+      if (dashboardContentNodes.isEmpty()) {
+        dashboardContentNodes.addAll(mainContentPane.getChildren());
+      }
+
+      FXMLLoader loader = new FXMLLoader(
+              getClass().getResource("/com/csit228/capstone/view/ProfileView.fxml")
+      );
+
+      Parent profileView = loader.load();
+
+      ProfileViewController profileController = loader.getController();
+      profileController.setBackAction(this::showDashboardContent);
+
+      AnchorPane.setTopAnchor(profileView, 0.0);
+      AnchorPane.setRightAnchor(profileView, 0.0);
+      AnchorPane.setBottomAnchor(profileView, 0.0);
+      AnchorPane.setLeftAnchor(profileView, 0.0);
+
+      mainContentPane.getChildren().setAll(profileView);
+
+    } catch (IOException e) {
+      e.printStackTrace();
+      showError("Unable to open Profile.");
+      resetProfileButton();
+    }
+  }
+
+  private void showDashboardContent() {
+    if (mainContentPane == null) {
+      return;
+    }
+
+    mainContentPane.getChildren().setAll(dashboardContentNodes);
+    resetProfileButton();
+  }
+
+  private void resetProfileButton() {
+    isProfileViewOpen = false;
+
+    if (profileButton != null) {
+      profileButton.setDisable(false);
+    }
+  }
+
+  @FXML
   public void onClickedLogout() throws IOException {
     stopWatching();
     AppSession.clearSession();
@@ -222,5 +335,13 @@ public abstract class BaseDashboardController implements DashboardObserver {
     alert.showAndWait();
   }
 
+  protected void loadRecentActivity(VBox activityBox) {
+    this.activityBox = activityBox;
 
+    if (this.notifications.isEmpty()) {
+      this.notifications = notificationDAO.getNotificationsByUserId(getCurrentUserId());
+    }
+
+    refreshActivityBox();
+  }
 }

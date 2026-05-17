@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="760.0" prefWidth="960.0" style="-fx-background-color: #f5f7fb;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
+    <children>
+        <HBox fx:id="ticketHeader" alignment="CENTER_LEFT" prefHeight="76.0" spacing="16.0" style="-fx-background-color: #2851ad;">
+            <padding>
+                <Insets bottom="18.0" left="24.0" right="24.0" top="18.0" />
+            </padding>
+            <children>
+                <VBox alignment="CENTER_LEFT" spacing="3.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label style="-fx-text-fill: #bcd2ff; -fx-font-size: 11px; -fx-font-weight: bold;" text="EDITOR REVIEW" />
+                        <Label style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" text="Ticket Details" />
+                    </children>
+                </VBox>
+                <Button fx:id="buttonClose" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#onClickedButtonClose" prefHeight="32.0" prefWidth="32.0" style="-fx-background-color: rgba(255,255,255,0.16); -fx-background-radius: 16; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;" text="X" />
+            </children>
+        </HBox>
+
+        <HBox spacing="18.0" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets bottom="22.0" left="22.0" right="22.0" top="22.0" />
+            </padding>
+            <children>
+                <VBox prefWidth="340.0" spacing="16.0">
+                    <children>
+                        <VBox spacing="12.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;">
+                            <padding>
+                                <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+                            </padding>
+                            <children>
+                                <Label fx:id="ticketCode" style="-fx-text-fill: #ff9900; -fx-font-size: 11px; -fx-font-weight: bold;" text="#TIX-020" />
+                                <Label fx:id="ticketTitle" maxWidth="304.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 22px; -fx-font-weight: bold;" text="New user onboarding flow improvements" wrapText="true" />
+                                <Separator />
+                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="DESCRIPTION" />
+                                <Label fx:id="descriptionLabel" maxWidth="304.0" style="-fx-text-fill: #4b587c; -fx-font-size: 13px; -fx-line-spacing: 4px;" text="Improve the user onboarding flow to reduce friction during signup." wrapText="true" />
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="12.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
+                            <padding>
+                                <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+                            </padding>
+                            <children>
+                                <HBox alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill: #1c2b63; -fx-font-size: 15px; -fx-font-weight: bold;" text="Comment History" HBox.hgrow="ALWAYS" />
+                                        <HBox fx:id="commentsBadgeContainer" alignment="CENTER_RIGHT" prefHeight="24.0" prefWidth="92.0" />
+                                    </children>
+                                </HBox>
+                                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" VBox.vgrow="ALWAYS">
+                                    <content>
+                                        <VBox fx:id="activityCommentContainer" prefWidth="302.0" spacing="10.0" style="-fx-background-color: transparent;" />
+                                    </content>
+                                </ScrollPane>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+
+                <VBox prefWidth="558.0" spacing="16.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <HBox spacing="12.0">
+                            <children>
+                                <VBox prefHeight="82.0" prefWidth="128.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;">
+                                    <padding>
+                                        <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+                                    </padding>
+                                    <children>
+                                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="STATUS" />
+                                        <HBox fx:id="statusBadgeContainer" alignment="CENTER_LEFT" />
+                                    </children>
+                                </VBox>
+                                <VBox prefHeight="82.0" prefWidth="128.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;">
+                                    <padding>
+                                        <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+                                    </padding>
+                                    <children>
+                                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="PRIORITY" />
+                                        <HBox fx:id="priorityBadgeContainer" alignment="CENTER_LEFT" />
+                                    </children>
+                                </VBox>
+                                <VBox prefHeight="82.0" prefWidth="128.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;">
+                                    <padding>
+                                        <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+                                    </padding>
+                                    <children>
+                                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="DEPARTMENT" />
+                                        <Label fx:id="departmentLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="Editorial" wrapText="true" />
+                                    </children>
+                                </VBox>
+                                <VBox prefHeight="82.0" prefWidth="128.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;">
+                                    <padding>
+                                        <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+                                    </padding>
+                                    <children>
+                                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="DEADLINE" />
+                                        <Label fx:id="deadlineDateLabel" style="-fx-text-fill: #f14d5a; -fx-font-size: 12px; -fx-font-weight: bold;" text="May 15, 2026" />
+                                        <Label fx:id="deadlineTimeLabel" style="-fx-text-fill: #9faad2; -fx-font-size: 10px;" text="12:00 AM" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <HBox fx:id="changesRequestedNoticeContainer" alignment="CENTER_LEFT" managed="false" minHeight="0.0" prefHeight="0.0" visible="false" />
+
+                        <VBox spacing="14.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
+                            <padding>
+                                <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+                            </padding>
+                            <children>
+                        <Label layoutX="29.0" layoutY="29.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 15px; -fx-font-weight: bold;" text="Create Comment" />
+                                <TextArea fx:id="reviewCommentArea" prefHeight="210.0" promptText="Add feedback before returning or resolving this ticket..." style="-fx-background-color: #f7f9fd; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10; -fx-font-size: 13px;" wrapText="true" VBox.vgrow="ALWAYS" />
+                                <HBox spacing="12.0">
+                                    <children>
+                                        <VBox prefWidth="165.0" spacing="6.0" style="-fx-background-color: #f7f9fd; -fx-background-radius: 8;">
+                                            <padding>
+                                                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                                            </padding>
+                                            <children>
+                                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="CREATED BY" />
+                                                <Label fx:id="createdBy" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="Ticket Creator" wrapText="true" />
+                                            </children>
+                                        </VBox>
+                                        <VBox prefWidth="165.0" spacing="6.0" style="-fx-background-color: #f7f9fd; -fx-background-radius: 8;">
+                                            <padding>
+                                                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                                            </padding>
+                                            <children>
+                                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="ASSIGNED TO" />
+                                                <Label fx:id="assignedToLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="Unassigned" wrapText="true" />
+                                                <ComboBox fx:id="assignedToComboBox" managed="false" maxWidth="1.7976931348623157E308" prefWidth="140.0" promptText="Assign to..." style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 11px;" visible="false" />
+                                            </children>
+                                        </VBox>
+                                        <VBox prefWidth="165.0" spacing="6.0" style="-fx-background-color: #f7f9fd; -fx-background-radius: 8;">
+                                            <padding>
+                                                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                                            </padding>
+                                            <children>
+                                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="LAST UPDATED" />
+                                                <Label fx:id="lastUpdatedDateLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="May 15, 2026" />
+                                                <Label fx:id="lastUpdatedTimeLabel" style="-fx-text-fill: #9faad2; -fx-font-size: 10px;" text="12:00 AM" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+                                <HBox spacing="12.0">
+                                    <children>
+                                        <VBox prefWidth="165.0" spacing="6.0" style="-fx-background-color: #f7f9fd; -fx-background-radius: 8;">
+                                            <padding>
+                                                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                                            </padding>
+                                            <children>
+                                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="CREATED" />
+                                                <Label fx:id="createdDateLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="May 15, 2026" />
+                                                <Label fx:id="createdTimeLabel" style="-fx-text-fill: #9faad2; -fx-font-size: 10px;" text="12:00 AM" />
+                                            </children>
+                                        </VBox>
+                                        <Region HBox.hgrow="ALWAYS" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                            <children>
+                                <Button onAction="#onClickedButtonClose" prefHeight="38.0" prefWidth="96.0" style="-fx-background-color: #eef2fb; -fx-background-radius: 8; -fx-text-fill: #607096; -fx-font-size: 12px; -fx-font-weight: bold;" text="Cancel" />
+                                <Button fx:id="saveAssignmentButton" managed="false" onAction="#onClickedSaveAssignment" prefHeight="38.0" prefWidth="96.0" style="-fx-background-color: #22C55E; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;" text="Save" visible="false" />
+                                <Button fx:id="returnTicketButton" managed="false" onAction="#onClickedReturnTicket" prefHeight="38.0" prefWidth="96.0" style="-fx-background-color: #fff1d8; -fx-background-radius: 8; -fx-text-fill: #d47a00; -fx-font-size: 12px; -fx-font-weight: bold;" text="Return" visible="false" />
+                                <Button fx:id="resolveTicketButton" managed="false" onAction="#onClickedResolveTicket" prefHeight="38.0" prefWidth="104.0" style="-fx-background-color: #4bcc8a; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;" text="Resolve" visible="false" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+</VBox>

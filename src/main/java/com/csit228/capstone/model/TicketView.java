@@ -177,4 +177,10 @@ public class TicketView {
   public void setReturnReason(String returnReason) {
     this.returnReason = returnReason;
   }
+
+  public boolean isVolunteerTicket() {
+    return (departmentName == null || departmentName.trim().isEmpty()
+            || departmentName.equalsIgnoreCase("N/A")
+            || departmentName.equalsIgnoreCase("Volunteer"));
+  }
 }

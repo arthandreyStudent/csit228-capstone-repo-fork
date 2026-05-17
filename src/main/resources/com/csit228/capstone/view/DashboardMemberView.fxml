@@ -113,7 +113,7 @@
 
                         <HBox spacing="8.0">
                             <children>
-                                <Button prefHeight="30.0" prefWidth="82.0" style="-fx-background-color: #e6f0ff; -fx-background-radius: 18; -fx-text-fill: #1b2b5f;" text="Profile">
+                                <Button fx:id="profileButton" onAction="#onClickedProfile" prefHeight="30.0" prefWidth="82.0" style="-fx-background-color: #e6f0ff; -fx-background-radius: 18; -fx-text-fill: #1b2b5f;" text="Profile">
                            <font>
                               <Font name="Inter 18pt ExtraBold" size="12.0" />
                            </font></Button>

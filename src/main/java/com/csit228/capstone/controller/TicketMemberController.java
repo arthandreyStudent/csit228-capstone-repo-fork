@@ -1,11 +1,12 @@
 package com.csit228.capstone.controller;
 
-import com.csit228.capstone.model.Notification;
-import com.csit228.capstone.model.TicketStatus;
+import com.csit228.capstone.dao.DepartmentDAO;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.ListRowItem;
+import com.csit228.capstone.utils.NotificationManager;
 import com.csit228.capstone.utils.UIStyler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -98,6 +99,8 @@ public class DashboardMemberController extends StaffDashboardController {
   @FXML
   private VBox activityBox;
 
+  private final DepartmentDAO departmentDAO = DepartmentDAO.getDepartmentDAO();
+  
   @Override
   protected String getDefaultRoleName() {
     return "MEMBER";
@@ -118,7 +121,7 @@ public class DashboardMemberController extends StaffDashboardController {
     updateSummaryCards();
     renderMyWorkTickets(currentFilter);
     loadVolunteerBoard();
-    loadMemberActivity();
+    loadRecentActivity(activityBox);
   }
 
   @Override
@@ -518,7 +521,7 @@ public class DashboardMemberController extends StaffDashboardController {
     int count = 0;
 
     for (TicketView ticket : getSortedTicketsByDeadline()) {
-      if (!isAvailableTicket(ticket) || !isVolunteerTicket(ticket))
+      if (!isAvailableTicket(ticket) || !ticket.isVolunteerTicket())
         continue;
       if (!matchesTicketSearch(ticket, keyword))
         continue;
@@ -577,8 +580,31 @@ public class DashboardMemberController extends StaffDashboardController {
 //    } else {
 //      showError("Unable to take ticket.");
 //    }
+  
+  }
+  
+  private boolean isAvailableTicket(TicketView ticket) {
+    if (ticket == null || !isUnassigned(ticket))
+      return false;
+    return (isStatus(ticket, TicketStatus.OPEN.name()) || isStatus(ticket, TicketStatus.IN_PROGRESS.name()));
+  }
+  
+  private boolean isAssignedToCurrentUser(TicketView ticket) {
+    User currentUser = AppSession.currentUser;
+    if (currentUser == null || ticket.getAssignedToName() == null)
+      return false;
+    return ticket.getAssignedToName().equalsIgnoreCase(currentUser.getFullName());
   }
 
+  private boolean isFromUserDepartment(TicketView ticket, int userDeptId) {
+    if (userDeptId <= 0) return true;
+    String userDeptName = departmentDAO.getDepartmentByID(userDeptId) != null
+            ? departmentDAO.getDepartmentByID(userDeptId).getName()
+            : null;
+    if (userDeptName == null) return true;
+    return userDeptName.equalsIgnoreCase(ticket.getDepartmentName());
+  }
+  
   private String safe(String value) {
     return (value == null || value.trim().isEmpty()) ? "N/A" : value.trim();
   }

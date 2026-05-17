@@ -13,7 +13,7 @@
 <VBox maxWidth="550.0" style="-fx-background-color: white;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.BaseTicketDetailModalController">
     <children>
         <HBox fx:id="ticketHeader" alignment="TOP_CENTER">
-<!--              style="-fx-background-color: #2851ad;"--> <!-- I uncomment ni nga part kung nahan mo naay background ang header pero plain blue ra siya, dili gradient -->
+<!--              style="-fx-background-color: #2851ad;"--> <!-- I uncomment ni nga part kung nahan mo naay background ang header nga makita sa SceneBuilder, pero plain blue ra siya, dili gradient -->
             <padding>
                 <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
             </padding>

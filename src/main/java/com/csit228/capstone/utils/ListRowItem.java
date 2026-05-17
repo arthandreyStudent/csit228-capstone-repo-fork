@@ -110,7 +110,7 @@ public class ListRowItem extends VBox {
       boolean isReturned,
       boolean isOverdueInProgress,
       boolean isVolunteer) {
-        
+      
     
     if (isCompleted || isResolved) return ButtonAction.VIEW_DETAILS;
     
@@ -143,6 +143,15 @@ public class ListRowItem extends VBox {
 
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, hh:mm a");
 
+  private static final String STATUS_OPEN = "#3B82F6";
+  private static final String STATUS_OPEN_BG = "#DBEAFE";
+  private static final String STATUS_IN_PROGRESS = "#F59E0B";
+  private static final String STATUS_IN_PROGRESS_BG = "#FEF3C7";
+  private static final String STATUS_COMPLETED = "#22C55E";
+  private static final String STATUS_COMPLETED_BG = "#DCFCE7";
+  private static final String STATUS_RESOLVED = "#8B5CF6";
+  private static final String STATUS_RESOLVED_BG = "#EDE9FE";
+
   private static final double TABLE_ROW_WIDTH = 850.0;
 
   private static final double MEMBER_DETAILS_WIDTH = 230.0;
@@ -158,8 +167,7 @@ public class ListRowItem extends VBox {
   private static final double EXEC_ASSIGN_WIDTH = 160.0;
   private static final double EXEC_ACTION_WIDTH = 65.0;
 
-  private static final double EDITOR_DETAILS_WIDTH = 210.0;
-  private static final double EDITOR_ASSIGN_WIDTH = 160.0;
+  private static final double EDITOR_DETAILS_WIDTH = 370.0;
   private static final double EDITOR_STATUS_WIDTH = 95.0;
   private static final double EDITOR_PRIORITY_WIDTH = 85.0;
   private static final double EDITOR_DEADLINE_WIDTH = 170.0;
@@ -479,20 +487,18 @@ public class ListRowItem extends VBox {
         deadlineLabel.setMinWidth(EDITOR_DEADLINE_WIDTH);
         deadlineLabel.setMaxWidth(EDITOR_DEADLINE_WIDTH);
 
-        Button saveButton     = makeButton("Save", 38, "#eef3ff", "#1c2b63");
         Button approveButton  = makeButton("✓",   28, "#4bcc8a", "white");
         Button sendBackButton = makeButton("↶",   28, "#ffe0e5", "#f14d5a");
-        item.secondaryActionButton = saveButton;
         item.actionButton          = approveButton;
         item.thirdActionButton     = sendBackButton;
 
-        HBox actionsBox = new HBox(5, saveButton, approveButton, sendBackButton);
+        HBox actionsBox = new HBox(5, approveButton, sendBackButton);
         actionsBox.setAlignment(Pos.CENTER_LEFT);
         actionsBox.setPrefWidth(EDITOR_ACTIONS_WIDTH);
         actionsBox.setMinWidth(EDITOR_ACTIONS_WIDTH);
         actionsBox.setMaxWidth(EDITOR_ACTIONS_WIDTH);
 
-        row.getChildren().addAll(detailsBox, assignBox, statusBox, priorityBox, deadlineLabel, actionsBox);
+        row.getChildren().addAll(detailsBox, statusBox, priorityBox, deadlineLabel, actionsBox);
 
         String normalStyle = row.getStyle();
         row.setOnMouseEntered(e -> row.setStyle(normalStyle.replace("-fx-background-color: white;", "-fx-background-color: #f8faff;")));
@@ -766,21 +772,23 @@ public class ListRowItem extends VBox {
     }
 
     private static String getNotificationCircleColor(Notification notification) {
-        if (notification == null || notification.getMessage() == null) return "#dceeff";
+        if (notification == null || notification.getMessage() == null) return STATUS_OPEN_BG;
         String msg = notification.getMessage().toUpperCase();
-        if (msg.contains("RESOLVED") || msg.contains("COMPLETED")) return "#d9ffed";
-        if (msg.contains("IN PROGRESS"))                           return "#ffedcc";
+        if (msg.contains("RESOLVED"))                              return STATUS_RESOLVED_BG;
+        if (msg.contains("COMPLETED"))                             return STATUS_COMPLETED_BG;
+        if (msg.contains("IN PROGRESS"))                           return STATUS_IN_PROGRESS_BG;
         if (msg.contains("OVERDUE"))                               return "#ffe0e5";
-        return "#dceeff";
+        return STATUS_OPEN_BG;
     }
 
     private static String getNotificationTextColor(Notification notification) {
-        if (notification == null || notification.getMessage() == null) return "#2f95ff";
+        if (notification == null || notification.getMessage() == null) return STATUS_OPEN;
         String msg = notification.getMessage().toUpperCase();
-        if (msg.contains("RESOLVED") || msg.contains("COMPLETED")) return "#4bcc8a";
-        if (msg.contains("IN PROGRESS"))                           return "#ff9900";
+        if (msg.contains("RESOLVED"))                              return STATUS_RESOLVED;
+        if (msg.contains("COMPLETED"))                             return STATUS_COMPLETED;
+        if (msg.contains("IN PROGRESS"))                           return STATUS_IN_PROGRESS;
         if (msg.contains("OVERDUE"))                               return "#f14d5a";
-        return "#2f95ff";
+        return STATUS_OPEN;
     }
 
     private static String getUserInitials(User user) {

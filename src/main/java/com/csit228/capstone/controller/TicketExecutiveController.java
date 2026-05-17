@@ -1,7 +1,7 @@
 package com.csit228.capstone.controller;
 
 import com.csit228.capstone.model.Department;
-import com.csit228.capstone.model.TicketStatus;
+import com.csit228.capstone.enums.TicketStatus;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.Formatter;
@@ -15,13 +15,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.Node;
+import javafx.scene.control.ButtonBase;
+import javafx.scene.control.ComboBoxBase;
+import javafx.scene.control.TextInputControl;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardExecutiveController extends StaffDashboardController {
-
+public class TicketExecutiveController extends StaffTicketController {
+  
   @FXML
   private Label unassignedLabel;
 
@@ -85,7 +89,7 @@ public class DashboardExecutiveController extends StaffDashboardController {
   protected void renderDashboard() {
     updateSummaryCardsAndResolutionRate();
     loadPendingAssignmentQueue();
-    loadRecentActivity(recentActivityBox);
+    refreshActivityBox();
   }
 
   @Override
@@ -104,6 +108,7 @@ public class DashboardExecutiveController extends StaffDashboardController {
     setupSearch();
     setupDeadlineSortComboBox();
     loadDepartmentsAndTabs();
+    loadRecentActivity(recentActivityBox);
     refreshDashboard();
     startWatching();
   }
@@ -143,6 +148,7 @@ public class DashboardExecutiveController extends StaffDashboardController {
         selectedDepartmentName = name;
         renderDepartmentTabs();
         loadPendingAssignmentQueue();
+
       });
       departmentTabsBox.getChildren().add(btn);
     }
@@ -238,7 +244,7 @@ public class DashboardExecutiveController extends StaffDashboardController {
     if (selectedDepartmentName == null || selectedDepartmentName.trim().isEmpty())
       return true;
     if (VOLUNTEER_TAB_NAME.equalsIgnoreCase(selectedDepartmentName))
-      return isVolunteerTicket(ticket);
+      return ticket.isVolunteerTicket();
     return (ticket.getDepartmentName() != null && ticket.getDepartmentName().equalsIgnoreCase(selectedDepartmentName));
   }
 
