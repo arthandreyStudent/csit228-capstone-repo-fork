@@ -215,7 +215,7 @@ public class ListRowItem extends VBox {
 
         VBox card = new VBox(10, topRow, titleLabel, descriptionLabel, deadlineLabel, volunteerButton);
         card.setPrefWidth(USE_COMPUTED_SIZE);
-        card.setMaxWidth(USE_COMPUTED_SIZE);
+        card.setMaxWidth(310);
         card.setMinHeight(118);
         card.setPadding(new Insets(12));
         card.setCursor(Cursor.HAND);
