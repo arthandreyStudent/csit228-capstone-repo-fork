@@ -185,27 +185,27 @@ public class TicketMemberController extends BaseTicketController {
         int overdue = 0;
         int myTasksCount = 0;
 
+        int userDeptId = AppSession.currentUser != null ? AppSession.currentUser.getDepartment_id() : -1;
+
         for (TicketView ticket : tickets) {
-            if (!isAssignedToCurrentUser(ticket)) {
-                continue;
-            }
-
-            myTasksCount++;
-
-            if (isStatus(ticket, TicketStatus.OPEN.name())) {
+            if (isAvailableTicket(ticket) && isFromUserDepartment(ticket, userDeptId)) {
                 openTasks++;
             }
 
-            if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) {
-                inProgress++;
-            }
+            if (isAssignedToCurrentUser(ticket)) {
+                myTasksCount++;
 
-            if (isStatus(ticket, TicketStatus.COMPLETED.name()) || isStatus(ticket, TicketStatus.RESOLVED.name())) {
-                completed++;
-            }
+                if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) {
+                    inProgress++;
+                }
 
-            if (isOverdue(ticket)) {
-                overdue++;
+                if (isStatus(ticket, TicketStatus.COMPLETED.name()) || isStatus(ticket, TicketStatus.RESOLVED.name())) {
+                    completed++;
+                }
+
+                if (isOverdue(ticket)) {
+                    overdue++;
+                }
             }
         }
 
