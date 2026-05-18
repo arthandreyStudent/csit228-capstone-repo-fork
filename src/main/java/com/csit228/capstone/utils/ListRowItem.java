@@ -359,25 +359,21 @@ public class ListRowItem extends VBox {
         ListRowItem item = new ListRowItem();
         item.sourceObject = notification;
 
-        String initials   = getNotificationInitials(notification);
-        String circleBg   = getNotificationCircleColor(notification);
+        String initials = getNotificationInitials(notification);
+        String circleBg = getNotificationCircleColor(notification);
         String circleText = getNotificationTextColor(notification);
-
         StackPane avatarIcon = makeAvatar(initials, circleBg, circleText);
 
         String messageText = notification.getMessage() != null ? notification.getMessage() : "No notification message.";
         Label messageLabel = new Label(messageText);
+
         messageLabel.setWrapText(true);
         messageLabel.setMaxWidth(SMALL_CARD_TEXT_WIDTH);
-        messageLabel.setStyle("-fx-text-fill: #544a4a; " +
-                              "-fx-font-size: 11px; " +
-                              "-fx-font-family: 'Georgia'; ");
+        messageLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 11px; -fx-font-weight: bold;");
 
         String timeText = notification.getCreatedAt() != null ? notification.getCreatedAt().format(DATE_FORMATTER) : "No date";
         Label timeLabel = new Label(timeText);
-        timeLabel.setStyle("-fx-text-fill: #655e59; " +
-                           "-fx-font-family: 'Times New Roman'; " +
-                           "-fx-font-size: 10px;");
+        timeLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 9px;");
 
         VBox textBox = new VBox(3, messageLabel, timeLabel);
         textBox.setAlignment(Pos.CENTER_LEFT);
@@ -394,11 +390,12 @@ public class ListRowItem extends VBox {
 
         String normalStyle = row.getStyle();
         row.setOnMouseEntered(e -> row.setStyle("-fx-background-color: #f8faff; -fx-background-radius: 10; -fx-padding: 4 6 4 6;"));
-        row.setOnMouseExited(e  -> row.setStyle(normalStyle));
+        row.setOnMouseExited(e -> row.setStyle(normalStyle));
 
         item.getChildren().add(row);
 
         return item;
+
     }
 
     public static ListRowItem forDepartment(Department department, int count) {
