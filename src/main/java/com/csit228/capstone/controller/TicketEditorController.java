@@ -203,11 +203,15 @@ public class TicketEditorController extends StaffTicketController {
   }
 
   private void updateSummaryCardsAndReviewStats() {
-    int inProgress = 0, toBeReviewed = 0, resolved = 0, sentBack = 0;
+    int inProgress = 0, toBeReviewed = 0, resolved = 0, sentBack = 0,open = 0;
     
     for (TicketView ticket : tickets) {
+
       if (isStatus(ticket, TicketStatus.IN_PROGRESS.name())) {
         inProgress++;
+      }
+      if (isStatus(ticket, TicketStatus.OPEN.name())) {
+          open++;
       }
       if (isStatus(ticket, TicketStatus.COMPLETED.name())) {
         toBeReviewed++;
@@ -217,7 +221,7 @@ public class TicketEditorController extends StaffTicketController {
       }
     }
 
-    awaitingReviewLabel.setText(String.valueOf(toBeReviewed));
+    awaitingReviewLabel.setText(String.valueOf(open));
     inProgressLabel.setText(String.valueOf(inProgress));
     approvedTodayLabel.setText(String.valueOf(resolved));
     sentBackLabel.setText(String.valueOf(sentBack));
