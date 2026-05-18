@@ -65,7 +65,7 @@
 }
 
 .icon-button-dark:hover {
-    -fx-background-color: #75a1f5;
+    -fx-background-color: #5e211c;
 }
 
 .icon-button-dark .fontIcon-x-mark {
@@ -249,17 +249,17 @@
 }
 
 .ticket-code {
-    -fx-font-size: 11px;
+    -fx-font-size: 12px;
     -fx-text-fill: -ticket-code-accent;
     -fx-font-weight: bold;
-    -fx-font-family: "Georgia";
+    -fx-font-family: "Times New Roman";
 }
 
 .ticket-title {
     -fx-text-fill: -white;
     -fx-font-weight: bold;
     -fx-font-family: "Georgia";
-    -fx-font-size: 22px;
+    -fx-font-size: 25px;
 }
 
 .badge-container {
@@ -267,7 +267,7 @@
 }
 
 .subheader-label {
-    -fx-font-size: 10px;
+    -fx-font-size: 11px;
     -fx-font-family: "Georgia";
     -fx-font-weight: bold;
     -fx-text-fill: #8f7a60;
@@ -282,7 +282,7 @@
     -fx-font-family: "Georgia";
     -fx-font-weight: bold;
     -fx-text-fill: #a15e07;
-    -fx-font-size: 11px;
+    -fx-font-size: 12px;
 }
 
 .assigned-to-container {
@@ -303,7 +303,7 @@
 .bold-text {
     -fx-font-family: "Times New Roman";
     -fx-font-weight: bold;
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
 }
 
 .subtext-light {
@@ -313,7 +313,7 @@
 }
 
 .department-container {
-    -fx-background-color: -lightgray-bg-accent;
+    -fx-background-color: white;
     -fx-background-radius: 10px;
 }
 
