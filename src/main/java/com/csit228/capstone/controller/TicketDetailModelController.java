@@ -15,8 +15,10 @@ import com.csit228.capstone.utils.AppSession;
 import com.csit228.capstone.utils.NotificationManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
@@ -26,6 +28,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -99,6 +102,8 @@ public class TicketDetailModelController implements CommentObserver {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
     public TextField reviewTitleField;
+  
+    private TicketMemberController parentController;
 
     private TicketView currentTicket;
     private boolean memberMode = false;
@@ -700,4 +705,18 @@ public class TicketDetailModelController implements CommentObserver {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    
+  public void setParentController(TicketMemberController parentController) {
+    this.parentController = parentController;
+  }
+  
+  public void onStartTicketClicked(ActionEvent event) throws IOException {
+    if (parentController != null && currentTicket != null) {
+      parentController.takeTicket(currentTicket);
+      
+      closeModal(event);
+    } else {
+      showError("Parent controller is not linked.");
+    }
+  }
 }

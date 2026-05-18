@@ -2,6 +2,7 @@ package com.csit228.capstone.controller;
 
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.enums.TicketStatus;
+import com.csit228.capstone.model.Ticket;
 import com.csit228.capstone.model.TicketView;
 import com.csit228.capstone.model.User;
 import com.csit228.capstone.utils.AppSession;
@@ -347,8 +348,8 @@ public class TicketMemberController extends BaseTicketController {
         sorted.sort(new TicketDeadlineComparator(mode));
         return sorted;
     }
-
-    private void takeTicket(TicketView ticket) {
+    
+    protected void takeTicket(TicketView ticket) {
         User currentUser = AppSession.currentUser;
 
         if (currentUser == null) {
@@ -397,7 +398,7 @@ public class TicketMemberController extends BaseTicketController {
 
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/csit228/capstone/view/StaffTicketView.fxml")
+                    getClass().getResource("/com/csit228/capstone/view/BaseTicketDetailModalView.fxml")
             );
 
             Parent root = loader.load();
@@ -406,6 +407,7 @@ public class TicketMemberController extends BaseTicketController {
 
             if (controller != null) {
                 controller.loadTicket(ticket);
+                controller.setParentController(this);
             }
 
             openMemberModal(root, "Ticket Details");
