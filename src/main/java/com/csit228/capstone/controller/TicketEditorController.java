@@ -2,9 +2,7 @@ package com.csit228.capstone.controller;
 import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.model.Department;
 import javafx.scene.Node;
-import javafx.scene.control.ButtonBase;
-import javafx.scene.control.ComboBoxBase;
-import javafx.scene.control.TextInputControl;
+import javafx.scene.control.*;
 import com.csit228.capstone.dao.NotificationDAO;
 import com.csit228.capstone.enums.Role;
 import com.csit228.capstone.enums.TicketStatus;
@@ -15,9 +13,6 @@ import com.csit228.capstone.utils.ListRowItem;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -68,7 +63,7 @@ public class TicketEditorController extends StaffTicketController {
   private TextField titleField;
 
   @FXML
-  private TextField descriptionTextField;
+  private TextArea descriptionTextField;
 
   @FXML
   private VBox notificationPane;
