@@ -317,6 +317,11 @@
     -fx-background-radius: 10px;
 }
 
+.create-acc-separator .separator .line{
+    -fx-border-width: 0.2;
+    -fx-border-color: #af968c;
+}
+
 /*MEMBER DASHBOARD SECTION*/
 .left-sidebar-subheader {
     -fx-text-fill: #5b678e;
