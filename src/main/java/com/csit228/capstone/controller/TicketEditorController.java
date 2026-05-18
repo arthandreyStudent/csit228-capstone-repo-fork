@@ -437,11 +437,10 @@ public class TicketEditorController extends StaffTicketController {
   private List<User> getAnnouncementRecipients(User currentUser) {
     List<User> recipients = new ArrayList<>();
     Set<Integer> seenUserIds = new HashSet<>();
-    int currentUserId = currentUser.getUserId();
     int departmentId = currentUser.getDepartment_id();
 
     for (User user : userDAO.getUsersByDepartment(departmentId)) {
-      if (user == null || user.getUserId() == currentUserId || !user.hasRole(Role.MEMBER)) {
+      if (user == null) {
         continue;
       }
 
