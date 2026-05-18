@@ -63,58 +63,68 @@ public class UserDAO {
 
 
     public void updateUser(User u, int role, int department, String jobName) {
-        // SQL queries based on table structures
-        String getJobIdSql = "SELECT id FROM job WHERE name = ?;";
+        String getJobIdSql = "SELECT id FROM job WHERE LOWER(name) = LOWER(?);"; // Case-insensitive
         String updateUserSql = "UPDATE user SET user_type = ?, department_id = ? WHERE id = ?;";
         String deleteOldJobSql = "DELETE FROM user_job WHERE user_id = ?;";
         String insertNewJobSql = "INSERT INTO user_job (user_id, job_id) VALUES (?, ?);";
 
         try (Connection connection = DBConnector.getConnection()) {
-            // Start transaction to ensure data integrity across multiple tables
-            connection.setAutoCommit(false);
+            connection.setAutoCommit(false); // Start transaction
 
             int jobId = -1;
-            // 1. Get the Job ID from the job name string
-            try (PreparedStatement psJob = connection.prepareStatement(getJobIdSql)) {
-                psJob.setString(1, jobName);
-                try (ResultSet rs = psJob.executeQuery()) {
-                    if (rs.next()) {
-                        jobId = rs.getInt("id");
-                    } else {
-                        System.out.println("Job '" + jobName + "' not found.");
+            try {
+
+                try (PreparedStatement psJob = connection.prepareStatement(getJobIdSql)) {
+                    psJob.setString(1, jobName.trim()); // Trim whitespace
+                    try (ResultSet rs = psJob.executeQuery()) {
+                        if (rs.next()) {
+                            jobId = rs.getInt("id");
+                        } else {
+                            System.out.println("Error: Job '" + jobName + "' not found in database.");
+                            connection.rollback();
+                            return;
+                        }
+                    }
+                }
+
+
+                try (PreparedStatement psUser = connection.prepareStatement(updateUserSql)) {
+                    System.out.println("Role: " + role);
+                    System.out.println("Department: " + department);
+                    psUser.setInt(1, role);
+                    psUser.setInt(2, department);
+                    psUser.setInt(3, u.getUserId());
+                    int rowsUpdated = psUser.executeUpdate();
+
+                    if (rowsUpdated == 0) {
+                        System.out.println("Error: User ID " + u.getUserId() + " not found.");
                         connection.rollback();
                         return;
                     }
                 }
-            }
 
-            // 2. Update the user's type and department
-            try (PreparedStatement psUser = connection.prepareStatement(updateUserSql)) {
-                psUser.setInt(1, role);       // maps to user_type
-                psUser.setInt(2, department); // maps to department_id
-                psUser.setInt(3, u.getUserId());
-                psUser.executeUpdate();
-            }
+                // 3. Update job association
+                try (PreparedStatement psDel = connection.prepareStatement(deleteOldJobSql)) {
+                    psDel.setInt(1, u.getUserId());
+                    psDel.executeUpdate();
+                }
 
-            // 3. Update the user_job table
-            // First remove existing job associations for this user
-            try (PreparedStatement psDel = connection.prepareStatement(deleteOldJobSql)) {
-                psDel.setInt(1, u.getUserId());
-                psDel.executeUpdate();
-            }
-            // Then insert the new job association
-            try (PreparedStatement psIns = connection.prepareStatement(insertNewJobSql)) {
-                psIns.setInt(1, u.getUserId());
-                psIns.setInt(2, jobId);
-                psIns.executeUpdate();
-            }
+                try (PreparedStatement psIns = connection.prepareStatement(insertNewJobSql)) {
+                    psIns.setInt(1, u.getUserId());
+                    psIns.setInt(2, jobId);
+                    psIns.executeUpdate();
+                }
 
-            connection.commit();
-            System.out.println("Successfully updated user: " + u.getUsername());
+                connection.commit(); // Push all changes to DB
+                System.out.println("Successfully updated user: " + u.getUsername());
 
+            } catch (SQLException e) {
+                connection.rollback(); // Rollback if ANY of the 3 steps fail
+                System.err.println("Transaction failed. Rolling back changes.");
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            // Rollback is implicitly handled by some pools, but good to have a catch-all
         }
 
         if (usersLoaded) {

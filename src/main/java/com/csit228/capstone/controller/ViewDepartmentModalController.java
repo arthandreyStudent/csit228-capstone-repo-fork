@@ -190,5 +190,7 @@ public class ViewDepartmentModalController {
     public void setParentController(DepartmentExecutiveController departmentExecutiveController) {
         this.departmentExecutiveController = departmentExecutiveController;
     }
+
+
 }
 
