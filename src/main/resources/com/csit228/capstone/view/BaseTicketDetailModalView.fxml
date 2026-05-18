@@ -10,61 +10,30 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox prefWidth="600.0"
-      style="-fx-background-color: #f5f0e7;"
-      stylesheets="@../styles/app.css"
-      xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
+<VBox prefWidth="600.0" style="-fx-background-color: #dacebb;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
 
     <children>
 
         <!-- Header -->
-        <HBox fx:id="ticketHeader"
-              alignment="TOP_CENTER"
-              style="-fx-background-color: #2851ad;">
+        <HBox fx:id="ticketHeader" alignment="TOP_CENTER" style="-fx-background-color: #7a0a0a;">
             <padding>
                 <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
             </padding>
 
             <children>
-                <VBox alignment="CENTER_LEFT"
-                      prefHeight="47.0"
-                      prefWidth="461.0"
-                      spacing="5.0"
-                      HBox.hgrow="ALWAYS">
+                <VBox alignment="CENTER_LEFT" prefHeight="47.0" prefWidth="461.0" spacing="5.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label fx:id="ticketCode"
-                               styleClass="ticket-code"
-                               text="#TIX-020" />
+                        <Label fx:id="ticketCode" styleClass="ticket-code" text="#TIX-020" />
 
-                        <Label fx:id="ticketTitle"
-                               maxWidth="1.7976931348623157E308"
-                               prefWidth="529.0"
-                               styleClass="ticket-title"
-                               text="New user onboarding flow improvements"
-                               wrapText="true" />
+                        <Label fx:id="ticketTitle" maxWidth="1.7976931348623157E308" prefWidth="529.0" styleClass="ticket-title" text="New user onboarding flow improvements" wrapText="true" />
                     </children>
                 </VBox>
 
-                <HBox alignment="CENTER_RIGHT"
-                      maxHeight="-Infinity"
-                      HBox.hgrow="ALWAYS">
+                <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" HBox.hgrow="ALWAYS">
                     <children>
-                        <Button fx:id="buttonClose"
-                                maxHeight="-Infinity"
-                                maxWidth="-Infinity"
-                                onAction="#onClickedButtonClose"
-                                prefHeight="30.0"
-                                prefWidth="30.0"
-                                styleClass="icon-button-dark"
-                                textAlignment="CENTER">
+                        <Button fx:id="buttonClose" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#onClickedButtonClose" prefHeight="30.0" prefWidth="30.0" styleClass="icon-button-dark" textAlignment="CENTER">
                             <graphic>
-                                <FontIcon fontSmoothingType="LCD"
-                                          iconColor="#a8b2cd"
-                                          iconLiteral="fas-times"
-                                          iconSize="12"
-                                          styleClass="fontIcon-x-mark" />
+                                <FontIcon fontSmoothingType="LCD" iconColor="#a8b2cd" iconLiteral="fas-times" iconSize="12" styleClass="fontIcon-x-mark" />
                             </graphic>
                         </Button>
                     </children>
@@ -73,34 +42,26 @@
         </HBox>
 
         <!-- Body -->
-        <ScrollPane fitToWidth="true"
-                    hbarPolicy="NEVER"
-                    prefHeight="620.0"
-                    prefWidth="600.0"
-                    style="-fx-background-color: #f5f0e7;">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefWidth="600.0" style="-fx-background-color: #d5c5a9;">
             <content>
-                <VBox alignment="CENTER"
-                      prefWidth="600.0"
-                      style="-fx-background-color: #f5f0e7;">
+                <VBox alignment="CENTER" prefWidth="600.0" style="-fx-background-color: #e8e3dd;">
                     <children>
 
                         <!-- Status and Priority -->
-                        <HBox alignment="CENTER_LEFT"
-                              prefHeight="94.0"
-                              spacing="50.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="94.0" spacing="50.0">
                             <padding>
                                 <Insets bottom="15.0" left="30.0" right="30.0" top="20.0" />
                             </padding>
 
                             <children>
-                                <VBox prefWidth="200.0" spacing="10.0">
+                                <VBox prefWidth="200.0" spacing="10.0" style="-fx-background-color: #EFF4FB; -fx-padding: 8 10 8 10; -fx-background-radius: 10;">
                                     <children>
                                         <Label styleClass="subheader-label" text="STATUS" />
                                         <HBox fx:id="statusBadgeContainer" styleClass="badge-container" />
                                     </children>
                                 </VBox>
 
-                                <VBox prefWidth="200.0" spacing="10.0">
+                                <VBox prefWidth="200.0" spacing="10.0" style="-fx-background-color: #EFF4FB; -fx-padding: 8 10 8 10; -fx-background-radius: 10;">
                                     <children>
                                         <Label styleClass="subheader-label" text="PRIORITY" />
                                         <HBox fx:id="priorityBadgeContainer" styleClass="badge-container" />
@@ -118,10 +79,7 @@
                             <children>
                                 <Label styleClass="subheader-label" text="DESCRIPTION" />
 
-                                <Label fx:id="descriptionLabel"
-                                       styleClass="desc-text-label"
-                                       text="Improve the user onboarding flow to reduce friction during signup."
-                                       wrapText="true" />
+                                <Label fx:id="descriptionLabel" styleClass="desc-text-label" text="Improve the user onboarding flow to reduce friction during signup." wrapText="true" />
                             </children>
                         </VBox>
 
@@ -132,9 +90,7 @@
                             </padding>
 
                             <children>
-                                <VBox spacing="10.0"
-                                      style="-fx-background-color: #EFF4FB; -fx-background-radius: 10;"
-                                      HBox.hgrow="ALWAYS">
+                                <VBox spacing="10.0" style="-fx-background-color: #EFF4FB; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
                                     <padding>
                                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                                     </padding>
@@ -142,9 +98,7 @@
                                     <children>
                                         <Label styleClass="subheader-blue-label" text="CREATED BY" />
 
-                                        <Label fx:id="createdBy"
-                                               styleClass="desc-text-label"
-                                               text="Ticket Creator" />
+                                        <Label fx:id="createdBy" styleClass="desc-text-label" text="Ticket Creator" />
                                     </children>
                                 </VBox>
                             </children>
@@ -171,10 +125,7 @@
                                     </padding>
 
                                     <children>
-                                        <VBox alignment="CENTER_LEFT"
-                                              spacing="2.0"
-                                              styleClass="timeline-card"
-                                              HBox.hgrow="ALWAYS">
+                                        <VBox alignment="CENTER_LEFT" spacing="4.0" style="-fx-background-color: #EFF4FB; -fx-background-radius: 10;" styleClass="timeline-card" HBox.hgrow="ALWAYS">
                                             <padding>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </padding>
@@ -186,13 +137,9 @@
                                                     </font>
                                                 </Label>
 
-                                                <Label fx:id="createdDateLabel"
-                                                       styleClass="bold-text"
-                                                       text="May 15, 2026" />
+                                                <Label fx:id="createdDateLabel" styleClass="bold-text" text="May 15, 2026" />
 
-                                                <Label fx:id="createdTimeLabel"
-                                                       styleClass="subtext-light"
-                                                       text="12:00 AM">
+                                                <Label fx:id="createdTimeLabel" styleClass="subtext-light" text="12:00 AM">
                                                     <font>
                                                         <Font size="11.0" />
                                                     </font>
@@ -200,10 +147,7 @@
                                             </children>
                                         </VBox>
 
-                                        <VBox alignment="CENTER_LEFT"
-                                              spacing="2.0"
-                                              styleClass="timeline-card"
-                                              HBox.hgrow="ALWAYS">
+                                        <VBox alignment="CENTER_LEFT" spacing="4.0" style="-fx-background-color: #EFF4FB; -fx-background-radius: 10;" styleClass="timeline-card" HBox.hgrow="ALWAYS">
                                             <padding>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </padding>
@@ -215,13 +159,9 @@
                                                     </font>
                                                 </Label>
 
-                                                <Label fx:id="lastUpdatedDateLabel"
-                                                       styleClass="bold-text"
-                                                       text="May 15, 2026" />
+                                                <Label fx:id="lastUpdatedDateLabel" styleClass="bold-text" text="May 15, 2026" />
 
-                                                <Label fx:id="lastUpdatedTimeLabel"
-                                                       styleClass="subtext-light"
-                                                       text="12:00 AM">
+                                                <Label fx:id="lastUpdatedTimeLabel" styleClass="subtext-light" text="12:00 AM">
                                                     <font>
                                                         <Font size="11.0" />
                                                     </font>
@@ -229,33 +169,21 @@
                                             </children>
                                         </VBox>
 
-                                        <VBox alignment="CENTER_LEFT"
-                                              spacing="2.0"
-                                              style="-fx-border-color: #eed1d6; -fx-background-color: #FFF6F1; -fx-background-radius: 10;"
-                                              styleClass="timeline-card"
-                                              HBox.hgrow="ALWAYS">
+                                        <VBox alignment="CENTER_LEFT" spacing="4.0" style="-fx-border-color: #eed1d6; -fx-background-color: #FFF6F1; -fx-background-radius: 10;" styleClass="timeline-card" HBox.hgrow="ALWAYS">
                                             <padding>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </padding>
 
                                             <children>
-                                                <Label style="-fx-text-fill: #F64E60;"
-                                                       styleClass="subheader-label"
-                                                       text="DEADLINE">
+                                                <Label style="-fx-text-fill: #F64E60;" styleClass="subheader-label" text="DEADLINE">
                                                     <font>
                                                         <Font size="10.0" />
                                                     </font>
                                                 </Label>
 
-                                                <Label fx:id="deadlineDateLabel"
-                                                       style="-fx-text-fill: #F64E60;"
-                                                       styleClass="bold-text"
-                                                       text="May 15, 2026" />
+                                                <Label fx:id="deadlineDateLabel" style="-fx-text-fill: #F64E60;" styleClass="bold-text" text="May 15, 2026" />
 
-                                                <Label fx:id="deadlineTimeLabel"
-                                                       style="-fx-text-fill: #F64E60;"
-                                                       styleClass="subtext-light"
-                                                       text="12:00 AM">
+                                                <Label fx:id="deadlineTimeLabel" style="-fx-text-fill: #F64E60;" styleClass="subtext-light" text="12:00 AM">
                                                     <font>
                                                         <Font size="11.0" />
                                                     </font>
@@ -270,14 +198,11 @@
                         <!-- Department -->
                         <HBox alignment="CENTER">
                             <padding>
-                                <Insets left="30.0" right="30.0" bottom="30.0" />
+                                <Insets bottom="30.0" left="30.0" right="30.0" />
                             </padding>
 
                             <children>
-                                <VBox alignment="CENTER"
-                                      spacing="5.0"
-                                      styleClass="department-container"
-                                      HBox.hgrow="ALWAYS">
+                                <VBox alignment="CENTER" spacing="5.0" styleClass="department-container" HBox.hgrow="ALWAYS">
                                     <padding>
                                         <Insets bottom="10.0" top="10.0" />
                                     </padding>
@@ -285,9 +210,7 @@
                                     <children>
                                         <Label styleClass="subheader-blue-label" text="DEPARTMENT" />
 
-                                        <Label fx:id="departmentLabel"
-                                               styleClass="bold-text"
-                                               text="Product Design">
+                                        <Label fx:id="departmentLabel" styleClass="bold-text" text="Product Design">
                                             <font>
                                                 <Font size="14.0" />
                                             </font>
@@ -298,15 +221,15 @@
                         </HBox>
 
                         <!-- Hidden controller-required nodes -->
-                        <HBox fx:id="changesRequestedNoticeContainer" visible="false" managed="false" />
-                        <Label fx:id="assignedToLabel" visible="false" managed="false" />
-                        <Label fx:id="assignedToSubHeader" visible="false" managed="false" />
-                        <HBox fx:id="assignedContainerOne" visible="false" managed="false" />
-                        <HBox fx:id="assignedContainerTwo" visible="false" managed="false" />
-                        <HBox fx:id="commentsBadgeContainer" visible="false" managed="false" />
-                        <VBox fx:id="activityCommentContainer" visible="false" managed="false" />
-                        <HBox fx:id="leftButtonContainer" visible="false" managed="false" />
-                        <HBox fx:id="rightButtonContainer" visible="false" managed="false" />
+                        <HBox fx:id="changesRequestedNoticeContainer" managed="false" visible="false" />
+                        <Label fx:id="assignedToLabel" managed="false" visible="false" />
+                        <Label fx:id="assignedToSubHeader" managed="false" visible="false" />
+                        <HBox fx:id="assignedContainerOne" managed="false" visible="false" />
+                        <HBox fx:id="assignedContainerTwo" managed="false" visible="false" />
+                        <HBox fx:id="commentsBadgeContainer" managed="false" visible="false" />
+                        <VBox fx:id="activityCommentContainer" managed="false" visible="false" />
+                        <HBox fx:id="leftButtonContainer" managed="false" visible="false" />
+                        <HBox fx:id="rightButtonContainer" managed="false" visible="false" />
 
                     </children>
                 </VBox>

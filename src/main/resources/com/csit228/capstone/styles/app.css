@@ -59,7 +59,7 @@
 }
 
 .icon-button-dark {
-    -fx-background-color: #6292ef;
+    -fx-background-color: #481511;
     -fx-background-radius: 50;
     -fx-cursor: hand;
 }
@@ -227,9 +227,9 @@
 /*TICKET VIEW MODAL SECTION*/
 .root {
     -app-background-accent: #F5F0E7;
-    -ticket-code-accent: #FFCC00;
+    -ticket-code-accent: #fcbd9c;
     -white: #FFFFFF;
-    -subheader-accent: #94A3B8;
+    -subheader-accent: #645850;
     -dodger-blue-bg-accent: #DBEAFE;
     -dodger-blue-accent: #3B82F6;
     -emerald-green-bg-accent: #DCFCE7;
@@ -251,12 +251,14 @@
 .ticket-code {
     -fx-font-size: 11px;
     -fx-text-fill: -ticket-code-accent;
-    -fx-font-family: "Inter 18pt ExtraBold";
+    -fx-font-weight: bold;
+    -fx-font-family: "Georgia";
 }
 
 .ticket-title {
     -fx-text-fill: -white;
-    -fx-font-family: "Inter 18pt ExtraBold";
+    -fx-font-weight: bold;
+    -fx-font-family: "Georgia";
     -fx-font-size: 22px;
 }
 
@@ -265,19 +267,21 @@
 }
 
 .subheader-label {
-    -fx-font-size: 11px;
-    -fx-font-family: "Inter 18pt ExtraBold";
-    -fx-text-fill: -subheader-accent;
+    -fx-font-size: 10px;
+    -fx-font-family: "Georgia";
+    -fx-font-weight: bold;
+    -fx-text-fill: #8f7a60;
 }
 
 .desc-text-label {
-    -fx-font-family: "Inter 18pt Regular";
+    -fx-font-family: "Georgia";
     -fx-font-size: 12px;
 }
 
 .subheader-blue-label {
-    -fx-font-family: "Inter 18pt ExtraBold";
-    -fx-text-fill: -dodger-blue-accent;
+    -fx-font-family: "Georgia";
+    -fx-font-weight: bold;
+    -fx-text-fill: #a15e07;
     -fx-font-size: 11px;
 }
 
@@ -297,12 +301,14 @@
 }
 
 .bold-text {
-    -fx-font-family: "Inter 18pt ExtraBold";
+    -fx-font-family: "Times New Roman";
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
 }
 
 .subtext-light {
-    -fx-font-family: "Inter 18pt Regular";
-    -fx-text-fill: #9fa4b1;
+    -fx-font-family: "Times New Roman";
+    -fx-text-fill: #91877c;
     -fx-font-size: 11px;
 }
 
