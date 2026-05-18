@@ -88,6 +88,31 @@ public class TicketDAO {
 
     }
 
+    public boolean setLastUpdated(int ticketId, LocalDateTime updatedAt) {
+        String sql = """
+                UPDATE ticket
+                SET last_updated = ?
+                WHERE id = ?;
+                """;
+
+        try (Connection connection = DBConnector.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setTimestamp(1, Timestamp.valueOf(updatedAt));
+            stmt.setInt(2, ticketId);
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                ticketsDirty = true;
+            }
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
     public static TicketDAO getTicketDAO() {
         if (ticketDAO == null) {
             ticketDAO = new TicketDAO();
@@ -227,9 +252,10 @@ public class TicketDAO {
                 LEFT JOIN user c ON t.created_by = c.id
                 ORDER BY t.date_created DESC
                 """;
-
+        
         List<TicketView> freshTickets = new ArrayList<>();
 
+        long start = System.nanoTime();
         try (Connection connection = DBConnector.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -249,7 +275,10 @@ public class TicketDAO {
                 ));
 
             }
+            long end = System.nanoTime();
+            double elapsedMs = (end - start) / 1_000_000.0;
 
+            System.out.println("Loaded " + freshTickets.size() + " tickets"+ " in "+ elapsedMs+" ms");
             tickets = freshTickets;
             ticketsLoaded = true;
             ticketsDirty = false;

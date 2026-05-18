@@ -1,5 +1,6 @@
 package com.csit228.capstone.controller;
 
+import com.csit228.capstone.dao.DepartmentDAO;
 import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.exceptions.InvalidCredentialsException;
 import com.csit228.capstone.model.User;
@@ -13,6 +14,7 @@ import java.io.IOException;
 public class LoginViewController {
   
   UserDAO userDAO = UserDAO.getUserDAO();
+  DepartmentDAO deptDAO = DepartmentDAO.getDepartmentDAO();
   
   public TextField tfUsername;
   public TextField tfPassword;
@@ -39,9 +41,13 @@ public class LoginViewController {
     } else {
       try {
         User u = userDAO.login(username, password);
+        
         if (u != null) {
           // Simplified the logic by using the newly implemented methods of saving session, and switching to the
           // correct screen based on the user's role.
+          
+          String deptName = deptDAO.getDepartmentNameByID(u.getDepartment_id());
+          u.setDepartmentName(deptName);
           AppSession.saveSession(u);
           Controls.switchScreen(AppSession.getInitialScreen());
         }

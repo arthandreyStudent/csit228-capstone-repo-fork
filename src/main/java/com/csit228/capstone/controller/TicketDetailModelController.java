@@ -436,7 +436,8 @@ public class TicketDetailModelController implements CommentObserver {
         Label badge = new Label(text);
         badge.setStyle(
                 "-fx-background-color: " + bgVar + "; " + "-fx-text-fill: " + textVar + "; " + "-fx-padding: 6 12 6 12; " +
-                        "-fx-background-radius: 6; " + "-fx-font-family: 'Inter 18pt ExtraBold'; " + "-fx-font-size: 11px;");
+                        "-fx-background-radius: 6; " + "-fx-font-family: 'Georgia'; " +
+                "-fx-font-weight: bold;" + "-fx-font-size: 11px;");
         return badge;
     }
 
@@ -504,12 +505,17 @@ public class TicketDetailModelController implements CommentObserver {
 
         if (commentsBadgeContainer != null) {
             commentsBadgeContainer.getChildren().clear();
-            commentsBadgeContainer.getChildren().add(createBadge(count + " notes", "#eef3ff", "#1c2b63"));
+            commentsBadgeContainer.getChildren().add(createBadge(count + " notes", "#f7eddf", "#3f342d"));
         }
 
         if (count == 0) {
             Label emptyLabel = new Label("No comments yet.");
-            emptyLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 12px;");
+            emptyLabel.setStyle("" +
+                                "-fx-text-fill: #72665e; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-font-family: 'Georgia'; " +
+                                "-fx-font-size: 12px;"
+            );
             activityCommentContainer.getChildren().add(emptyLabel);
             return;
         }
@@ -522,22 +528,35 @@ public class TicketDetailModelController implements CommentObserver {
 
     private VBox createCommentCard(Comment comment) {
         Label authorLabel = new Label(safe(comment.getCreatedBy(), "Unknown"));
-        authorLabel.setStyle("-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;");
+        authorLabel.setStyle("" +
+                             "-fx-text-fill: #312d2b; " +
+                             "-fx-font-size: 13px; " +
+                             "-fx-font-family: 'Georgia'; " +
+                             "-fx-font-weight: bold;"
+                            );
 
         String timeText = comment.getDateCreated() != null
                 ? comment.getDateCreated().format(dateFormatter) + " at " + comment.getDateCreated().format(timeFormatter)
                 : "No timestamp";
         Label timeLabel = new Label(timeText);
-        timeLabel.setStyle("-fx-text-fill: #9faad2; -fx-font-size: 10px;");
+        timeLabel.setStyle("" +
+                           "-fx-text-fill: #86766e; " +
+                           "-fx-font-family: 'Times New Roman'; " +
+                           "-fx-font-size: 11px;"
+                          );
 
         Label contentLabel = new Label(safe(comment.getContent(), ""));
         contentLabel.setWrapText(true);
         contentLabel.setMaxWidth(270.0);
-        contentLabel.setStyle("-fx-text-fill: #4b587c; -fx-font-size: 12px; -fx-line-spacing: 3px;");
+        contentLabel.setStyle("" +
+                              "-fx-text-fill: #494040; " +
+                              "-fx-font-family: 'Georgia'; " +
+                              "-fx-font-size: 12px; " +
+                              "-fx-line-spacing: 3px;");
 
         VBox card = new VBox(4, authorLabel, timeLabel, contentLabel);
         card.setPadding(new Insets(12));
-        card.setStyle("-fx-background-color: #f7f9fd; -fx-background-radius: 8;");
+        card.setStyle("-fx-background-color: #fdf9f6; -fx-background-radius: 8;");
         return card;
     }
 

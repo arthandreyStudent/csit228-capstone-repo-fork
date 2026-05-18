@@ -1,178 +1,252 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="760.0" prefWidth="960.0" style="-fx-background-color: #f5f0e7;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
+<VBox prefHeight="760.0" prefWidth="960.0" style="-fx-background-color: #eadaca;" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csit228.capstone.controller.TicketDetailModelController">
     <children>
-        <HBox fx:id="ticketHeader" alignment="CENTER_LEFT" prefHeight="76.0" spacing="16.0" style="-fx-background-color: #7a1e1f;">
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!--  HEADER  (background overridden by controller)  -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <HBox fx:id="ticketHeader" alignment="CENTER_LEFT" prefHeight="72.0" spacing="16.0" style="-fx-background-color: #751b1c;">
             <padding>
-                <Insets bottom="18.0" left="24.0" right="24.0" top="18.0" />
+                <Insets bottom="16.0" left="26.0" right="26.0" top="16.0" />
             </padding>
             <children>
-                <VBox alignment="CENTER_LEFT" spacing="3.0" HBox.hgrow="ALWAYS">
+                <VBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label style="-fx-text-fill: #bcd2ff; -fx-font-size: 11px; -fx-font-weight: bold;" text="EDITOR REVIEW" />
-                        <Label style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" text="Ticket Details" />
+                        <Label style="-fx-text-fill: #f5c5a3; -fx-font-size: 12; -fx-font-weight: bold; -fx-font-family: Georgia;" text="EDITOR REVIEW" />
+                        <Label style="-fx-text-fill: white; -fx-font-size: 30px; -fx-font-weight: bold; -fx-font-family: Georgia;" text="TICKET DETAILS" />
                     </children>
                 </VBox>
-                <Button fx:id="buttonClose" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#onClickedButtonClose" prefHeight="32.0" prefWidth="32.0" style="-fx-background-color: rgba(255,255,255,0.16); -fx-background-radius: 16; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;" text="X" />
+
+                <Button fx:id="buttonClose" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#onClickedButtonClose" prefHeight="32.0" prefWidth="32.0" style="-fx-background-color: rgba(255,255,255,0.18);                                -fx-background-radius: 16;                                -fx-text-fill: white;                                -fx-font-size: 13px;                                -fx-font-weight: bold;                                -fx-font-family: Georgia;                                -fx-cursor: hand;" text="✕" />
             </children>
         </HBox>
 
+        <!-- ═══════════════════════════════════════════════ -->
+        <!--  MAIN CONTENT                                   -->
+        <!-- ═══════════════════════════════════════════════ -->
         <HBox spacing="18.0" VBox.vgrow="ALWAYS">
             <padding>
                 <Insets bottom="22.0" left="22.0" right="22.0" top="22.0" />
             </padding>
             <children>
-                <VBox prefWidth="340.0" spacing="16.0">
+
+                <!-- ─────────────────────────────────── -->
+                <!--  LEFT COLUMN  (ticket info + chat)  -->
+                <!-- ─────────────────────────────────── -->
+                <VBox prefWidth="330.0" spacing="16.0">
                     <children>
-                        <VBox spacing="12.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;">
+
+                        <!-- Ticket Info Card -->
+                        <VBox spacing="12.0" style="-fx-background-color: white;                                      -fx-background-radius: 16;                                      -fx-border-color: #e0d5c8;                                      -fx-border-radius: 16;                                      -fx-effect: dropshadow(gaussian, rgba(90,60,40,0.07), 8, 0, 0, 2);">
                             <padding>
                                 <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
                             </padding>
                             <children>
-                                <Label fx:id="ticketCode" style="-fx-text-fill: #ff9900; -fx-font-size: 11px; -fx-font-weight: bold;" text="#TIX-020" />
-                                <Label fx:id="ticketTitle" maxWidth="304.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 22px; -fx-font-weight: bold;" text="New user onboarding flow improvements" wrapText="true" />
-                                <Separator />
-                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 11px; -fx-font-weight: bold;" text="DESCRIPTION" />
-                                <Label fx:id="descriptionLabel" maxWidth="304.0" style="-fx-text-fill: #4b587c; -fx-font-size: 13px; -fx-line-spacing: 4px;" text="Improve the user onboarding flow to reduce friction during signup." wrapText="true" />
+                                <!-- Ticket code pill -->
+                                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                    <children>
+                                        <Label fx:id="ticketCode" style="-fx-background-color: #f5ede6;                                                       -fx-background-radius: 6;                                                       -fx-text-fill: #821010;                                                       -fx-font-size: 11px;                                                       -fx-font-weight: bold;                                                       -fx-font-family: 'Times New Roman';
+                                        -fx-padding: 3 8 3 8;" text="#TIX-020" />
+                                    </children>
+                                </HBox>
+
+                                <Label fx:id="ticketTitle" maxWidth="294.0" style="-fx-text-fill: #251e1d;                                               -fx-font-size: 19px;                                               -fx-font-weight: bold;                                               -fx-font-family: Georgia;                                               -fx-line-spacing: 2px;" text="New user onboarding flow improvements" wrapText="true" />
+
+                                <Separator style="-fx-background-color: #857e77;" />
+
+                                <Label style="-fx-text-fill: #8f8780;                                               -fx-font-size: 10px;                                               -fx-font-weight: bold;                                               -fx-font-family: Georgia;                                               -fx-letter-spacing: 1px;" text="DESCRIPTION" />
+
+                                <Label fx:id="descriptionLabel" maxWidth="294.0" style="-fx-text-fill: #5b4d48;                                               -fx-font-size: 13px;                                               -fx-line-spacing: 5px;                                               -fx-font-family: Georgia;" text="Improve the user onboarding flow to reduce friction during signup." wrapText="true" />
                             </children>
                         </VBox>
 
-
-                        <VBox spacing="12.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
+                        <!-- Comment History Card -->
+                        <VBox spacing="12.0" style="-fx-background-color: white;                                      -fx-background-radius: 16;                                      -fx-border-color: #e0d5c8;                                      -fx-border-radius: 16;                                      -fx-effect: dropshadow(gaussian, rgba(90,60,40,0.07), 8, 0, 0, 2);" VBox.vgrow="ALWAYS">
                             <padding>
-                                <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+                                <Insets bottom="16.0" left="18.0" right="18.0" top="16.0" />
                             </padding>
                             <children>
                                 <HBox alignment="CENTER_LEFT">
                                     <children>
-                                        <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill: #1c2b63; -fx-font-size: 15px; -fx-font-weight: bold;" text="Comment History" HBox.hgrow="ALWAYS" />
+                                        <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill: #251e1d;                                                       -fx-font-size: 14px;                                                       -fx-font-weight: bold;                                                       -fx-font-family: Georgia;" text="Comment History" HBox.hgrow="ALWAYS" />
                                         <HBox fx:id="commentsBadgeContainer" alignment="CENTER_RIGHT" prefHeight="24.0" prefWidth="92.0" />
                                     </children>
                                 </HBox>
+
                                 <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" VBox.vgrow="ALWAYS">
                                     <content>
-                                        <VBox fx:id="activityCommentContainer" prefWidth="302.0" spacing="10.0" style="-fx-background-color: transparent;" />
+                                        <VBox fx:id="activityCommentContainer" prefWidth="292.0" spacing="10.0" style="-fx-background-color: transparent;" />
                                     </content>
                                 </ScrollPane>
                             </children>
                         </VBox>
+
                     </children>
                 </VBox>
 
+                <!-- ─────────────────────────────────────────── -->
+                <!--  RIGHT COLUMN  (badges, compose, actions)   -->
+                <!-- ─────────────────────────────────────────── -->
                 <VBox prefWidth="558.0" spacing="16.0" HBox.hgrow="ALWAYS">
                     <children>
+
+                        <!-- Top badge row: Status · Priority · Department · Deadline -->
                         <HBox spacing="12.0">
                             <children>
-                                <VBox prefHeight="82.0" prefWidth="128.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;">
+
+                                <!-- STATUS -->
+                                <VBox spacing="8.0" style="-fx-background-color: white;                                              -fx-background-radius: 16;                                              -fx-border-color: #e0d5c8;                                              -fx-border-radius: 16;                                              -fx-effect: dropshadow(gaussian, rgba(90,60,40,0.07), 8, 0, 0, 2);" HBox.hgrow="ALWAYS">
                                     <padding>
                                         <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
                                     </padding>
                                     <children>
-                                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="STATUS" />
+                                        <Label style="-fx-text-fill: #7c756d;                                                       -fx-font-size: 10px;                                                       -fx-font-weight: bold;                                                       -fx-font-family: Georgia;" text="STATUS" />
                                         <HBox fx:id="statusBadgeContainer" alignment="CENTER_LEFT" />
                                     </children>
                                 </VBox>
-                                <VBox prefHeight="82.0" prefWidth="128.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;">
+
+                                <!-- PRIORITY -->
+                                <VBox spacing="8.0" style="-fx-background-color: white;                                              -fx-background-radius: 16;                                              -fx-border-color: #e0d5c8;                                              -fx-border-radius: 16;                                              -fx-effect: dropshadow(gaussian, rgba(90,60,40,0.07), 8, 0, 0, 2);" HBox.hgrow="ALWAYS">
                                     <padding>
                                         <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
                                     </padding>
                                     <children>
-                                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="PRIORITY" />
+                                        <Label style="-fx-text-fill: #7c756d;                                                      -fx-font-size: 10px;                                                       -fx-font-weight: bold;                                                       -fx-font-family: Georgia;" text="PRIORITY" />
                                         <HBox fx:id="priorityBadgeContainer" alignment="CENTER_LEFT" />
                                     </children>
                                 </VBox>
-                                <VBox prefHeight="82.0" prefWidth="128.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;">
+
+                                <!-- DEPARTMENT -->
+                                <VBox spacing="8.0" style="-fx-background-color: white;                                              -fx-background-radius: 16;                                              -fx-border-color: #e0d5c8;                                              -fx-border-radius: 16;                                              -fx-effect: dropshadow(gaussian, rgba(90,60,40,0.07), 8, 0, 0, 2);" HBox.hgrow="ALWAYS">
                                     <padding>
                                         <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
                                     </padding>
                                     <children>
-                                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="DEPARTMENT" />
-                                        <Label fx:id="departmentLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="Editorial" wrapText="true" />
+                                        <Label style="-fx-text-fill: #7c756d;                                                       -fx-font-size: 10px;                                                       -fx-font-weight: bold;                                                       -fx-font-family: Georgia;" text="DEPARTMENT" />
+                                        <Label fx:id="departmentLabel" style="-fx-text-fill: #251e1d;                                                       -fx-font-size: 12px;                                                       -fx-font-weight: bold;                                                       -fx-font-family: Georgia;" text="Editorial" wrapText="true" />
                                     </children>
                                 </VBox>
-                                <VBox prefHeight="82.0" prefWidth="128.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;">
+
+                                <!-- DEADLINE -->
+                                <VBox spacing="6.0" style="-fx-background-color: #fdebea;                                              -fx-background-radius: 16;                                              -fx-border-color: #f5d5ca;                                              -fx-border-radius: 16;                                              -fx-effect: dropshadow(gaussian, rgba(90,60,40,0.07), 8, 0, 0, 2);" HBox.hgrow="ALWAYS">
                                     <padding>
                                         <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
                                     </padding>
                                     <children>
-                                        <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="DEADLINE" />
-                                        <Label fx:id="deadlineDateLabel" style="-fx-text-fill: #f14d5a; -fx-font-size: 12px; -fx-font-weight: bold;" text="May 15, 2026" />
-                                        <Label fx:id="deadlineTimeLabel" style="-fx-text-fill: #9faad2; -fx-font-size: 10px;" text="12:00 AM" />
+                                        <Label style="-fx-text-fill: #d53535;                                                       -fx-font-size: 10px;                                                       -fx-font-weight: bold;                                                       -fx-font-family: Georgia;" text="DEADLINE" />
+                                        <Label fx:id="deadlineDateLabel" style="-fx-text-fill: #7c0b0b;                                                       -fx-font-size: 13px;                                                       -fx-font-weight: bold;                                                       -fx-font-family: Georgia;" text="May 15, 2026" />
+                                        <Label fx:id="deadlineTimeLabel" style="-fx-text-fill: #835a56;                                                       -fx-font-size: 11px;                                                       -fx-font-family: Georgia;" text="12:00 AM" />
                                     </children>
                                 </VBox>
+
                             </children>
                         </HBox>
 
-
-
-                        <VBox spacing="14.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
+                        <!-- ─────────────────────────────── -->
+                        <!--  Create Comment + Metadata Card -->
+                        <!-- ─────────────────────────────── -->
+                        <VBox spacing="14.0" style="-fx-background-color: white;                                      -fx-background-radius: 16;                                      -fx-border-color: #e0d5c8;                                      -fx-border-radius: 16;                                      -fx-effect: dropshadow(gaussian, rgba(90,60,40,0.07), 8, 0, 0, 2);" VBox.vgrow="ALWAYS">
                             <padding>
                                 <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
                             </padding>
                             <children>
-                        <Label layoutX="29.0" layoutY="29.0" style="-fx-text-fill: #1c2b63; -fx-font-size: 15px; -fx-font-weight: bold;" text="Create Comment" />
-                                <TextArea fx:id="reviewCommentArea" prefHeight="210.0" promptText="Add feedback before returning or resolving this ticket..." style="-fx-background-color: #f7f9fd; -fx-background-radius: 10; -fx-border-color: #dfe7f5; -fx-border-radius: 10; -fx-font-size: 13px;" wrapText="true" VBox.vgrow="ALWAYS" />
-                                <HBox spacing="12.0">
+
+                                <Label style="-fx-text-fill: #251e1d;                                               -fx-font-size: 14px;                                               -fx-font-weight: bold;                                               -fx-font-family: Georgia;" text="Create Comment" />
+
+                                <TextArea fx:id="reviewCommentArea" prefHeight="200.0" promptText="Add feedback before returning or resolving this ticket..." style="-fx-background-color: #f5f0e7;                                                  -fx-background-radius: 10;                                                  -fx-border-color: #e0d5c8;                                                  -fx-border-radius: 10;                                                  -fx-font-size: 13px;                                                  -fx-font-family: Georgia;                                                  -fx-text-fill: #3a2e2a;                                                  -fx-prompt-text-fill: #a99f96;" wrapText="true" VBox.vgrow="ALWAYS" />
+
+                                <!-- Metadata row 1: Created By · Assigned To · Last Updated -->
+                                <HBox spacing="10.0">
                                     <children>
-                                        <VBox prefWidth="165.0" spacing="6.0" style="-fx-background-color: #f7f9fd; -fx-background-radius: 8;">
+
+                                        <VBox spacing="5.0" style="-fx-background-color: #f1eeea;                                                      -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
                                             <padding>
                                                 <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
                                             </padding>
                                             <children>
-                                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="CREATED BY" />
-                                                <Label fx:id="createdBy" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="Ticket Creator" wrapText="true" />
+                                                <Label style="-fx-text-fill: #8f8881;                                                               -fx-font-size: 10px;                                                               -fx-font-weight: bold;                                                               -fx-font-family: Georgia;" text="CREATED BY" />
+                                                <Label fx:id="createdBy" style="-fx-text-fill: #251e1d;                                                               -fx-font-size: 12px;                                                               -fx-font-weight: bold;                                                               -fx-font-family: Georgia;" text="Ticket Creator" wrapText="true" />
                                             </children>
                                         </VBox>
-                                        <VBox prefWidth="165.0" spacing="6.0" style="-fx-background-color: #f7f9fd; -fx-background-radius: 8;">
+
+                                        <VBox spacing="5.0" style="-fx-background-color: #f1eeea;                                                      -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
                                             <padding>
                                                 <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
                                             </padding>
                                             <children>
-                                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="ASSIGNED TO" />
-                                                <Label fx:id="assignedToLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="Unassigned" wrapText="true" />
-                                                <ComboBox fx:id="assignedToComboBox" managed="false" maxWidth="1.7976931348623157E308" prefWidth="140.0" promptText="Assign to..." style="-fx-background-color: white; -fx-border-color: #dfe7f5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 11px;" visible="false" />
+                                                <Label style="-fx-text-fill: #8f8881;                                                               -fx-font-size: 10px;                                                               -fx-font-weight: bold;                                                               -fx-font-family: Georgia;" text="ASSIGNED TO" />
+                                                <Label fx:id="assignedToLabel" style="-fx-text-fill: #251e1d;                                                               -fx-font-size: 12px;                                                               -fx-font-weight: bold;                                                               -fx-font-family: Georgia;" text="Unassigned" wrapText="true" />
+                                                <ComboBox fx:id="assignedToComboBox" managed="false" maxWidth="1.7976931348623157E308" prefWidth="140.0" promptText="Assign to..." style="-fx-background-color: white;                                                                  -fx-border-color: #e0d5c8;                                                                  -fx-border-radius: 8;                                                                  -fx-background-radius: 8;                                                                  -fx-font-size: 11px;                                                                  -fx-font-family: Georgia;" visible="false" />
                                             </children>
                                         </VBox>
-                                        <VBox prefWidth="165.0" spacing="6.0" style="-fx-background-color: #f7f9fd; -fx-background-radius: 8;">
+
+                                        <VBox spacing="5.0" style="-fx-background-color: #f1eeea;                                                      -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
                                             <padding>
                                                 <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
                                             </padding>
                                             <children>
-                                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="LAST UPDATED" />
-                                                <Label fx:id="lastUpdatedDateLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="May 15, 2026" />
-                                                <Label fx:id="lastUpdatedTimeLabel" style="-fx-text-fill: #9faad2; -fx-font-size: 10px;" text="12:00 AM" />
+                                                <Label style="-fx-text-fill: #8f8881;                                                               -fx-font-size: 10px;                                                               -fx-font-weight: bold;                                                               -fx-font-family: Georgia;" text="LAST UPDATED" />
+                                                <Label fx:id="lastUpdatedDateLabel" style="-fx-text-fill: #251e1d;                                                               -fx-font-size: 12px;                                                               -fx-font-weight: bold;                                                               -fx-font-family: Georgia;" text="May 15, 2026" />
+                                                <Label fx:id="lastUpdatedTimeLabel" style="-fx-text-fill: #807770;                                                               -fx-font-size: 11px;                                                               -fx-font-family: 'Times New Roman';" text="12:00 AM" />
                                             </children>
                                         </VBox>
+
                                     </children>
                                 </HBox>
-                                <HBox spacing="12.0">
+
+                                <!-- Metadata row 2: Created -->
+                                <HBox spacing="10.0">
                                     <children>
-                                        <VBox prefWidth="165.0" spacing="6.0" style="-fx-background-color: #f7f9fd; -fx-background-radius: 8;">
+
+                                        <VBox prefWidth="165.0" spacing="5.0" style="-fx-background-color: #f1eeea;                                                      -fx-background-radius: 10;">
                                             <padding>
                                                 <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
                                             </padding>
                                             <children>
-                                                <Label style="-fx-text-fill: #9faad2; -fx-font-size: 10px; -fx-font-weight: bold;" text="CREATED" />
-                                                <Label fx:id="createdDateLabel" style="-fx-text-fill: #1c2b63; -fx-font-size: 12px; -fx-font-weight: bold;" text="May 15, 2026" />
-                                                <Label fx:id="createdTimeLabel" style="-fx-text-fill: #9faad2; -fx-font-size: 10px;" text="12:00 AM" />
+                                                <Label style="-fx-text-fill: #8f8881;                                                               -fx-font-size: 10px;                                                               -fx-font-weight: bold;                                                               -fx-font-family: Georgia;" text="CREATED" />
+                                                <Label fx:id="createdDateLabel" style="-fx-text-fill: #251e1d;                                                               -fx-font-size: 12px;                                                               -fx-font-weight: bold;                                                               -fx-font-family: Georgia;" text="May 15, 2026" />
+                                                <Label fx:id="createdTimeLabel" style="-fx-text-fill: #807770;                                                              -fx-font-size: 11px;                                                               -fx-font-family: 'Times New Roman';" text="12:00 AM" />
                                             </children>
                                         </VBox>
+
                                         <Region HBox.hgrow="ALWAYS" />
+
                                     </children>
                                 </HBox>
+
                             </children>
                         </VBox>
 
+                        <!-- ────────────────── -->
+                        <!--  Action Buttons    -->
+                        <!-- ────────────────── -->
                         <HBox alignment="CENTER_RIGHT" spacing="10.0">
                             <children>
-                                <Button onAction="#onClickedButtonClose" prefHeight="38.0" prefWidth="96.0" style="-fx-background-color: #eef2fb; -fx-background-radius: 8; -fx-text-fill: #607096; -fx-font-size: 12px; -fx-font-weight: bold;" text="Cancel" />
-                                <Button fx:id="saveAssignmentButton" managed="false" onAction="#onClickedSaveAssignment" prefHeight="38.0" prefWidth="96.0" style="-fx-background-color: #22C55E; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;" text="Save" visible="false" />
-                                <Button fx:id="returnTicketButton" managed="false" onAction="#onClickedReturnTicket" prefHeight="38.0" prefWidth="96.0" style="-fx-background-color: #fff1d8; -fx-background-radius: 8; -fx-text-fill: #d47a00; -fx-font-size: 12px; -fx-font-weight: bold;" text="Return" visible="false" />
-                                <Button fx:id="resolveTicketButton" managed="false" onAction="#onClickedResolveTicket" prefHeight="38.0" prefWidth="104.0" style="-fx-background-color: #4bcc8a; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;" text="Resolve" visible="false" />
+
+                                <!-- Cancel -->
+                                <Button onAction="#onClickedButtonClose" prefHeight="38.0" prefWidth="120.0" style="-fx-background-color: #f8f1f0;                                                -fx-background-radius: 18;                                                -fx-text-fill: black;                                                -fx-font-size: 12px;                                                -fx-font-weight: bold;                                                -fx-font-family: Georgia;                                                -fx-cursor: hand;" text="Cancel" />
+
+                                <!-- Save / Submit (toggled by controller) -->
+                                <Button fx:id="saveAssignmentButton" managed="false" onAction="#onClickedSaveAssignment" prefHeight="38.0" prefWidth="120.0" style="-fx-background-color: #3e9e6e;                                                -fx-background-radius: 18;                                                -fx-text-fill: white;                                                -fx-font-size: 12px;                                                -fx-font-weight: bold;                                                -fx-font-family: Georgia;                                                -fx-cursor: hand;" text="Save" visible="false" />
+
+                                <!-- Return -->
+                                <Button fx:id="returnTicketButton" managed="false" onAction="#onClickedReturnTicket" prefHeight="38.0" prefWidth="120.0" style="-fx-background-color: #fff1d8;                                                -fx-background-radius: 18;                                                -fx-text-fill: #8b642b;                                                -fx-font-size: 12px;                                                -fx-font-weight: bold;                                                -fx-font-family: Georgia;                                                -fx-cursor: hand;" text="Return" visible="false" />
+
+                                <!-- Resolve -->
+                                <Button fx:id="resolveTicketButton" managed="false" onAction="#onClickedResolveTicket" prefHeight="38.0" prefWidth="120.0" style="-fx-background-color: #821010;                                                -fx-background-radius: 18;                                                -fx-text-fill: white;                                                -fx-font-size: 12px;                                                -fx-font-weight: bold;                                                -fx-font-family: Georgia;                                                -fx-cursor: hand;" text="Resolve" visible="false" />
+
                             </children>
                         </HBox>
                     </children>
