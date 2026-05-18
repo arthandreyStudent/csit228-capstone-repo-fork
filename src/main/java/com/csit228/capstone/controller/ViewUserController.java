@@ -12,8 +12,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
 
 public class ViewUserController {
@@ -24,6 +26,8 @@ public class ViewUserController {
     public ComboBox<Role> comboboxPosition;
     public ComboBox<Department> comboboxDepartment;
     public ComboBox<Job> comboboxJob;
+    public Button saveChangeButton;
+    public Button cancelButton;
 
     private ObservableList<Role> roles = FXCollections.observableArrayList();
     private ObservableList<Department> departments = FXCollections.observableArrayList();
@@ -73,6 +77,7 @@ public class ViewUserController {
         positionLabel.setText(user.getRole() == Role.MEMBER ? "Member" : "Editor");
         comboboxPosition.setPromptText(user.getRole() == Role.MEMBER ? "MEMBER" : "EDITOR");
         comboboxJob.setPromptText(userJobDAO.getJobByUser(user.getUsername()));
+        jobs.addAll(departmentDAO.getDepartmentByID(user.getDepartment_id()).getJobs());
     }
 
     public void updateJobCombobox() {
@@ -85,15 +90,26 @@ public class ViewUserController {
 
     public void handleSaveChanges() {
         System.out.println("Saving");
-        Role role = comboboxPosition != null ? comboboxPosition.getValue() : user.getRole();
-        Department department = comboboxDepartment != null ? comboboxDepartment.getValue() : departmentDAO.getDepartmentByID(user.getDepartment_id());
-        String job = comboboxJob != null ? comboboxJob.getValue().getName() : userJobDAO.getJobByUser(user.getUsername());
-
-        userDAO.updateUser(user, userDAO.getTypeRev(role), department.getId(), job);
-
+        Role role = comboboxPosition.getValue() != null ? comboboxPosition.getValue() : user.getRole();
+        Department department = comboboxDepartment.getValue() != null ? comboboxDepartment.getValue() : departmentDAO.getDepartmentByID(user.getDepartment_id());
+        if(comboboxJob.getValue() == null){
+            comboboxJob.setPromptText("Select position.");
+        } else{
+            String job = comboboxJob.getValue() != null ? comboboxJob.getValue().getName() : userJobDAO.getJobByUser(user.getUsername());
+            userDAO.updateUser(user,  userDAO.getTypeRev(role), department.getId(), job);
+            controller.createUserRowView(departmentDAO.getDepartmentByID(user.getDepartment_id()));
+            closeModal(saveChangeButton);
+        }
+    }
+    protected void closeModal(Button sourceButton) {
+        if (sourceButton != null
+                && sourceButton.getScene() != null
+                && sourceButton.getScene().getWindow() instanceof Stage stage) {
+            stage.close();
+        }
     }
 
     public void handleCancel() {
-        System.out.println("Canceling");
+        closeModal(cancelButton);
     }
 }

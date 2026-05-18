@@ -1,5 +1,6 @@
 package com.csit228.capstone.utils;
 
+import com.csit228.capstone.dao.UserDAO;
 import com.csit228.capstone.model.Department;
 import com.csit228.capstone.model.Notification;
 import com.csit228.capstone.model.TicketView;
@@ -86,7 +87,7 @@ public class ListRowItem extends VBox {
     row.setPrefHeight(66);
     row.setAlignment(Pos.CENTER_LEFT);
     row.setCursor(Cursor.HAND);
-    row.setStyle("-fx-background-color: white; -fx-border-color: #eef2fb; -fx-border-width: 1 0 0 0;");
+    row.setStyle(" -fx-background-color: white; -fx-border-color: #eef2fb; -fx-border-width: 1 0 0 0;");
 
     String createdBy = ticket.getCreatedBy() != null ? ticket.getCreatedBy() : "Unknown";
     String ticketNum = String.format("%03d", ticket.getId());
@@ -431,7 +432,7 @@ public class ListRowItem extends VBox {
         numOfJobs.setPrefWidth(160);
         numOfJobs.setStyle("-fx-font-family: 'Georgia'; -fx-alignment: 'center'; -fx-text-fill: #888888; -fx-font-size: 15px;");
 
-        Label numOfMembers = new Label("" + count);
+        Label numOfMembers = new Label(UserDAO.getUserDAO().getMembersByDepartment(department.getId()).size() + "");
         numOfMembers.setPrefWidth(160);
         numOfMembers.setStyle("-fx-font-family: 'Georgia'; -fx-alignment: 'center'; -fx-text-fill: #888888; -fx-font-size: 15px;");
 
@@ -615,8 +616,7 @@ public class ListRowItem extends VBox {
                         "-fx-background-radius: 7;" +
                         "-fx-text-fill: " + textColor + ";" +
                         "-fx-font-size: 11px;" +
-                        "-fx-font-family: 'Georgia'; " +
-                        "-fx-font-weight: bold;"
+                        "-fx-font-weight: bold; -fx-font-family: Georgia;"
         );
         return button;
     }
@@ -632,7 +632,7 @@ public class ListRowItem extends VBox {
                         "-fx-border-radius: 8;" +
                         "-fx-background-radius: 8;" +
                         "-fx-font-size: 10px;" +
-                        "-fx-text-fill: #1c2b63;"
+                        "-fx-text-fill: #1c2b63; -fx-font-family: Georgia;"
         );
 
         if (users != null) {

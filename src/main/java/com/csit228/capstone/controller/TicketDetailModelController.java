@@ -319,7 +319,7 @@ public class TicketDetailModelController implements CommentObserver {
         int currentUserId = AppSession.currentUser != null ? AppSession.currentUser.getUserId() : -1;
 
         for (User user : userDAO.getUsersByDepartment(departmentId)) {
-            if (user != null && user.hasRole(Role.MEMBER) && user.getUserId() != currentUserId) {
+            if (user != null && user.getUserId() != currentUserId) {
                 departmentUsers.add(user);
             }
         }

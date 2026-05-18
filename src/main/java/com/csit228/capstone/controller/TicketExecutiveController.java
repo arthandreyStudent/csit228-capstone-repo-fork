@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.Node;
@@ -131,7 +132,7 @@ public class TicketExecutiveController extends StaffTicketController {
     departmentTabsBox.getChildren().add(allButton);
 
     Button volunteerButton =
-      createTabButton(VOLUNTEER_TAB_NAME, VOLUNTEER_TAB_NAME.equalsIgnoreCase(selectedDepartmentName));
+            createTabButton(VOLUNTEER_TAB_NAME, VOLUNTEER_TAB_NAME.equalsIgnoreCase(selectedDepartmentName));
     volunteerButton.setOnAction(event -> {
       selectedDepartmentName = VOLUNTEER_TAB_NAME;
       renderDepartmentTabs();
@@ -155,6 +156,9 @@ public class TicketExecutiveController extends StaffTicketController {
     }
   }
 
+  
+
+  
   private Button createTabButton(String text, boolean selected) {
     Button button = new Button(text);
     button.setPrefHeight(32.0);
@@ -193,18 +197,6 @@ public class TicketExecutiveController extends StaffTicketController {
     resolvedLabel.setText(String.valueOf(resolved));
     overdueLabel.setText(String.valueOf(overdue));
 
-    double resolvedRate = rate(resolved, total);
-    double inProgressRate = rate(inProgress, total);
-    double overdueRate = rate(overdue, total);
-
-    resolutionRateLabel.setText(Formatter.formatPercent(resolvedRate));
-    resolvedRatePercentLabel.setText(Formatter.formatPercent(resolvedRate));
-    inProgressRatePercentLabel.setText(Formatter.formatPercent(inProgressRate));
-    overdueRatePercentLabel.setText(Formatter.formatPercent(overdueRate));
-
-    resolvedProgressBar.setProgress(resolvedRate);
-    inProgressProgressBar.setProgress(inProgressRate);
-    overdueProgressBar.setProgress(overdueRate);
   }
 
   private void loadPendingAssignmentQueue() {
@@ -246,7 +238,7 @@ public class TicketExecutiveController extends StaffTicketController {
       return true;
     if (VOLUNTEER_TAB_NAME.equalsIgnoreCase(selectedDepartmentName))
       return ticket.isVolunteerTicket();
-    return (ticket.getDepartmentName() != null && ticket.getDepartmentName().equalsIgnoreCase(selectedDepartmentName));
+      return (ticket.getDepartmentName() != null && ticket.getDepartmentName().equalsIgnoreCase(selectedDepartmentName));
   }
 
   @FXML
@@ -302,7 +294,7 @@ public class TicketExecutiveController extends StaffTicketController {
       Controls.switchScreen("DepartmentExecutiveView.fxml");
   }
 
-  public void goToManageUser() throws IOException {
+  public void goToManageUsers() throws IOException {
       showDashboardContent();
       Controls.switchScreen("ManageUserExecutive.fxml");
   }
@@ -310,6 +302,13 @@ public class TicketExecutiveController extends StaffTicketController {
   private double rate(int value, int total) {
     return total <= 0 ? 0 : (double) value / total;
   }
+
+
+  public void goToDashboard() throws IOException {
+    showDashboardContent();
+    Controls.switchScreen("DashboardExecutiveView.fxml");
+  }
+
 }
 
 
