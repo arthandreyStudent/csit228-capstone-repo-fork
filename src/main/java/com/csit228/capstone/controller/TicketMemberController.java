@@ -397,7 +397,7 @@ public class TicketMemberController extends BaseTicketController {
 
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/csit228/capstone/view/StaffTicketView.fxml")
+                    getClass().getResource("/com/csit228/capstone/view/BaseTicketDetailModalView.fxml")
             );
 
             Parent root = loader.load();
